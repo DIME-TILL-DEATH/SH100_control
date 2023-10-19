@@ -32,13 +32,28 @@ LIB_DEP:=
 LINKER_SCRIPT_DEP:=
 
 # Every subdirectory with source files must be described here
-SUBDIRS := 
+SUBDIRS :=  \
+../src/ \
+../src/ASF/ \
+../src/ASF/common/ \
+../src/ASF/common/services/ \
+../src/ASF/common/services/gpio/ \
+../src/ASF/common/services/gpio/mega_gpio/ \
+../src/ASF/common/services/ioport/ \
+../src/ASF/common/services/ioport/mega/ \
+../src/ASF/common/utils/ \
+../src/ASF/common/utils/interrupt/ \
+../src/ASF/mega/ \
+../src/ASF/mega/utils/ \
+../src/ASF/mega/utils/preprocessor/
 
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
 ../main.c \
-../midi.c
+../midi.c \
+../midi_parser.c \
+../uart.c
 
 
 PREPROCESSING_SRCS += 
@@ -49,19 +64,27 @@ ASM_SRCS +=
 
 OBJS +=  \
 main.o \
-midi.o
+midi.o \
+midi_parser.o \
+uart.o
 
 OBJS_AS_ARGS +=  \
 main.o \
-midi.o
+midi.o \
+midi_parser.o \
+uart.o
 
 C_DEPS +=  \
 main.d \
-midi.d
+midi.d \
+midi_parser.d \
+uart.d
 
 C_DEPS_AS_ARGS +=  \
 main.d \
-midi.d
+midi.d \
+midi_parser.d \
+uart.d
 
 OUTPUT_FILE_PATH +=SH100_control.elf
 
@@ -80,14 +103,28 @@ LINKER_SCRIPT_DEP+=
 ./main.o: .././main.c
 	@echo Building file: $<
 	@echo Invoking: XC8 C Compiler : 2.36
-	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88__ -DDEBUG  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88__ -DDEBUG  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
 ./midi.o: .././midi.c
 	@echo Building file: $<
 	@echo Invoking: XC8 C Compiler : 2.36
-	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88__ -DDEBUG  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88__ -DDEBUG  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./midi_parser.o: .././midi_parser.c
+	@echo Building file: $<
+	@echo Invoking: XC8 C Compiler : 2.36
+	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88__ -DDEBUG  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./uart.o: .././uart.c
+	@echo Building file: $<
+	@echo Invoking: XC8 C Compiler : 2.36
+	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88__ -DDEBUG  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
@@ -117,7 +154,7 @@ all: $(OUTPUT_FILE_PATH) $(ADDITIONAL_DEPENDENCIES)
 $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP) $(LIB_DEP) $(LINKER_SCRIPT_DEP)
 	@echo Building target: $@
 	@echo Invoking:  XC8 C Linker : 2.36
-	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -mcpu=ATmega88  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\xc8"  -Wl,-Map="SH100_control.map" -funsigned-char -funsigned-bitfields -Wl,--start-group -Wl,-lm  -Wl,--end-group -Wl,--gc-sections -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums --memorysummary,memoryfile.xml  
+	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -mcpu=ATmega88  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\xc8"  -Wl,-Map="SH100_control.map" -funsigned-char -funsigned-bitfields -Wl,--start-group -Wl,-lm  -Wl,--end-group -Wl,--gc-sections -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums --memorysummary,memoryfile.xml  
 	@echo Finished building target: $@
 	"D:\Microchip\xc8\v2.36\bin\avr-objcopy.exe" -O ihex -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures  "SH100_control.elf" "SH100_control.hex"
 	"D:\Microchip\xc8\v2.36\bin\avr-objcopy.exe" -j .eeprom --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0 --no-change-warnings -O ihex "SH100_control.elf" "SH100_control.eep" || exit 0

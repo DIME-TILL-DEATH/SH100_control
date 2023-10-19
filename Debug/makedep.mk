@@ -6,3 +6,7 @@ main.c
 
 midi.c
 
+midi_parser.c
+
+uart.c
+

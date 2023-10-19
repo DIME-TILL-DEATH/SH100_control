@@ -1,34 +1,39 @@
-#ifndef MIDI_H
-#define MIDI_h
+#ifndef MIDI_H_
+#define MIDI_H_
 
 #include <stdint.h>
 #include <stdbool.h>
 
-// Status messages with 2 bytes
-#define MIDI_COMM_NOTE_OFF	0x80
-#define MIDI_COMM_NOTE_ON	0x90
-#define MIDI_COMM_POLY_PRESSURE	0xA0
-#define MIDI_COMM_CONTROL_CHANGE	0xB0
-#define MIDI_COMM_PITCH_BEND	0xE0
-#define MIDI_COMM_SONG_POSITION	0xF2
+typedef enum
+{
+	MIDI_COMM_UNDEFINED = 0x00,
+	
+	// Status messages with 2 bytes
+	MIDI_COMM_NOTE_OFF = 0x80,
+	MIDI_COMM_NOTE_ON =	0x90,
+	MIDI_COMM_POLY_PRESSURE = 0xA0,
+	MIDI_COMM_CONTROL_CHANGE = 0xB0,
+	MIDI_COMM_PITCH_BEND = 0xE0,
+	MIDI_COMM_SONG_POSITION = 0xF2,
 
-// Status messages with 1 byte
-#define MIDI_COMM_PROGRAM_CHANGE	0xC0
-#define MIDI_COMM_CHANNEL_PRESSURE	0xD0
-#define MIDI_COMM_TIME_CODE			0xF1
-#define MIDI_COMM_SONG_SELECT		0xF3
+	// Status messages with 1 byte
+	MIDI_COMM_PROGRAM_CHANGE = 0xC0,
+	MIDI_COMM_CHANNEL_PRESSURE = 0xD0,
+	MIDI_COMM_TIME_CODE = 0xF1,
+	MIDI_COMM_SONG_SELECT = 0xF3,
 
-// System real-time messages(no data bytes)
-#define MIDI_COMM_TIMING_CLOCK	0xF8
-#define MIDI_COMM_START		0xFA
-#define MIDI_COMM_CONTINUE	0xFB
-#define MIDI_COMM_STOP		0xFC
-#define MIDI_COMM_ACTIVE_SENSING	0xFE
-#define MIDI_COMM_SYSTEM_RESET		0xFF
+	// System real-time messages(no data bytes)
+	MIDI_COMM_TIMING_CLOCK = 0xF8,
+	MIDI_COMM_START	= 0xFA,
+	MIDI_COMM_CONTINUE = 0xFB,
+	MIDI_COMM_STO = 0xFC,
+	MIDI_COMM_ACTIVE_SENSING = 0xFE,
+	MIDI_COMM_SYSTEM_RESET = 0xFF,
 
-// System exclusive
-#define MIDI_COMM_START_SYS_EX	0xF0
-#define MIDI_COMM_STOP_SYS_EX	0xF7
+	// System exclusive
+	MIDI_COMM_START_SYS_EX = 0xF0,
+	MIDI_COMM_STOP_SYS_EX = 0xF7
+}MIDI_Status_t;
 
 
 typedef enum
@@ -41,4 +46,4 @@ typedef enum
 bool MIDI_IsStatusWord(uint8_t word);
 bool MIDI_IsSysRealTime(uint8_t word);
 
-#endif /* MIDI_H */
+#endif /* MIDI_H_ */
