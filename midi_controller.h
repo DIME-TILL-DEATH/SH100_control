@@ -15,6 +15,6 @@ typedef struct
 
 void MIDICTRL_Init();
 void MIDICTRL_HandleCommand(MIDI_Command_t command);
-
+void MIDICTRL_StoreUserCommands();
 
 #endif /* MIDI_CONTROLLER_H_ */

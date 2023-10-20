@@ -1,4 +1,7 @@
-#include <avr/pgmspace.h>
+//#include <avr/pgmspace.h>  // use only if SRAM is over. Can put commandBlocks in FLASH
+#include <avr/eeprom.h>
+
+#include "sh100_memory.h"
 
 #include "midi_controller.h"
 #include "sh100_controller.h"
@@ -11,7 +14,7 @@ enum
 
 enum 
 {
-	DEFAULT,
+	DEFAULT = 0,
 	USER
 }commandSet;
 
@@ -89,10 +92,25 @@ bool isEqualCommands(MIDI_Command_t commandRecieved, MIDI_Command_t commandSaved
 
 void MIDICTRL_Init()
 {
-	// !!!!!!!!LOAD FROM EEPROM after init!!!!!!!!!!!!!
-	userCommands = defaultCommands;
-	commandSet = USER;
+	uint16_t readedMagicWord = eeprom_read_word(0x00);
 	
+	if(readedMagicWord == MEMORY_MAGIC_WORD)
+	{
+		// memory is not empty. Load EEPROM values
+		uint8_t readedData[sizeof(MIDICTRL_CommandBlock_t)];	
+		eeprom_read_block(&readedData, (uint16_t*)MEMORY_USER_COMMANDS_OFFSET, sizeof(MIDICTRL_CommandBlock_t));		
+		MIDICTRL_CommandBlock_t* userCommands_ptr = (MIDICTRL_CommandBlock_t*)readedData;
+		userCommands = *userCommands_ptr;
+		
+		commandSet = eeprom_read_byte((uint8_t*)MEMORY_COMMAND_BLOCK_TYPE_OFFSET);
+	}
+	else
+	{
+		// memory empty. Load default values
+		userCommands = defaultCommands;
+		commandSet = DEFAULT;	
+	}
+
 	mode = RUNNING;
 }
 
@@ -132,4 +150,14 @@ void MIDICTRL_HandleCommand(MIDI_Command_t command)
 			break;
 		}
 	}	
+}
+
+void MIDICTRL_StoreUserCommands()
+{
+	if(mode == PROGRAMMING)
+	{
+		eeprom_write_word(0x00, MEMORY_MAGIC_WORD);
+		eeprom_write_byte((void*)MEMORY_COMMAND_BLOCK_TYPE_OFFSET, commandSet);
+		eeprom_write_block(&userCommands, (void*)MEMORY_USER_COMMANDS_OFFSET, sizeof(MIDICTRL_CommandBlock_t));
+	}
 }

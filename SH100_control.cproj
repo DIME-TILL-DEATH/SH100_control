@@ -229,6 +229,9 @@
     <Compile Include="sh100_controller.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="sh100_memory.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="uart.c">
       <SubType>compile</SubType>
     </Compile>
