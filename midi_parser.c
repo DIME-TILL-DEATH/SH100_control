@@ -1,4 +1,5 @@
 #include "midi_parser.h"
+#include "midi_controller.h"
 
 #include "uart.h"
 
@@ -6,7 +7,7 @@ MIDI_Command_t currentCommand;
 MIDI_StatusType_t currentStatusType;
 bool isSecondDataWord;
 
-enum
+enum 
 {
 	RESET=0,
 	WAIT_WORD,
@@ -70,7 +71,8 @@ void MIDI_ParserTask()
 		
 		case DISPATCH_STATUS:
 		{
-			currentCommand.status = (MIDI_Status_t)recievedWord;
+			currentCommand.status = (MIDI_Status_t)((recievedWord & 0xF0) >> 4);
+			currentCommand.channel = recievedWord & 0x0F;
 			currentCommand.data1 = 0;
 			currentCommand.data2 = 0;
 			currentStatusType = MIDI_GetStatusType(currentCommand.status);
@@ -84,8 +86,8 @@ void MIDI_ParserTask()
 			if(isSecondDataWord)
 			{
 				currentCommand.data2 = recievedWord;
-				isSecondDataWord = false;
-				// handle message
+				isSecondDataWord = false;			
+				MIDICTRL_HandleCommand(currentCommand);
 			}
 			else
 			{
@@ -99,7 +101,7 @@ void MIDI_ParserTask()
 		case REC_ONE_BYTE:
 		{
 			currentCommand.data1 = recievedWord;
-			// handle message
+			MIDICTRL_HandleCommand(currentCommand);
 			state = WAIT_WORD;
 			break;
 		}
