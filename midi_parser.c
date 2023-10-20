@@ -2,11 +2,9 @@
 
 #include "uart.h"
 
-MIDI_Status_t currentStatus = MIDI_COMM_UNDEFINED;
-MIDI_StatusType_t currentStatusType = MIDI_TYPE_UNDEFINED;
-
-uint8_t dataWord1, dataWord2;
-bool isSecondDataWord = false;
+MIDI_Command_t currentCommand;
+MIDI_StatusType_t currentStatusType;
+bool isSecondDataWord;
 
 enum
 {
@@ -31,15 +29,20 @@ void MIDI_ParserTask()
 	{
 		case RESET:
 		{
+			currentCommand.status = MIDI_COMM_UNDEFINED;
+			currentCommand.data1 = 0;
+			currentCommand.data2 = 0;
+			currentStatusType = MIDI_TYPE_UNDEFINED;
+			isSecondDataWord = false;
 			state = WAIT_WORD;
 			break;
 		}
 		
 		case WAIT_WORD:
 		{
-			if(isRxBufferNotEmpty())
+			if(UART_RxBufferNotEmpty())
 			{
-				recievedWord = usart_pop_word();
+				recievedWord = UART_PopWord();
 				if(MIDI_IsSysRealTime(recievedWord))
 				{ 
 					handleRealTimeStatus((MIDI_Status_t)recievedWord);
@@ -47,8 +50,7 @@ void MIDI_ParserTask()
 				}
 				
 				if(MIDI_IsStatusWord(recievedWord))
-				{
-					currentStatus = (MIDI_Status_t)recievedWord;	
+				{					
 					state = DISPATCH_STATUS;
 				}
 				else
@@ -68,7 +70,10 @@ void MIDI_ParserTask()
 		
 		case DISPATCH_STATUS:
 		{
-			currentStatusType = MIDI_GetStatusType(currentStatus);
+			currentCommand.status = (MIDI_Status_t)recievedWord;
+			currentCommand.data1 = 0;
+			currentCommand.data2 = 0;
+			currentStatusType = MIDI_GetStatusType(currentCommand.status);
 			isSecondDataWord = false;
 			state = WAIT_WORD;
 			break;
@@ -78,13 +83,13 @@ void MIDI_ParserTask()
 		{
 			if(isSecondDataWord)
 			{
-				dataWord2 = recievedWord;
+				currentCommand.data2 = recievedWord;
 				isSecondDataWord = false;
 				// handle message
 			}
 			else
 			{
-				dataWord1 = recievedWord;
+				currentCommand.data1 = recievedWord;
 				isSecondDataWord = true;
 			}
 			state = WAIT_WORD;
@@ -93,7 +98,7 @@ void MIDI_ParserTask()
 		
 		case REC_ONE_BYTE:
 		{
-			dataWord1 = recievedWord;
+			currentCommand.data1 = recievedWord;
 			// handle message
 			state = WAIT_WORD;
 			break;
@@ -107,7 +112,9 @@ void MIDI_ParserTask()
 		
 		case HADLE_SYS_EX:
 		{
-			currentStatus = MIDI_COMM_UNDEFINED;
+			currentCommand.status = MIDI_COMM_UNDEFINED;
+			currentCommand.data1 = 0;
+			currentCommand.data2 = 0;
 			state = WAIT_WORD;
 			break;	
 		}

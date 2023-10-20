@@ -6,6 +6,8 @@ main.c
 
 midi.c
 
+midi_controller.c
+
 midi_parser.c
 
 uart.c

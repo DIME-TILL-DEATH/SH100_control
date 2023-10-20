@@ -1,10 +1,11 @@
 #include <asf.h>
 
+#include "uart.h"
 #include "midi_parser.h"
 
 int main(void)
 {
-	uart_init();
+	UART_init();
 	
 	
 	cpu_irq_enable();

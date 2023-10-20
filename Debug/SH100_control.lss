@@ -3,237 +3,233 @@ SH100_control.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  00800100  0000048c  2**0
+  0 .data         00000000  00800100  00800100  000004c0  2**0
                   ALLOC, LOAD, DATA
   1 .text         00000198  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000022  00800100  00800100  0000048c  2**0
+  2 .bss          00000025  00800100  00800100  000004c0  2**0
                   ALLOC
-  3 .comment      0000002f  00000000  00000000  0000048c  2**0
+  3 .comment      0000002f  00000000  00000000  000004c0  2**0
                   CONTENTS, READONLY
-  4 .stack.descriptors.hdr 0000000e  00000000  00000000  000004bb  2**0
+  4 .stack.descriptors.hdr 0000000e  00000000  00000000  000004ef  2**0
                   CONTENTS, READONLY
-  5 .debug_aranges 000000c0  00000000  00000000  000004c9  2**0
+  5 .debug_aranges 000000c0  00000000  00000000  000004fd  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   000018be  00000000  00000000  00000589  2**0
+  6 .debug_info   000018f4  00000000  00000000  000005bd  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00000851  00000000  00000000  00001e47  2**0
+  7 .debug_abbrev 0000086d  00000000  00000000  00001eb1  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000005c6  00000000  00000000  00002698  2**0
+  8 .debug_line   0000060c  00000000  00000000  0000271e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  0000014c  00000000  00000000  00002c60  2**2
+  9 .debug_frame  0000014c  00000000  00000000  00002d2c  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000272  00000000  00000000  00002dac  2**0
+ 10 .debug_str    0000027d  00000000  00000000  00002e78  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    0000023c  00000000  00000000  0000301e  2**0
+ 11 .debug_loc    0000023c  00000000  00000000  000030f5  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000080  00000000  00000000  0000325a  2**0
+ 12 .debug_ranges 00000080  00000000  00000000  00003331  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .text         00000002  000003ee  000003ee  00000482  2**1
+ 13 .text         00000002  00000422  00000422  000004b6  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 14 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000032dc  2**2
+ 14 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000033b4  2**2
                   CONTENTS, READONLY, DEBUGGING
- 15 .text.main    00000006  000003e8  000003e8  0000047c  2**1
+ 15 .text.main    00000008  00000412  00000412  000004a6  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 16 .text.MIDI_IsStatusWord 00000008  000003e0  000003e0  00000474  2**1
+ 16 .text.MIDI_IsStatusWord 00000008  0000041a  0000041a  000004ae  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 17 .text.MIDI_IsSysRealTime 0000000c  000003d4  000003d4  00000468  2**1
+ 17 .text.MIDI_IsSysRealTime 0000000c  00000406  00000406  0000049a  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 18 .text.MIDI_GetStatusType 00000040  00000344  00000344  000003d8  2**1
+ 18 .text.MIDI_GetStatusType 00000040  0000035e  0000035e  000003f2  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 19 .text.MIDI_ParserTask 000000f6  00000198  00000198  0000022c  2**1
+ 19 .text.MIDI_ParserTask 00000110  00000198  00000198  0000022c  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 20 .bss.state    00000001  00800122  00800122  0000048c  2**0
+ 20 .bss.state    00000001  00800125  00800125  000004c0  2**0
                   ALLOC
- 21 .bss.isSecondDataWord 00000001  00800123  00800123  0000048c  2**0
-                  ALLOC
- 22 .bss.currentStatusType 00000001  00800124  00800124  0000048c  2**0
-                  ALLOC
- 23 .bss.currentStatus 00000001  00800125  00800125  0000048c  2**0
-                  ALLOC
- 24 .text.__vector_18 00000064  0000028e  0000028e  00000322  2**1
+ 21 .text.UART_init 00000018  000003d2  000003d2  00000466  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 25 .text.usart_pop_word 00000034  00000384  00000384  00000418  2**1
+ 22 .text.__vector_18 00000064  000002a8  000002a8  0000033c  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 26 .text.isRxBufferNotEmpty 0000000e  000003b8  000003b8  0000044c  2**1
+ 23 .text.UART_PopWord 00000034  0000039e  0000039e  00000432  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 27 .text.__vector_20 00000052  000002f2  000002f2  00000386  2**1
+ 24 .text.UART_RxBufferNotEmpty 0000000e  000003ea  000003ea  0000047e  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 28 .text.__dummy_fini 00000002  000003f0  000003f0  00000484  2**1
+ 25 .text.__vector_20 00000052  0000030c  0000030c  000003a0  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 29 .text.__dummy_funcs_on_exit 00000002  000003f2  000003f2  00000486  2**1
+ 26 .text.__dummy_fini 00000002  00000424  00000424  000004b8  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 30 .text.__dummy_simulator_exit 00000002  000003f4  000003f4  00000488  2**1
+ 27 .text.__dummy_funcs_on_exit 00000002  00000426  00000426  000004ba  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 31 .text.exit    0000000e  000003c6  000003c6  0000045a  2**1
+ 28 .text.__dummy_simulator_exit 00000002  00000428  00000428  000004bc  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
- 32 .text._Exit   00000002  000003f6  000003f6  0000048a  2**1
+ 29 .text.exit    0000000e  000003f8  000003f8  0000048c  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+ 30 .text._Exit   00000002  0000042a  0000042a  000004be  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
 
 Disassembly of section .text:
 
 00000000 <__vectors>:
    0:	a3 c0       	rjmp	.+326    	; 0x148 <__ctors_end>
-   2:	f5 c1       	rjmp	.+1002   	; 0x3ee <__bad_interrupt>
-   4:	f4 c1       	rjmp	.+1000   	; 0x3ee <__bad_interrupt>
-   6:	f3 c1       	rjmp	.+998    	; 0x3ee <__bad_interrupt>
-   8:	f2 c1       	rjmp	.+996    	; 0x3ee <__bad_interrupt>
-   a:	f1 c1       	rjmp	.+994    	; 0x3ee <__bad_interrupt>
-   c:	f0 c1       	rjmp	.+992    	; 0x3ee <__bad_interrupt>
-   e:	ef c1       	rjmp	.+990    	; 0x3ee <__bad_interrupt>
-  10:	ee c1       	rjmp	.+988    	; 0x3ee <__bad_interrupt>
-  12:	ed c1       	rjmp	.+986    	; 0x3ee <__bad_interrupt>
-  14:	ec c1       	rjmp	.+984    	; 0x3ee <__bad_interrupt>
-  16:	eb c1       	rjmp	.+982    	; 0x3ee <__bad_interrupt>
-  18:	ea c1       	rjmp	.+980    	; 0x3ee <__bad_interrupt>
-  1a:	e9 c1       	rjmp	.+978    	; 0x3ee <__bad_interrupt>
-  1c:	e8 c1       	rjmp	.+976    	; 0x3ee <__bad_interrupt>
-  1e:	e7 c1       	rjmp	.+974    	; 0x3ee <__bad_interrupt>
-  20:	e6 c1       	rjmp	.+972    	; 0x3ee <__bad_interrupt>
-  22:	e5 c1       	rjmp	.+970    	; 0x3ee <__bad_interrupt>
-  24:	34 c1       	rjmp	.+616    	; 0x28e <__vector_18>
-  26:	e3 c1       	rjmp	.+966    	; 0x3ee <__bad_interrupt>
-  28:	64 c1       	rjmp	.+712    	; 0x2f2 <__vector_20>
-  2a:	e1 c1       	rjmp	.+962    	; 0x3ee <__bad_interrupt>
-  2c:	e0 c1       	rjmp	.+960    	; 0x3ee <__bad_interrupt>
-  2e:	df c1       	rjmp	.+958    	; 0x3ee <__bad_interrupt>
-  30:	de c1       	rjmp	.+956    	; 0x3ee <__bad_interrupt>
-  32:	dd c1       	rjmp	.+954    	; 0x3ee <__bad_interrupt>
-  34:	91 c1       	rjmp	.+802    	; 0x358 <MIDI_GetStatusType+0x14>
-  36:	a2 c1       	rjmp	.+836    	; 0x37c <MIDI_GetStatusType+0x38>
-  38:	a1 c1       	rjmp	.+834    	; 0x37c <MIDI_GetStatusType+0x38>
-  3a:	a0 c1       	rjmp	.+832    	; 0x37c <MIDI_GetStatusType+0x38>
-  3c:	9f c1       	rjmp	.+830    	; 0x37c <MIDI_GetStatusType+0x38>
-  3e:	9e c1       	rjmp	.+828    	; 0x37c <MIDI_GetStatusType+0x38>
-  40:	9d c1       	rjmp	.+826    	; 0x37c <MIDI_GetStatusType+0x38>
-  42:	9c c1       	rjmp	.+824    	; 0x37c <MIDI_GetStatusType+0x38>
-  44:	9b c1       	rjmp	.+822    	; 0x37c <MIDI_GetStatusType+0x38>
-  46:	9a c1       	rjmp	.+820    	; 0x37c <MIDI_GetStatusType+0x38>
-  48:	99 c1       	rjmp	.+818    	; 0x37c <MIDI_GetStatusType+0x38>
-  4a:	98 c1       	rjmp	.+816    	; 0x37c <MIDI_GetStatusType+0x38>
-  4c:	97 c1       	rjmp	.+814    	; 0x37c <MIDI_GetStatusType+0x38>
-  4e:	96 c1       	rjmp	.+812    	; 0x37c <MIDI_GetStatusType+0x38>
-  50:	95 c1       	rjmp	.+810    	; 0x37c <MIDI_GetStatusType+0x38>
-  52:	94 c1       	rjmp	.+808    	; 0x37c <MIDI_GetStatusType+0x38>
-  54:	81 c1       	rjmp	.+770    	; 0x358 <MIDI_GetStatusType+0x14>
-  56:	92 c1       	rjmp	.+804    	; 0x37c <MIDI_GetStatusType+0x38>
-  58:	91 c1       	rjmp	.+802    	; 0x37c <MIDI_GetStatusType+0x38>
-  5a:	90 c1       	rjmp	.+800    	; 0x37c <MIDI_GetStatusType+0x38>
-  5c:	8f c1       	rjmp	.+798    	; 0x37c <MIDI_GetStatusType+0x38>
-  5e:	8e c1       	rjmp	.+796    	; 0x37c <MIDI_GetStatusType+0x38>
-  60:	8d c1       	rjmp	.+794    	; 0x37c <MIDI_GetStatusType+0x38>
-  62:	8c c1       	rjmp	.+792    	; 0x37c <MIDI_GetStatusType+0x38>
-  64:	8b c1       	rjmp	.+790    	; 0x37c <MIDI_GetStatusType+0x38>
-  66:	8a c1       	rjmp	.+788    	; 0x37c <MIDI_GetStatusType+0x38>
-  68:	89 c1       	rjmp	.+786    	; 0x37c <MIDI_GetStatusType+0x38>
-  6a:	88 c1       	rjmp	.+784    	; 0x37c <MIDI_GetStatusType+0x38>
-  6c:	87 c1       	rjmp	.+782    	; 0x37c <MIDI_GetStatusType+0x38>
-  6e:	86 c1       	rjmp	.+780    	; 0x37c <MIDI_GetStatusType+0x38>
-  70:	85 c1       	rjmp	.+778    	; 0x37c <MIDI_GetStatusType+0x38>
-  72:	84 c1       	rjmp	.+776    	; 0x37c <MIDI_GetStatusType+0x38>
-  74:	71 c1       	rjmp	.+738    	; 0x358 <MIDI_GetStatusType+0x14>
-  76:	82 c1       	rjmp	.+772    	; 0x37c <MIDI_GetStatusType+0x38>
-  78:	81 c1       	rjmp	.+770    	; 0x37c <MIDI_GetStatusType+0x38>
-  7a:	80 c1       	rjmp	.+768    	; 0x37c <MIDI_GetStatusType+0x38>
-  7c:	7f c1       	rjmp	.+766    	; 0x37c <MIDI_GetStatusType+0x38>
-  7e:	7e c1       	rjmp	.+764    	; 0x37c <MIDI_GetStatusType+0x38>
-  80:	7d c1       	rjmp	.+762    	; 0x37c <MIDI_GetStatusType+0x38>
-  82:	7c c1       	rjmp	.+760    	; 0x37c <MIDI_GetStatusType+0x38>
-  84:	7b c1       	rjmp	.+758    	; 0x37c <MIDI_GetStatusType+0x38>
-  86:	7a c1       	rjmp	.+756    	; 0x37c <MIDI_GetStatusType+0x38>
-  88:	79 c1       	rjmp	.+754    	; 0x37c <MIDI_GetStatusType+0x38>
-  8a:	78 c1       	rjmp	.+752    	; 0x37c <MIDI_GetStatusType+0x38>
-  8c:	77 c1       	rjmp	.+750    	; 0x37c <MIDI_GetStatusType+0x38>
-  8e:	76 c1       	rjmp	.+748    	; 0x37c <MIDI_GetStatusType+0x38>
-  90:	75 c1       	rjmp	.+746    	; 0x37c <MIDI_GetStatusType+0x38>
-  92:	74 c1       	rjmp	.+744    	; 0x37c <MIDI_GetStatusType+0x38>
-  94:	61 c1       	rjmp	.+706    	; 0x358 <MIDI_GetStatusType+0x14>
-  96:	72 c1       	rjmp	.+740    	; 0x37c <MIDI_GetStatusType+0x38>
-  98:	71 c1       	rjmp	.+738    	; 0x37c <MIDI_GetStatusType+0x38>
-  9a:	70 c1       	rjmp	.+736    	; 0x37c <MIDI_GetStatusType+0x38>
-  9c:	6f c1       	rjmp	.+734    	; 0x37c <MIDI_GetStatusType+0x38>
-  9e:	6e c1       	rjmp	.+732    	; 0x37c <MIDI_GetStatusType+0x38>
-  a0:	6d c1       	rjmp	.+730    	; 0x37c <MIDI_GetStatusType+0x38>
-  a2:	6c c1       	rjmp	.+728    	; 0x37c <MIDI_GetStatusType+0x38>
-  a4:	6b c1       	rjmp	.+726    	; 0x37c <MIDI_GetStatusType+0x38>
-  a6:	6a c1       	rjmp	.+724    	; 0x37c <MIDI_GetStatusType+0x38>
-  a8:	69 c1       	rjmp	.+722    	; 0x37c <MIDI_GetStatusType+0x38>
-  aa:	68 c1       	rjmp	.+720    	; 0x37c <MIDI_GetStatusType+0x38>
-  ac:	67 c1       	rjmp	.+718    	; 0x37c <MIDI_GetStatusType+0x38>
-  ae:	66 c1       	rjmp	.+716    	; 0x37c <MIDI_GetStatusType+0x38>
-  b0:	65 c1       	rjmp	.+714    	; 0x37c <MIDI_GetStatusType+0x38>
-  b2:	64 c1       	rjmp	.+712    	; 0x37c <MIDI_GetStatusType+0x38>
-  b4:	65 c1       	rjmp	.+714    	; 0x380 <MIDI_GetStatusType+0x3c>
-  b6:	62 c1       	rjmp	.+708    	; 0x37c <MIDI_GetStatusType+0x38>
-  b8:	61 c1       	rjmp	.+706    	; 0x37c <MIDI_GetStatusType+0x38>
-  ba:	60 c1       	rjmp	.+704    	; 0x37c <MIDI_GetStatusType+0x38>
-  bc:	5f c1       	rjmp	.+702    	; 0x37c <MIDI_GetStatusType+0x38>
-  be:	5e c1       	rjmp	.+700    	; 0x37c <MIDI_GetStatusType+0x38>
-  c0:	5d c1       	rjmp	.+698    	; 0x37c <MIDI_GetStatusType+0x38>
-  c2:	5c c1       	rjmp	.+696    	; 0x37c <MIDI_GetStatusType+0x38>
-  c4:	5b c1       	rjmp	.+694    	; 0x37c <MIDI_GetStatusType+0x38>
-  c6:	5a c1       	rjmp	.+692    	; 0x37c <MIDI_GetStatusType+0x38>
-  c8:	59 c1       	rjmp	.+690    	; 0x37c <MIDI_GetStatusType+0x38>
-  ca:	58 c1       	rjmp	.+688    	; 0x37c <MIDI_GetStatusType+0x38>
-  cc:	57 c1       	rjmp	.+686    	; 0x37c <MIDI_GetStatusType+0x38>
-  ce:	56 c1       	rjmp	.+684    	; 0x37c <MIDI_GetStatusType+0x38>
-  d0:	55 c1       	rjmp	.+682    	; 0x37c <MIDI_GetStatusType+0x38>
-  d2:	54 c1       	rjmp	.+680    	; 0x37c <MIDI_GetStatusType+0x38>
-  d4:	55 c1       	rjmp	.+682    	; 0x380 <MIDI_GetStatusType+0x3c>
-  d6:	52 c1       	rjmp	.+676    	; 0x37c <MIDI_GetStatusType+0x38>
-  d8:	51 c1       	rjmp	.+674    	; 0x37c <MIDI_GetStatusType+0x38>
-  da:	50 c1       	rjmp	.+672    	; 0x37c <MIDI_GetStatusType+0x38>
-  dc:	4f c1       	rjmp	.+670    	; 0x37c <MIDI_GetStatusType+0x38>
-  de:	4e c1       	rjmp	.+668    	; 0x37c <MIDI_GetStatusType+0x38>
-  e0:	4d c1       	rjmp	.+666    	; 0x37c <MIDI_GetStatusType+0x38>
-  e2:	4c c1       	rjmp	.+664    	; 0x37c <MIDI_GetStatusType+0x38>
-  e4:	4b c1       	rjmp	.+662    	; 0x37c <MIDI_GetStatusType+0x38>
-  e6:	4a c1       	rjmp	.+660    	; 0x37c <MIDI_GetStatusType+0x38>
-  e8:	49 c1       	rjmp	.+658    	; 0x37c <MIDI_GetStatusType+0x38>
-  ea:	48 c1       	rjmp	.+656    	; 0x37c <MIDI_GetStatusType+0x38>
-  ec:	47 c1       	rjmp	.+654    	; 0x37c <MIDI_GetStatusType+0x38>
-  ee:	46 c1       	rjmp	.+652    	; 0x37c <MIDI_GetStatusType+0x38>
-  f0:	45 c1       	rjmp	.+650    	; 0x37c <MIDI_GetStatusType+0x38>
-  f2:	44 c1       	rjmp	.+648    	; 0x37c <MIDI_GetStatusType+0x38>
-  f4:	31 c1       	rjmp	.+610    	; 0x358 <MIDI_GetStatusType+0x14>
-  f6:	42 c1       	rjmp	.+644    	; 0x37c <MIDI_GetStatusType+0x38>
-  f8:	41 c1       	rjmp	.+642    	; 0x37c <MIDI_GetStatusType+0x38>
-  fa:	40 c1       	rjmp	.+640    	; 0x37c <MIDI_GetStatusType+0x38>
-  fc:	3f c1       	rjmp	.+638    	; 0x37c <MIDI_GetStatusType+0x38>
-  fe:	3e c1       	rjmp	.+636    	; 0x37c <MIDI_GetStatusType+0x38>
- 100:	3d c1       	rjmp	.+634    	; 0x37c <MIDI_GetStatusType+0x38>
- 102:	3c c1       	rjmp	.+632    	; 0x37c <MIDI_GetStatusType+0x38>
- 104:	3b c1       	rjmp	.+630    	; 0x37c <MIDI_GetStatusType+0x38>
- 106:	3a c1       	rjmp	.+628    	; 0x37c <MIDI_GetStatusType+0x38>
- 108:	39 c1       	rjmp	.+626    	; 0x37c <MIDI_GetStatusType+0x38>
- 10a:	38 c1       	rjmp	.+624    	; 0x37c <MIDI_GetStatusType+0x38>
- 10c:	37 c1       	rjmp	.+622    	; 0x37c <MIDI_GetStatusType+0x38>
- 10e:	36 c1       	rjmp	.+620    	; 0x37c <MIDI_GetStatusType+0x38>
- 110:	35 c1       	rjmp	.+618    	; 0x37c <MIDI_GetStatusType+0x38>
- 112:	34 c1       	rjmp	.+616    	; 0x37c <MIDI_GetStatusType+0x38>
- 114:	2f c1       	rjmp	.+606    	; 0x374 <MIDI_GetStatusType+0x30>
- 116:	34 c1       	rjmp	.+616    	; 0x380 <MIDI_GetStatusType+0x3c>
- 118:	1f c1       	rjmp	.+574    	; 0x358 <MIDI_GetStatusType+0x14>
- 11a:	32 c1       	rjmp	.+612    	; 0x380 <MIDI_GetStatusType+0x3c>
- 11c:	2f c1       	rjmp	.+606    	; 0x37c <MIDI_GetStatusType+0x38>
- 11e:	2e c1       	rjmp	.+604    	; 0x37c <MIDI_GetStatusType+0x38>
- 120:	2d c1       	rjmp	.+602    	; 0x37c <MIDI_GetStatusType+0x38>
- 122:	2a c1       	rjmp	.+596    	; 0x378 <MIDI_GetStatusType+0x34>
- 124:	1b c1       	rjmp	.+566    	; 0x35c <MIDI_GetStatusType+0x18>
- 126:	2a c1       	rjmp	.+596    	; 0x37c <MIDI_GetStatusType+0x38>
- 128:	1b c1       	rjmp	.+566    	; 0x360 <MIDI_GetStatusType+0x1c>
- 12a:	1c c1       	rjmp	.+568    	; 0x364 <MIDI_GetStatusType+0x20>
- 12c:	1d c1       	rjmp	.+570    	; 0x368 <MIDI_GetStatusType+0x24>
- 12e:	26 c1       	rjmp	.+588    	; 0x37c <MIDI_GetStatusType+0x38>
- 130:	1d c1       	rjmp	.+570    	; 0x36c <MIDI_GetStatusType+0x28>
- 132:	1e c1       	rjmp	.+572    	; 0x370 <MIDI_GetStatusType+0x2c>
+   2:	0f c2       	rjmp	.+1054   	; 0x422 <__bad_interrupt>
+   4:	0e c2       	rjmp	.+1052   	; 0x422 <__bad_interrupt>
+   6:	0d c2       	rjmp	.+1050   	; 0x422 <__bad_interrupt>
+   8:	0c c2       	rjmp	.+1048   	; 0x422 <__bad_interrupt>
+   a:	0b c2       	rjmp	.+1046   	; 0x422 <__bad_interrupt>
+   c:	0a c2       	rjmp	.+1044   	; 0x422 <__bad_interrupt>
+   e:	09 c2       	rjmp	.+1042   	; 0x422 <__bad_interrupt>
+  10:	08 c2       	rjmp	.+1040   	; 0x422 <__bad_interrupt>
+  12:	07 c2       	rjmp	.+1038   	; 0x422 <__bad_interrupt>
+  14:	06 c2       	rjmp	.+1036   	; 0x422 <__bad_interrupt>
+  16:	05 c2       	rjmp	.+1034   	; 0x422 <__bad_interrupt>
+  18:	04 c2       	rjmp	.+1032   	; 0x422 <__bad_interrupt>
+  1a:	03 c2       	rjmp	.+1030   	; 0x422 <__bad_interrupt>
+  1c:	02 c2       	rjmp	.+1028   	; 0x422 <__bad_interrupt>
+  1e:	01 c2       	rjmp	.+1026   	; 0x422 <__bad_interrupt>
+  20:	00 c2       	rjmp	.+1024   	; 0x422 <__bad_interrupt>
+  22:	ff c1       	rjmp	.+1022   	; 0x422 <__bad_interrupt>
+  24:	41 c1       	rjmp	.+642    	; 0x2a8 <__vector_18>
+  26:	fd c1       	rjmp	.+1018   	; 0x422 <__bad_interrupt>
+  28:	71 c1       	rjmp	.+738    	; 0x30c <__vector_20>
+  2a:	fb c1       	rjmp	.+1014   	; 0x422 <__bad_interrupt>
+  2c:	fa c1       	rjmp	.+1012   	; 0x422 <__bad_interrupt>
+  2e:	f9 c1       	rjmp	.+1010   	; 0x422 <__bad_interrupt>
+  30:	f8 c1       	rjmp	.+1008   	; 0x422 <__bad_interrupt>
+  32:	f7 c1       	rjmp	.+1006   	; 0x422 <__bad_interrupt>
+  34:	9e c1       	rjmp	.+828    	; 0x372 <MIDI_GetStatusType+0x14>
+  36:	af c1       	rjmp	.+862    	; 0x396 <MIDI_GetStatusType+0x38>
+  38:	ae c1       	rjmp	.+860    	; 0x396 <MIDI_GetStatusType+0x38>
+  3a:	ad c1       	rjmp	.+858    	; 0x396 <MIDI_GetStatusType+0x38>
+  3c:	ac c1       	rjmp	.+856    	; 0x396 <MIDI_GetStatusType+0x38>
+  3e:	ab c1       	rjmp	.+854    	; 0x396 <MIDI_GetStatusType+0x38>
+  40:	aa c1       	rjmp	.+852    	; 0x396 <MIDI_GetStatusType+0x38>
+  42:	a9 c1       	rjmp	.+850    	; 0x396 <MIDI_GetStatusType+0x38>
+  44:	a8 c1       	rjmp	.+848    	; 0x396 <MIDI_GetStatusType+0x38>
+  46:	a7 c1       	rjmp	.+846    	; 0x396 <MIDI_GetStatusType+0x38>
+  48:	a6 c1       	rjmp	.+844    	; 0x396 <MIDI_GetStatusType+0x38>
+  4a:	a5 c1       	rjmp	.+842    	; 0x396 <MIDI_GetStatusType+0x38>
+  4c:	a4 c1       	rjmp	.+840    	; 0x396 <MIDI_GetStatusType+0x38>
+  4e:	a3 c1       	rjmp	.+838    	; 0x396 <MIDI_GetStatusType+0x38>
+  50:	a2 c1       	rjmp	.+836    	; 0x396 <MIDI_GetStatusType+0x38>
+  52:	a1 c1       	rjmp	.+834    	; 0x396 <MIDI_GetStatusType+0x38>
+  54:	8e c1       	rjmp	.+796    	; 0x372 <MIDI_GetStatusType+0x14>
+  56:	9f c1       	rjmp	.+830    	; 0x396 <MIDI_GetStatusType+0x38>
+  58:	9e c1       	rjmp	.+828    	; 0x396 <MIDI_GetStatusType+0x38>
+  5a:	9d c1       	rjmp	.+826    	; 0x396 <MIDI_GetStatusType+0x38>
+  5c:	9c c1       	rjmp	.+824    	; 0x396 <MIDI_GetStatusType+0x38>
+  5e:	9b c1       	rjmp	.+822    	; 0x396 <MIDI_GetStatusType+0x38>
+  60:	9a c1       	rjmp	.+820    	; 0x396 <MIDI_GetStatusType+0x38>
+  62:	99 c1       	rjmp	.+818    	; 0x396 <MIDI_GetStatusType+0x38>
+  64:	98 c1       	rjmp	.+816    	; 0x396 <MIDI_GetStatusType+0x38>
+  66:	97 c1       	rjmp	.+814    	; 0x396 <MIDI_GetStatusType+0x38>
+  68:	96 c1       	rjmp	.+812    	; 0x396 <MIDI_GetStatusType+0x38>
+  6a:	95 c1       	rjmp	.+810    	; 0x396 <MIDI_GetStatusType+0x38>
+  6c:	94 c1       	rjmp	.+808    	; 0x396 <MIDI_GetStatusType+0x38>
+  6e:	93 c1       	rjmp	.+806    	; 0x396 <MIDI_GetStatusType+0x38>
+  70:	92 c1       	rjmp	.+804    	; 0x396 <MIDI_GetStatusType+0x38>
+  72:	91 c1       	rjmp	.+802    	; 0x396 <MIDI_GetStatusType+0x38>
+  74:	7e c1       	rjmp	.+764    	; 0x372 <MIDI_GetStatusType+0x14>
+  76:	8f c1       	rjmp	.+798    	; 0x396 <MIDI_GetStatusType+0x38>
+  78:	8e c1       	rjmp	.+796    	; 0x396 <MIDI_GetStatusType+0x38>
+  7a:	8d c1       	rjmp	.+794    	; 0x396 <MIDI_GetStatusType+0x38>
+  7c:	8c c1       	rjmp	.+792    	; 0x396 <MIDI_GetStatusType+0x38>
+  7e:	8b c1       	rjmp	.+790    	; 0x396 <MIDI_GetStatusType+0x38>
+  80:	8a c1       	rjmp	.+788    	; 0x396 <MIDI_GetStatusType+0x38>
+  82:	89 c1       	rjmp	.+786    	; 0x396 <MIDI_GetStatusType+0x38>
+  84:	88 c1       	rjmp	.+784    	; 0x396 <MIDI_GetStatusType+0x38>
+  86:	87 c1       	rjmp	.+782    	; 0x396 <MIDI_GetStatusType+0x38>
+  88:	86 c1       	rjmp	.+780    	; 0x396 <MIDI_GetStatusType+0x38>
+  8a:	85 c1       	rjmp	.+778    	; 0x396 <MIDI_GetStatusType+0x38>
+  8c:	84 c1       	rjmp	.+776    	; 0x396 <MIDI_GetStatusType+0x38>
+  8e:	83 c1       	rjmp	.+774    	; 0x396 <MIDI_GetStatusType+0x38>
+  90:	82 c1       	rjmp	.+772    	; 0x396 <MIDI_GetStatusType+0x38>
+  92:	81 c1       	rjmp	.+770    	; 0x396 <MIDI_GetStatusType+0x38>
+  94:	6e c1       	rjmp	.+732    	; 0x372 <MIDI_GetStatusType+0x14>
+  96:	7f c1       	rjmp	.+766    	; 0x396 <MIDI_GetStatusType+0x38>
+  98:	7e c1       	rjmp	.+764    	; 0x396 <MIDI_GetStatusType+0x38>
+  9a:	7d c1       	rjmp	.+762    	; 0x396 <MIDI_GetStatusType+0x38>
+  9c:	7c c1       	rjmp	.+760    	; 0x396 <MIDI_GetStatusType+0x38>
+  9e:	7b c1       	rjmp	.+758    	; 0x396 <MIDI_GetStatusType+0x38>
+  a0:	7a c1       	rjmp	.+756    	; 0x396 <MIDI_GetStatusType+0x38>
+  a2:	79 c1       	rjmp	.+754    	; 0x396 <MIDI_GetStatusType+0x38>
+  a4:	78 c1       	rjmp	.+752    	; 0x396 <MIDI_GetStatusType+0x38>
+  a6:	77 c1       	rjmp	.+750    	; 0x396 <MIDI_GetStatusType+0x38>
+  a8:	76 c1       	rjmp	.+748    	; 0x396 <MIDI_GetStatusType+0x38>
+  aa:	75 c1       	rjmp	.+746    	; 0x396 <MIDI_GetStatusType+0x38>
+  ac:	74 c1       	rjmp	.+744    	; 0x396 <MIDI_GetStatusType+0x38>
+  ae:	73 c1       	rjmp	.+742    	; 0x396 <MIDI_GetStatusType+0x38>
+  b0:	72 c1       	rjmp	.+740    	; 0x396 <MIDI_GetStatusType+0x38>
+  b2:	71 c1       	rjmp	.+738    	; 0x396 <MIDI_GetStatusType+0x38>
+  b4:	72 c1       	rjmp	.+740    	; 0x39a <MIDI_GetStatusType+0x3c>
+  b6:	6f c1       	rjmp	.+734    	; 0x396 <MIDI_GetStatusType+0x38>
+  b8:	6e c1       	rjmp	.+732    	; 0x396 <MIDI_GetStatusType+0x38>
+  ba:	6d c1       	rjmp	.+730    	; 0x396 <MIDI_GetStatusType+0x38>
+  bc:	6c c1       	rjmp	.+728    	; 0x396 <MIDI_GetStatusType+0x38>
+  be:	6b c1       	rjmp	.+726    	; 0x396 <MIDI_GetStatusType+0x38>
+  c0:	6a c1       	rjmp	.+724    	; 0x396 <MIDI_GetStatusType+0x38>
+  c2:	69 c1       	rjmp	.+722    	; 0x396 <MIDI_GetStatusType+0x38>
+  c4:	68 c1       	rjmp	.+720    	; 0x396 <MIDI_GetStatusType+0x38>
+  c6:	67 c1       	rjmp	.+718    	; 0x396 <MIDI_GetStatusType+0x38>
+  c8:	66 c1       	rjmp	.+716    	; 0x396 <MIDI_GetStatusType+0x38>
+  ca:	65 c1       	rjmp	.+714    	; 0x396 <MIDI_GetStatusType+0x38>
+  cc:	64 c1       	rjmp	.+712    	; 0x396 <MIDI_GetStatusType+0x38>
+  ce:	63 c1       	rjmp	.+710    	; 0x396 <MIDI_GetStatusType+0x38>
+  d0:	62 c1       	rjmp	.+708    	; 0x396 <MIDI_GetStatusType+0x38>
+  d2:	61 c1       	rjmp	.+706    	; 0x396 <MIDI_GetStatusType+0x38>
+  d4:	62 c1       	rjmp	.+708    	; 0x39a <MIDI_GetStatusType+0x3c>
+  d6:	5f c1       	rjmp	.+702    	; 0x396 <MIDI_GetStatusType+0x38>
+  d8:	5e c1       	rjmp	.+700    	; 0x396 <MIDI_GetStatusType+0x38>
+  da:	5d c1       	rjmp	.+698    	; 0x396 <MIDI_GetStatusType+0x38>
+  dc:	5c c1       	rjmp	.+696    	; 0x396 <MIDI_GetStatusType+0x38>
+  de:	5b c1       	rjmp	.+694    	; 0x396 <MIDI_GetStatusType+0x38>
+  e0:	5a c1       	rjmp	.+692    	; 0x396 <MIDI_GetStatusType+0x38>
+  e2:	59 c1       	rjmp	.+690    	; 0x396 <MIDI_GetStatusType+0x38>
+  e4:	58 c1       	rjmp	.+688    	; 0x396 <MIDI_GetStatusType+0x38>
+  e6:	57 c1       	rjmp	.+686    	; 0x396 <MIDI_GetStatusType+0x38>
+  e8:	56 c1       	rjmp	.+684    	; 0x396 <MIDI_GetStatusType+0x38>
+  ea:	55 c1       	rjmp	.+682    	; 0x396 <MIDI_GetStatusType+0x38>
+  ec:	54 c1       	rjmp	.+680    	; 0x396 <MIDI_GetStatusType+0x38>
+  ee:	53 c1       	rjmp	.+678    	; 0x396 <MIDI_GetStatusType+0x38>
+  f0:	52 c1       	rjmp	.+676    	; 0x396 <MIDI_GetStatusType+0x38>
+  f2:	51 c1       	rjmp	.+674    	; 0x396 <MIDI_GetStatusType+0x38>
+  f4:	3e c1       	rjmp	.+636    	; 0x372 <MIDI_GetStatusType+0x14>
+  f6:	4f c1       	rjmp	.+670    	; 0x396 <MIDI_GetStatusType+0x38>
+  f8:	4e c1       	rjmp	.+668    	; 0x396 <MIDI_GetStatusType+0x38>
+  fa:	4d c1       	rjmp	.+666    	; 0x396 <MIDI_GetStatusType+0x38>
+  fc:	4c c1       	rjmp	.+664    	; 0x396 <MIDI_GetStatusType+0x38>
+  fe:	4b c1       	rjmp	.+662    	; 0x396 <MIDI_GetStatusType+0x38>
+ 100:	4a c1       	rjmp	.+660    	; 0x396 <MIDI_GetStatusType+0x38>
+ 102:	49 c1       	rjmp	.+658    	; 0x396 <MIDI_GetStatusType+0x38>
+ 104:	48 c1       	rjmp	.+656    	; 0x396 <MIDI_GetStatusType+0x38>
+ 106:	47 c1       	rjmp	.+654    	; 0x396 <MIDI_GetStatusType+0x38>
+ 108:	46 c1       	rjmp	.+652    	; 0x396 <MIDI_GetStatusType+0x38>
+ 10a:	45 c1       	rjmp	.+650    	; 0x396 <MIDI_GetStatusType+0x38>
+ 10c:	44 c1       	rjmp	.+648    	; 0x396 <MIDI_GetStatusType+0x38>
+ 10e:	43 c1       	rjmp	.+646    	; 0x396 <MIDI_GetStatusType+0x38>
+ 110:	42 c1       	rjmp	.+644    	; 0x396 <MIDI_GetStatusType+0x38>
+ 112:	41 c1       	rjmp	.+642    	; 0x396 <MIDI_GetStatusType+0x38>
+ 114:	3c c1       	rjmp	.+632    	; 0x38e <MIDI_GetStatusType+0x30>
+ 116:	41 c1       	rjmp	.+642    	; 0x39a <MIDI_GetStatusType+0x3c>
+ 118:	2c c1       	rjmp	.+600    	; 0x372 <MIDI_GetStatusType+0x14>
+ 11a:	3f c1       	rjmp	.+638    	; 0x39a <MIDI_GetStatusType+0x3c>
+ 11c:	3c c1       	rjmp	.+632    	; 0x396 <MIDI_GetStatusType+0x38>
+ 11e:	3b c1       	rjmp	.+630    	; 0x396 <MIDI_GetStatusType+0x38>
+ 120:	3a c1       	rjmp	.+628    	; 0x396 <MIDI_GetStatusType+0x38>
+ 122:	37 c1       	rjmp	.+622    	; 0x392 <MIDI_GetStatusType+0x34>
+ 124:	28 c1       	rjmp	.+592    	; 0x376 <MIDI_GetStatusType+0x18>
+ 126:	37 c1       	rjmp	.+622    	; 0x396 <MIDI_GetStatusType+0x38>
+ 128:	28 c1       	rjmp	.+592    	; 0x37a <MIDI_GetStatusType+0x1c>
+ 12a:	29 c1       	rjmp	.+594    	; 0x37e <MIDI_GetStatusType+0x20>
+ 12c:	2a c1       	rjmp	.+596    	; 0x382 <MIDI_GetStatusType+0x24>
+ 12e:	33 c1       	rjmp	.+614    	; 0x396 <MIDI_GetStatusType+0x38>
+ 130:	2a c1       	rjmp	.+596    	; 0x386 <MIDI_GetStatusType+0x28>
+ 132:	2b c1       	rjmp	.+598    	; 0x38a <MIDI_GetStatusType+0x2c>
  134:	3d c0       	rjmp	.+122    	; 0x1b0 <_etext+0x18>
- 136:	40 c0       	rjmp	.+128    	; 0x1b8 <_etext+0x20>
- 138:	77 c0       	rjmp	.+238    	; 0x228 <__EEPROM_REGION_LENGTH__+0x28>
- 13a:	97 c0       	rjmp	.+302    	; 0x26a <__EEPROM_REGION_LENGTH__+0x6a>
- 13c:	80 c0       	rjmp	.+256    	; 0x23e <__EEPROM_REGION_LENGTH__+0x3e>
- 13e:	9d c0       	rjmp	.+314    	; 0x27a <__EEPROM_REGION_LENGTH__+0x7a>
- 140:	a0 c0       	rjmp	.+320    	; 0x282 <__EEPROM_REGION_LENGTH__+0x82>
+ 136:	49 c0       	rjmp	.+146    	; 0x1ca <_etext+0x32>
+ 138:	7c c0       	rjmp	.+248    	; 0x232 <__EEPROM_REGION_LENGTH__+0x32>
+ 13a:	a1 c0       	rjmp	.+322    	; 0x27e <__EEPROM_REGION_LENGTH__+0x7e>
+ 13c:	8a c0       	rjmp	.+276    	; 0x252 <__EEPROM_REGION_LENGTH__+0x52>
+ 13e:	a7 c0       	rjmp	.+334    	; 0x28e <__EEPROM_REGION_LENGTH__+0x8e>
+ 140:	aa c0       	rjmp	.+340    	; 0x296 <__EEPROM_REGION_LENGTH__+0x96>
 
 00000142 <.dinit>:
  142:	01 00       	.word	0x0001	; ????
@@ -281,8 +277,8 @@ Disassembly of section .text:
  18a:	e7 34       	cpi	r30, 0x47	; 71
  18c:	f4 07       	cpc	r31, r20
  18e:	31 f7       	brne	.-52     	; 0x15c <__do_copy_data+0x8>
- 190:	2b d1       	rcall	.+598    	; 0x3e8 <main>
- 192:	19 c1       	rjmp	.+562    	; 0x3c6 <exit>
+ 190:	40 d1       	rcall	.+640    	; 0x412 <main>
+ 192:	32 c1       	rjmp	.+612    	; 0x3f8 <exit>
 
 00000194 <_exit>:
  194:	f8 94       	cli
@@ -292,125 +288,129 @@ Disassembly of section .text:
 
 Disassembly of section .text:
 
-000003ee <__bad_interrupt>:
- 3ee:	08 ce       	rjmp	.-1008   	; 0x0 <__TEXT_REGION_ORIGIN__>
+00000422 <__bad_interrupt>:
+ 422:	ee cd       	rjmp	.-1060   	; 0x0 <__TEXT_REGION_ORIGIN__>
 
 Disassembly of section .text.main:
 
-000003e8 <main>:
-
+00000412 <main>:
+#include "uart.h"
 #include "midi_parser.h"
 
 int main(void)
 {
+	UART_init();
+ 412:	df df       	rcall	.-66     	; 0x3d2 <UART_init>
+	
+	
 	cpu_irq_enable();
- 3e8:	78 94       	sei
+ 414:	78 94       	sei
 	
     while(1)
     {
 		MIDI_ParserTask();
- 3ea:	d6 de       	rcall	.-596    	; 0x198 <__data_load_end>
- 3ec:	fe cf       	rjmp	.-4      	; 0x3ea <main+0x2>
+ 416:	c0 de       	rcall	.-640    	; 0x198 <__data_load_end>
+ 418:	fe cf       	rjmp	.-4      	; 0x416 <main+0x4>
 
 Disassembly of section .text.MIDI_IsStatusWord:
 
-000003e0 <MIDI_IsStatusWord>:
+0000041a <MIDI_IsStatusWord>:
 #include "midi.h"
 
 bool MIDI_IsStatusWord(uint8_t word)
 {
 	return (word & 0x80);
 }
- 3e0:	88 1f       	adc	r24, r24
- 3e2:	88 27       	eor	r24, r24
- 3e4:	88 1f       	adc	r24, r24
- 3e6:	08 95       	ret
+ 41a:	88 1f       	adc	r24, r24
+ 41c:	88 27       	eor	r24, r24
+ 41e:	88 1f       	adc	r24, r24
+ 420:	08 95       	ret
 
 Disassembly of section .text.MIDI_IsSysRealTime:
 
-000003d4 <MIDI_IsSysRealTime>:
+00000406 <MIDI_IsSysRealTime>:
 
 bool MIDI_IsSysRealTime(uint8_t word)
 {
 	return word > 0xF7;
- 3d4:	91 e0       	ldi	r25, 0x01	; 1
- 3d6:	88 3f       	cpi	r24, 0xF8	; 248
- 3d8:	08 f4       	brcc	.+2      	; 0x3dc <MIDI_IsSysRealTime+0x8>
- 3da:	90 e0       	ldi	r25, 0x00	; 0
+ 406:	91 e0       	ldi	r25, 0x01	; 1
+ 408:	88 3f       	cpi	r24, 0xF8	; 248
+ 40a:	08 f4       	brcc	.+2      	; 0x40e <MIDI_IsSysRealTime+0x8>
+ 40c:	90 e0       	ldi	r25, 0x00	; 0
 }
- 3dc:	89 2f       	mov	r24, r25
- 3de:	08 95       	ret
+ 40e:	89 2f       	mov	r24, r25
+ 410:	08 95       	ret
 
 Disassembly of section .text.MIDI_GetStatusType:
 
-00000344 <MIDI_GetStatusType>:
+0000035e <MIDI_GetStatusType>:
 
 MIDI_StatusType_t MIDI_GetStatusType(MIDI_Status_t status)
 {
 	switch(status)
- 344:	90 e0       	ldi	r25, 0x00	; 0
- 346:	fc 01       	movw	r30, r24
- 348:	e0 58       	subi	r30, 0x80	; 128
- 34a:	f1 09       	sbc	r31, r1
- 34c:	e0 38       	cpi	r30, 0x80	; 128
- 34e:	f1 05       	cpc	r31, r1
- 350:	a8 f4       	brcc	.+42     	; 0x37c <MIDI_GetStatusType+0x38>
- 352:	e6 5e       	subi	r30, 0xE6	; 230
- 354:	ff 4f       	sbci	r31, 0xFF	; 255
- 356:	09 94       	ijmp
+ 35e:	90 e0       	ldi	r25, 0x00	; 0
+ 360:	fc 01       	movw	r30, r24
+ 362:	e0 58       	subi	r30, 0x80	; 128
+ 364:	f1 09       	sbc	r31, r1
+ 366:	e0 38       	cpi	r30, 0x80	; 128
+ 368:	f1 05       	cpc	r31, r1
+ 36a:	a8 f4       	brcc	.+42     	; 0x396 <MIDI_GetStatusType+0x38>
+ 36c:	e6 5e       	subi	r30, 0xE6	; 230
+ 36e:	ff 4f       	sbci	r31, 0xFF	; 255
+ 370:	09 94       	ijmp
 	{
 		// Status messages with 2 bytes
 		case MIDI_COMM_NOTE_OFF: return MIDI_TYPE_TWO_BYTE;
- 358:	82 e0       	ldi	r24, 0x02	; 2
- 35a:	08 95       	ret
+ 372:	82 e0       	ldi	r24, 0x02	; 2
+ 374:	08 95       	ret
 		case MIDI_COMM_CHANNEL_PRESSURE: return MIDI_TYPE_ONE_BYTE;
 		case MIDI_COMM_TIME_CODE: return MIDI_TYPE_ONE_BYTE;
 		case MIDI_COMM_SONG_SELECT: return MIDI_TYPE_ONE_BYTE;
 
 		// System real-time messages(no data bytes)
 		case MIDI_COMM_TIMING_CLOCK: return MIDI_TYPE_REAL_TIME;
- 35c:	83 e0       	ldi	r24, 0x03	; 3
- 35e:	08 95       	ret
+ 376:	83 e0       	ldi	r24, 0x03	; 3
+ 378:	08 95       	ret
 		case MIDI_COMM_START: return MIDI_TYPE_REAL_TIME;
- 360:	83 e0       	ldi	r24, 0x03	; 3
- 362:	08 95       	ret
+ 37a:	83 e0       	ldi	r24, 0x03	; 3
+ 37c:	08 95       	ret
 		case MIDI_COMM_CONTINUE: return MIDI_TYPE_REAL_TIME;
- 364:	83 e0       	ldi	r24, 0x03	; 3
- 366:	08 95       	ret
+ 37e:	83 e0       	ldi	r24, 0x03	; 3
+ 380:	08 95       	ret
 		case MIDI_COMM_STO: return MIDI_TYPE_REAL_TIME;
- 368:	83 e0       	ldi	r24, 0x03	; 3
- 36a:	08 95       	ret
+ 382:	83 e0       	ldi	r24, 0x03	; 3
+ 384:	08 95       	ret
 		case MIDI_COMM_ACTIVE_SENSING: return MIDI_TYPE_REAL_TIME;
- 36c:	83 e0       	ldi	r24, 0x03	; 3
- 36e:	08 95       	ret
+ 386:	83 e0       	ldi	r24, 0x03	; 3
+ 388:	08 95       	ret
 		case MIDI_COMM_SYSTEM_RESET: return MIDI_TYPE_REAL_TIME;
- 370:	83 e0       	ldi	r24, 0x03	; 3
- 372:	08 95       	ret
+ 38a:	83 e0       	ldi	r24, 0x03	; 3
+ 38c:	08 95       	ret
 
 		// System exclusive
 		case MIDI_COMM_START_SYS_EX: return MIDI_TYPE_START_SYS_EX;
- 374:	84 e0       	ldi	r24, 0x04	; 4
- 376:	08 95       	ret
+ 38e:	84 e0       	ldi	r24, 0x04	; 4
+ 390:	08 95       	ret
 		case MIDI_COMM_STOP_SYS_EX: return MIDI_TYPE_STOP_SYS_EX;
- 378:	85 e0       	ldi	r24, 0x05	; 5
- 37a:	08 95       	ret
+ 392:	85 e0       	ldi	r24, 0x05	; 5
+ 394:	08 95       	ret
 		
 		default: return MIDI_TYPE_UNDEFINED;
- 37c:	80 e0       	ldi	r24, 0x00	; 0
- 37e:	08 95       	ret
+ 396:	80 e0       	ldi	r24, 0x00	; 0
+ 398:	08 95       	ret
 		case MIDI_COMM_CONTROL_CHANGE: return MIDI_TYPE_TWO_BYTE;
 		case MIDI_COMM_PITCH_BEND: return MIDI_TYPE_TWO_BYTE;
 		case MIDI_COMM_SONG_POSITION: return MIDI_TYPE_TWO_BYTE;
 
 		// Status messages with 1 byte
 		case MIDI_COMM_PROGRAM_CHANGE: return MIDI_TYPE_ONE_BYTE;
- 380:	81 e0       	ldi	r24, 0x01	; 1
+ 39a:	81 e0       	ldi	r24, 0x01	; 1
 		case MIDI_COMM_START_SYS_EX: return MIDI_TYPE_START_SYS_EX;
 		case MIDI_COMM_STOP_SYS_EX: return MIDI_TYPE_STOP_SYS_EX;
 		
 		default: return MIDI_TYPE_UNDEFINED;
 	}
- 382:	08 95       	ret
+ 39c:	08 95       	ret
 
 Disassembly of section .text.MIDI_ParserTask:
 
@@ -421,13 +421,13 @@ uint8_t recievedWord;
 void MIDI_ParserTask()
 {
 	switch(state)
- 198:	e0 91 22 01 	lds	r30, 0x0122	; 0x800122 <_end>
+ 198:	e0 91 25 01 	lds	r30, 0x0125	; 0x800125 <_end>
  19c:	8e 2f       	mov	r24, r30
  19e:	90 e0       	ldi	r25, 0x00	; 0
  1a0:	87 30       	cpi	r24, 0x07	; 7
  1a2:	91 05       	cpc	r25, r1
  1a4:	08 f0       	brcs	.+2      	; 0x1a8 <MIDI_ParserTask+0x10>
- 1a6:	72 c0       	rjmp	.+228    	; 0x28c <__EEPROM_REGION_LENGTH__+0x8c>
+ 1a6:	7f c0       	rjmp	.+254    	; 0x2a6 <__EEPROM_REGION_LENGTH__+0xa6>
  1a8:	fc 01       	movw	r30, r24
  1aa:	e6 56       	subi	r30, 0x66	; 102
  1ac:	ff 4f       	sbci	r31, 0xFF	; 255
@@ -435,369 +435,418 @@ void MIDI_ParserTask()
 	{
 		case RESET:
 		{
+			currentCommand.status = MIDI_COMM_UNDEFINED;
+ 1b0:	e2 e0       	ldi	r30, 0x02	; 2
+ 1b2:	f1 e0       	ldi	r31, 0x01	; 1
+ 1b4:	10 82       	st	Z, r1
+			currentCommand.data1 = 0;
+ 1b6:	11 82       	std	Z+1, r1	; 0x01
+			currentCommand.data2 = 0;
+ 1b8:	12 82       	std	Z+2, r1	; 0x02
+			currentStatusType = MIDI_TYPE_UNDEFINED;
+ 1ba:	10 92 05 01 	sts	0x0105, r1	; 0x800105 <currentStatusType>
+			isSecondDataWord = false;
+ 1be:	10 92 01 01 	sts	0x0101, r1	; 0x800101 <isSecondDataWord>
 			state = WAIT_WORD;
- 1b0:	81 e0       	ldi	r24, 0x01	; 1
- 1b2:	80 93 22 01 	sts	0x0122, r24	; 0x800122 <_end>
+ 1c2:	81 e0       	ldi	r24, 0x01	; 1
+ 1c4:	80 93 25 01 	sts	0x0125, r24	; 0x800125 <_end>
 			break;
- 1b6:	08 95       	ret
+ 1c8:	08 95       	ret
 		}
 		
 		case WAIT_WORD:
 		{
-			if(isRxBufferNotEmpty())
- 1b8:	ff d0       	rcall	.+510    	; 0x3b8 <isRxBufferNotEmpty>
- 1ba:	88 23       	and	r24, r24
- 1bc:	09 f4       	brne	.+2      	; 0x1c0 <MIDI_ParserTask+0x28>
- 1be:	66 c0       	rjmp	.+204    	; 0x28c <__EEPROM_REGION_LENGTH__+0x8c>
+			if(UART_RxBufferNotEmpty())
+ 1ca:	0f d1       	rcall	.+542    	; 0x3ea <UART_RxBufferNotEmpty>
+ 1cc:	88 23       	and	r24, r24
+ 1ce:	09 f4       	brne	.+2      	; 0x1d2 <MIDI_ParserTask+0x3a>
+ 1d0:	6a c0       	rjmp	.+212    	; 0x2a6 <__EEPROM_REGION_LENGTH__+0xa6>
 			{
-				recievedWord = usart_pop_word();
- 1c0:	e1 d0       	rcall	.+450    	; 0x384 <usart_pop_word>
- 1c2:	80 93 01 01 	sts	0x0101, r24	; 0x800101 <recievedWord>
+				recievedWord = UART_PopWord();
+ 1d2:	e5 d0       	rcall	.+458    	; 0x39e <UART_PopWord>
+ 1d4:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <__DATA_REGION_ORIGIN__>
 				if(MIDI_IsSysRealTime(recievedWord))
- 1c6:	06 d1       	rcall	.+524    	; 0x3d4 <MIDI_IsSysRealTime>
- 1c8:	81 11       	cpse	r24, r1
- 1ca:	60 c0       	rjmp	.+192    	; 0x28c <__EEPROM_REGION_LENGTH__+0x8c>
+ 1d8:	16 d1       	rcall	.+556    	; 0x406 <MIDI_IsSysRealTime>
+ 1da:	81 11       	cpse	r24, r1
+ 1dc:	64 c0       	rjmp	.+200    	; 0x2a6 <__EEPROM_REGION_LENGTH__+0xa6>
 				{ 
 					handleRealTimeStatus((MIDI_Status_t)recievedWord);
 					return;
 				}
 				
 				if(MIDI_IsStatusWord(recievedWord))
- 1cc:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <recievedWord>
- 1d0:	07 d1       	rcall	.+526    	; 0x3e0 <MIDI_IsStatusWord>
- 1d2:	88 23       	and	r24, r24
- 1d4:	41 f0       	breq	.+16     	; 0x1e6 <MIDI_ParserTask+0x4e>
-				{
-					currentStatus = (MIDI_Status_t)recievedWord;	
- 1d6:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <recievedWord>
- 1da:	80 93 25 01 	sts	0x0125, r24	; 0x800125 <currentStatus>
+ 1de:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 1e2:	1b d1       	rcall	.+566    	; 0x41a <MIDI_IsStatusWord>
+ 1e4:	88 23       	and	r24, r24
+ 1e6:	21 f0       	breq	.+8      	; 0x1f0 <MIDI_ParserTask+0x58>
+				{					
 					state = DISPATCH_STATUS;
- 1de:	82 e0       	ldi	r24, 0x02	; 2
- 1e0:	80 93 22 01 	sts	0x0122, r24	; 0x800122 <_end>
- 1e4:	08 95       	ret
+ 1e8:	82 e0       	ldi	r24, 0x02	; 2
+ 1ea:	80 93 25 01 	sts	0x0125, r24	; 0x800125 <_end>
+ 1ee:	08 95       	ret
 				}
 				else
 				{
 					switch(currentStatusType)
- 1e6:	80 91 24 01 	lds	r24, 0x0124	; 0x800124 <currentStatusType>
- 1ea:	82 30       	cpi	r24, 0x02	; 2
- 1ec:	49 f0       	breq	.+18     	; 0x200 <__EEPROM_REGION_LENGTH__>
- 1ee:	18 f4       	brcc	.+6      	; 0x1f6 <MIDI_ParserTask+0x5e>
- 1f0:	81 30       	cpi	r24, 0x01	; 1
- 1f2:	51 f0       	breq	.+20     	; 0x208 <__EEPROM_REGION_LENGTH__+0x8>
- 1f4:	15 c0       	rjmp	.+42     	; 0x220 <__EEPROM_REGION_LENGTH__+0x20>
- 1f6:	84 30       	cpi	r24, 0x04	; 4
- 1f8:	59 f0       	breq	.+22     	; 0x210 <__EEPROM_REGION_LENGTH__+0x10>
- 1fa:	85 30       	cpi	r24, 0x05	; 5
- 1fc:	69 f0       	breq	.+26     	; 0x218 <__EEPROM_REGION_LENGTH__+0x18>
- 1fe:	10 c0       	rjmp	.+32     	; 0x220 <__EEPROM_REGION_LENGTH__+0x20>
+ 1f0:	80 91 05 01 	lds	r24, 0x0105	; 0x800105 <currentStatusType>
+ 1f4:	82 30       	cpi	r24, 0x02	; 2
+ 1f6:	49 f0       	breq	.+18     	; 0x20a <__EEPROM_REGION_LENGTH__+0xa>
+ 1f8:	18 f4       	brcc	.+6      	; 0x200 <__EEPROM_REGION_LENGTH__>
+ 1fa:	81 30       	cpi	r24, 0x01	; 1
+ 1fc:	51 f0       	breq	.+20     	; 0x212 <__EEPROM_REGION_LENGTH__+0x12>
+ 1fe:	15 c0       	rjmp	.+42     	; 0x22a <__EEPROM_REGION_LENGTH__+0x2a>
+ 200:	84 30       	cpi	r24, 0x04	; 4
+ 202:	59 f0       	breq	.+22     	; 0x21a <__EEPROM_REGION_LENGTH__+0x1a>
+ 204:	85 30       	cpi	r24, 0x05	; 5
+ 206:	69 f0       	breq	.+26     	; 0x222 <__EEPROM_REGION_LENGTH__+0x22>
+ 208:	10 c0       	rjmp	.+32     	; 0x22a <__EEPROM_REGION_LENGTH__+0x2a>
 					{
 						case MIDI_TYPE_TWO_BYTE: state = REC_TWO_BYTE; break;
- 200:	84 e0       	ldi	r24, 0x04	; 4
- 202:	80 93 22 01 	sts	0x0122, r24	; 0x800122 <_end>
- 206:	08 95       	ret
+ 20a:	84 e0       	ldi	r24, 0x04	; 4
+ 20c:	80 93 25 01 	sts	0x0125, r24	; 0x800125 <_end>
+ 210:	08 95       	ret
 						case MIDI_TYPE_ONE_BYTE: state = REC_ONE_BYTE; break;
- 208:	83 e0       	ldi	r24, 0x03	; 3
- 20a:	80 93 22 01 	sts	0x0122, r24	; 0x800122 <_end>
- 20e:	08 95       	ret
+ 212:	83 e0       	ldi	r24, 0x03	; 3
+ 214:	80 93 25 01 	sts	0x0125, r24	; 0x800125 <_end>
+ 218:	08 95       	ret
 						case MIDI_TYPE_START_SYS_EX: state = REC_SYS_EX; break;
- 210:	85 e0       	ldi	r24, 0x05	; 5
- 212:	80 93 22 01 	sts	0x0122, r24	; 0x800122 <_end>
- 216:	08 95       	ret
+ 21a:	85 e0       	ldi	r24, 0x05	; 5
+ 21c:	80 93 25 01 	sts	0x0125, r24	; 0x800125 <_end>
+ 220:	08 95       	ret
 						case MIDI_TYPE_STOP_SYS_EX: state = HADLE_SYS_EX; break;
- 218:	86 e0       	ldi	r24, 0x06	; 6
- 21a:	80 93 22 01 	sts	0x0122, r24	; 0x800122 <_end>
- 21e:	08 95       	ret
+ 222:	86 e0       	ldi	r24, 0x06	; 6
+ 224:	80 93 25 01 	sts	0x0125, r24	; 0x800125 <_end>
+ 228:	08 95       	ret
 						default: state = WAIT_WORD;
- 220:	81 e0       	ldi	r24, 0x01	; 1
- 222:	80 93 22 01 	sts	0x0122, r24	; 0x800122 <_end>
- 226:	08 95       	ret
+ 22a:	81 e0       	ldi	r24, 0x01	; 1
+ 22c:	80 93 25 01 	sts	0x0125, r24	; 0x800125 <_end>
+ 230:	08 95       	ret
 			break;
 		}
 		
 		case DISPATCH_STATUS:
 		{
-			currentStatusType = MIDI_GetStatusType(currentStatus);
- 228:	80 91 25 01 	lds	r24, 0x0125	; 0x800125 <currentStatus>
- 22c:	8b d0       	rcall	.+278    	; 0x344 <MIDI_GetStatusType>
- 22e:	80 93 24 01 	sts	0x0124, r24	; 0x800124 <currentStatusType>
+			currentCommand.status = (MIDI_Status_t)recievedWord;
+ 232:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 236:	e2 e0       	ldi	r30, 0x02	; 2
+ 238:	f1 e0       	ldi	r31, 0x01	; 1
+ 23a:	80 83       	st	Z, r24
+			currentCommand.data1 = 0;
+ 23c:	11 82       	std	Z+1, r1	; 0x01
+			currentCommand.data2 = 0;
+ 23e:	12 82       	std	Z+2, r1	; 0x02
+			currentStatusType = MIDI_GetStatusType(currentCommand.status);
+ 240:	8e d0       	rcall	.+284    	; 0x35e <MIDI_GetStatusType>
+ 242:	80 93 05 01 	sts	0x0105, r24	; 0x800105 <currentStatusType>
 			isSecondDataWord = false;
- 232:	10 92 23 01 	sts	0x0123, r1	; 0x800123 <isSecondDataWord>
+ 246:	10 92 01 01 	sts	0x0101, r1	; 0x800101 <isSecondDataWord>
 			state = WAIT_WORD;
- 236:	81 e0       	ldi	r24, 0x01	; 1
- 238:	80 93 22 01 	sts	0x0122, r24	; 0x800122 <_end>
+ 24a:	81 e0       	ldi	r24, 0x01	; 1
+ 24c:	80 93 25 01 	sts	0x0125, r24	; 0x800125 <_end>
 			break;
- 23c:	08 95       	ret
+ 250:	08 95       	ret
 		}				
 		
 		case REC_TWO_BYTE:
 		{
 			if(isSecondDataWord)
- 23e:	80 91 23 01 	lds	r24, 0x0123	; 0x800123 <isSecondDataWord>
- 242:	88 23       	and	r24, r24
- 244:	39 f0       	breq	.+14     	; 0x254 <__EEPROM_REGION_LENGTH__+0x54>
+ 252:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <isSecondDataWord>
+ 256:	88 23       	and	r24, r24
+ 258:	39 f0       	breq	.+14     	; 0x268 <__EEPROM_REGION_LENGTH__+0x68>
 			{
-				dataWord2 = recievedWord;
- 246:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <recievedWord>
- 24a:	80 93 02 01 	sts	0x0102, r24	; 0x800102 <dataWord2>
+				currentCommand.data2 = recievedWord;
+ 25a:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 25e:	80 93 04 01 	sts	0x0104, r24	; 0x800104 <currentCommand+0x2>
 				isSecondDataWord = false;
- 24e:	10 92 23 01 	sts	0x0123, r1	; 0x800123 <isSecondDataWord>
- 252:	07 c0       	rjmp	.+14     	; 0x262 <__EEPROM_REGION_LENGTH__+0x62>
+ 262:	10 92 01 01 	sts	0x0101, r1	; 0x800101 <isSecondDataWord>
+ 266:	07 c0       	rjmp	.+14     	; 0x276 <__EEPROM_REGION_LENGTH__+0x76>
 				// handle message
 			}
 			else
 			{
-				dataWord1 = recievedWord;
- 254:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <recievedWord>
- 258:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <__DATA_REGION_ORIGIN__>
+				currentCommand.data1 = recievedWord;
+ 268:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 26c:	80 93 03 01 	sts	0x0103, r24	; 0x800103 <currentCommand+0x1>
 				isSecondDataWord = true;
- 25c:	81 e0       	ldi	r24, 0x01	; 1
- 25e:	80 93 23 01 	sts	0x0123, r24	; 0x800123 <isSecondDataWord>
+ 270:	81 e0       	ldi	r24, 0x01	; 1
+ 272:	80 93 01 01 	sts	0x0101, r24	; 0x800101 <isSecondDataWord>
 			}
 			state = WAIT_WORD;
- 262:	81 e0       	ldi	r24, 0x01	; 1
- 264:	80 93 22 01 	sts	0x0122, r24	; 0x800122 <_end>
+ 276:	81 e0       	ldi	r24, 0x01	; 1
+ 278:	80 93 25 01 	sts	0x0125, r24	; 0x800125 <_end>
 			break;
- 268:	08 95       	ret
+ 27c:	08 95       	ret
 		}
 		
 		case REC_ONE_BYTE:
 		{
-			dataWord1 = recievedWord;
- 26a:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <recievedWord>
- 26e:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <__DATA_REGION_ORIGIN__>
+			currentCommand.data1 = recievedWord;
+ 27e:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 282:	80 93 03 01 	sts	0x0103, r24	; 0x800103 <currentCommand+0x1>
 			// handle message
 			state = WAIT_WORD;
- 272:	81 e0       	ldi	r24, 0x01	; 1
- 274:	80 93 22 01 	sts	0x0122, r24	; 0x800122 <_end>
+ 286:	81 e0       	ldi	r24, 0x01	; 1
+ 288:	80 93 25 01 	sts	0x0125, r24	; 0x800125 <_end>
 			break;
- 278:	08 95       	ret
+ 28c:	08 95       	ret
 		}
 		
 		case REC_SYS_EX:
 		{
 			state = WAIT_WORD;
- 27a:	81 e0       	ldi	r24, 0x01	; 1
- 27c:	80 93 22 01 	sts	0x0122, r24	; 0x800122 <_end>
+ 28e:	81 e0       	ldi	r24, 0x01	; 1
+ 290:	80 93 25 01 	sts	0x0125, r24	; 0x800125 <_end>
 			break;
- 280:	08 95       	ret
+ 294:	08 95       	ret
 		}
 		
 		case HADLE_SYS_EX:
 		{
-			currentStatus = MIDI_COMM_UNDEFINED;
- 282:	10 92 25 01 	sts	0x0125, r1	; 0x800125 <currentStatus>
+			currentCommand.status = MIDI_COMM_UNDEFINED;
+ 296:	e2 e0       	ldi	r30, 0x02	; 2
+ 298:	f1 e0       	ldi	r31, 0x01	; 1
+ 29a:	10 82       	st	Z, r1
+			currentCommand.data1 = 0;
+ 29c:	11 82       	std	Z+1, r1	; 0x01
+			currentCommand.data2 = 0;
+ 29e:	12 82       	std	Z+2, r1	; 0x02
 			state = WAIT_WORD;
- 286:	81 e0       	ldi	r24, 0x01	; 1
- 288:	80 93 22 01 	sts	0x0122, r24	; 0x800122 <_end>
- 28c:	08 95       	ret
+ 2a0:	81 e0       	ldi	r24, 0x01	; 1
+ 2a2:	80 93 25 01 	sts	0x0125, r24	; 0x800125 <_end>
+ 2a6:	08 95       	ret
+
+Disassembly of section .text.UART_init:
+
+000003d2 <UART_init>:
+	// Rx INT: On
+	// Tx INT: On
+	// Receiver: On
+	// Transmitter: On
+	
+	UCSR0B = (1<<RXCIE0) | (1<<TXCIE0) | (1<<RXEN0) | (1<<TXEN0); //UCSR1B=0x98;
+ 3d2:	88 ed       	ldi	r24, 0xD8	; 216
+ 3d4:	80 93 c1 00 	sts	0x00C1, r24	; 0x8000c1 <__TEXT_REGION_LENGTH__+0x7fe0c1>
+	
+	// 8 Data, 1 Stop, No Parity
+	UCSR0C=0x06; 
+ 3d8:	86 e0       	ldi	r24, 0x06	; 6
+ 3da:	80 93 c2 00 	sts	0x00C2, r24	; 0x8000c2 <__TEXT_REGION_LENGTH__+0x7fe0c2>
+	
+	// USART0 Mode: Asynchronous
+	// USART Baud Rate: Fosc/320 = Fosc/16(UBRR+1)
+	UBRR0H=0x00;
+ 3de:	10 92 c5 00 	sts	0x00C5, r1	; 0x8000c5 <__TEXT_REGION_LENGTH__+0x7fe0c5>
+	UBRR0L=0x13;
+ 3e2:	83 e1       	ldi	r24, 0x13	; 19
+ 3e4:	80 93 c4 00 	sts	0x00C4, r24	; 0x8000c4 <__TEXT_REGION_LENGTH__+0x7fe0c4>
+ 3e8:	08 95       	ret
 
 Disassembly of section .text.__vector_18:
 
-0000028e <__vector_18>:
+000002a8 <__vector_18>:
 uint8_t rx_wr_index, rx_rd_index, rx_counter;
 
 bool rx_buffer_overflow;
 
 ISR(USART_RX_vect)
 {
- 28e:	1f 92       	push	r1
- 290:	0f 92       	push	r0
- 292:	0f b6       	in	r0, 0x3f	; 63
- 294:	0f 92       	push	r0
- 296:	11 24       	eor	r1, r1
- 298:	8f 93       	push	r24
- 29a:	9f 93       	push	r25
- 29c:	ef 93       	push	r30
- 29e:	ff 93       	push	r31
+ 2a8:	1f 92       	push	r1
+ 2aa:	0f 92       	push	r0
+ 2ac:	0f b6       	in	r0, 0x3f	; 63
+ 2ae:	0f 92       	push	r0
+ 2b0:	11 24       	eor	r1, r1
+ 2b2:	8f 93       	push	r24
+ 2b4:	9f 93       	push	r25
+ 2b6:	ef 93       	push	r30
+ 2b8:	ff 93       	push	r31
 	uint8_t status, data;
 	status = UCSR0A;
- 2a0:	80 91 c0 00 	lds	r24, 0x00C0	; 0x8000c0 <__TEXT_REGION_LENGTH__+0x7fe0c0>
+ 2ba:	80 91 c0 00 	lds	r24, 0x00C0	; 0x8000c0 <__TEXT_REGION_LENGTH__+0x7fe0c0>
 	data = UDR0;
- 2a4:	90 91 c6 00 	lds	r25, 0x00C6	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7fe0c6>
+ 2be:	90 91 c6 00 	lds	r25, 0x00C6	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7fe0c6>
 	
 	if ((status & (FRAMING_ERROR | PARITY_ERROR | DATA_OVERRUN))==0)
- 2a8:	8c 71       	andi	r24, 0x1C	; 28
- 2aa:	d1 f4       	brne	.+52     	; 0x2e0 <__vector_18+0x52>
+ 2c2:	8c 71       	andi	r24, 0x1C	; 28
+ 2c4:	d1 f4       	brne	.+52     	; 0x2fa <__vector_18+0x52>
 	{
 		rx_buffer0[rx_wr_index++] = data;
- 2ac:	e0 91 03 01 	lds	r30, 0x0103	; 0x800103 <rx_wr_index>
- 2b0:	81 e0       	ldi	r24, 0x01	; 1
- 2b2:	8e 0f       	add	r24, r30
- 2b4:	80 93 03 01 	sts	0x0103, r24	; 0x800103 <rx_wr_index>
- 2b8:	f0 e0       	ldi	r31, 0x00	; 0
- 2ba:	e1 5f       	subi	r30, 0xF1	; 241
- 2bc:	fe 4f       	sbci	r31, 0xFE	; 254
- 2be:	90 83       	st	Z, r25
+ 2c6:	e0 91 06 01 	lds	r30, 0x0106	; 0x800106 <rx_wr_index>
+ 2ca:	81 e0       	ldi	r24, 0x01	; 1
+ 2cc:	8e 0f       	add	r24, r30
+ 2ce:	80 93 06 01 	sts	0x0106, r24	; 0x800106 <rx_wr_index>
+ 2d2:	f0 e0       	ldi	r31, 0x00	; 0
+ 2d4:	ee 5e       	subi	r30, 0xEE	; 238
+ 2d6:	fe 4f       	sbci	r31, 0xFE	; 254
+ 2d8:	90 83       	st	Z, r25
 		
 		if (rx_wr_index == RX_BUFFER_SIZE) rx_wr_index=0;
- 2c0:	80 31       	cpi	r24, 0x10	; 16
- 2c2:	11 f4       	brne	.+4      	; 0x2c8 <__vector_18+0x3a>
- 2c4:	10 92 03 01 	sts	0x0103, r1	; 0x800103 <rx_wr_index>
+ 2da:	80 31       	cpi	r24, 0x10	; 16
+ 2dc:	11 f4       	brne	.+4      	; 0x2e2 <__vector_18+0x3a>
+ 2de:	10 92 06 01 	sts	0x0106, r1	; 0x800106 <rx_wr_index>
 		
 		if (++rx_counter == RX_BUFFER_SIZE)
- 2c8:	80 91 0e 01 	lds	r24, 0x010E	; 0x80010e <rx_counter>
- 2cc:	8f 5f       	subi	r24, 0xFF	; 255
- 2ce:	80 93 0e 01 	sts	0x010E, r24	; 0x80010e <rx_counter>
- 2d2:	80 31       	cpi	r24, 0x10	; 16
- 2d4:	29 f4       	brne	.+10     	; 0x2e0 <__vector_18+0x52>
+ 2e2:	80 91 11 01 	lds	r24, 0x0111	; 0x800111 <rx_counter>
+ 2e6:	8f 5f       	subi	r24, 0xFF	; 255
+ 2e8:	80 93 11 01 	sts	0x0111, r24	; 0x800111 <rx_counter>
+ 2ec:	80 31       	cpi	r24, 0x10	; 16
+ 2ee:	29 f4       	brne	.+10     	; 0x2fa <__vector_18+0x52>
 		{
 			rx_counter=0;
- 2d6:	10 92 0e 01 	sts	0x010E, r1	; 0x80010e <rx_counter>
+ 2f0:	10 92 11 01 	sts	0x0111, r1	; 0x800111 <rx_counter>
 			rx_buffer_overflow=1;
- 2da:	81 e0       	ldi	r24, 0x01	; 1
- 2dc:	80 93 04 01 	sts	0x0104, r24	; 0x800104 <rx_buffer_overflow>
+ 2f4:	81 e0       	ldi	r24, 0x01	; 1
+ 2f6:	80 93 07 01 	sts	0x0107, r24	; 0x800107 <rx_buffer_overflow>
 		}
 	}
 }
- 2e0:	ff 91       	pop	r31
- 2e2:	ef 91       	pop	r30
- 2e4:	9f 91       	pop	r25
- 2e6:	8f 91       	pop	r24
- 2e8:	0f 90       	pop	r0
- 2ea:	0f be       	out	0x3f, r0	; 63
- 2ec:	0f 90       	pop	r0
- 2ee:	1f 90       	pop	r1
- 2f0:	18 95       	reti
+ 2fa:	ff 91       	pop	r31
+ 2fc:	ef 91       	pop	r30
+ 2fe:	9f 91       	pop	r25
+ 300:	8f 91       	pop	r24
+ 302:	0f 90       	pop	r0
+ 304:	0f be       	out	0x3f, r0	; 63
+ 306:	0f 90       	pop	r0
+ 308:	1f 90       	pop	r1
+ 30a:	18 95       	reti
 
-Disassembly of section .text.usart_pop_word:
+Disassembly of section .text.UART_PopWord:
 
-00000384 <usart_pop_word>:
+0000039e <UART_PopWord>:
 
-uint8_t usart_pop_word()
+uint8_t UART_PopWord()
 {
 	uint8_t data;
 	
 	while (rx_counter == 0); // blocking
- 384:	80 91 0e 01 	lds	r24, 0x010E	; 0x80010e <rx_counter>
- 388:	88 23       	and	r24, r24
- 38a:	e1 f3       	breq	.-8      	; 0x384 <usart_pop_word>
+ 39e:	80 91 11 01 	lds	r24, 0x0111	; 0x800111 <rx_counter>
+ 3a2:	88 23       	and	r24, r24
+ 3a4:	e1 f3       	breq	.-8      	; 0x39e <UART_PopWord>
 	
 	data = rx_buffer0[rx_rd_index++];
- 38c:	e0 91 1f 01 	lds	r30, 0x011F	; 0x80011f <rx_rd_index>
- 390:	91 e0       	ldi	r25, 0x01	; 1
- 392:	9e 0f       	add	r25, r30
- 394:	90 93 1f 01 	sts	0x011F, r25	; 0x80011f <rx_rd_index>
- 398:	f0 e0       	ldi	r31, 0x00	; 0
- 39a:	e1 5f       	subi	r30, 0xF1	; 241
- 39c:	fe 4f       	sbci	r31, 0xFE	; 254
- 39e:	80 81       	ld	r24, Z
+ 3a6:	e0 91 22 01 	lds	r30, 0x0122	; 0x800122 <rx_rd_index>
+ 3aa:	91 e0       	ldi	r25, 0x01	; 1
+ 3ac:	9e 0f       	add	r25, r30
+ 3ae:	90 93 22 01 	sts	0x0122, r25	; 0x800122 <rx_rd_index>
+ 3b2:	f0 e0       	ldi	r31, 0x00	; 0
+ 3b4:	ee 5e       	subi	r30, 0xEE	; 238
+ 3b6:	fe 4f       	sbci	r31, 0xFE	; 254
+ 3b8:	80 81       	ld	r24, Z
 	
 	#if RX_BUFFER_SIZE != 256
 		if (rx_rd_index == RX_BUFFER_SIZE) rx_rd_index = 0;
- 3a0:	90 31       	cpi	r25, 0x10	; 16
- 3a2:	11 f4       	brne	.+4      	; 0x3a8 <usart_pop_word+0x24>
- 3a4:	10 92 1f 01 	sts	0x011F, r1	; 0x80011f <rx_rd_index>
+ 3ba:	90 31       	cpi	r25, 0x10	; 16
+ 3bc:	11 f4       	brne	.+4      	; 0x3c2 <UART_PopWord+0x24>
+ 3be:	10 92 22 01 	sts	0x0122, r1	; 0x800122 <rx_rd_index>
 	#endif
 	
 	cpu_irq_disable();
- 3a8:	f8 94       	cli
+ 3c2:	f8 94       	cli
 	--rx_counter;
- 3aa:	90 91 0e 01 	lds	r25, 0x010E	; 0x80010e <rx_counter>
- 3ae:	91 50       	subi	r25, 0x01	; 1
- 3b0:	90 93 0e 01 	sts	0x010E, r25	; 0x80010e <rx_counter>
+ 3c4:	90 91 11 01 	lds	r25, 0x0111	; 0x800111 <rx_counter>
+ 3c8:	91 50       	subi	r25, 0x01	; 1
+ 3ca:	90 93 11 01 	sts	0x0111, r25	; 0x800111 <rx_counter>
 	cpu_irq_enable();
- 3b4:	78 94       	sei
+ 3ce:	78 94       	sei
 	return data;
 }
- 3b6:	08 95       	ret
+ 3d0:	08 95       	ret
 
-Disassembly of section .text.isRxBufferNotEmpty:
+Disassembly of section .text.UART_RxBufferNotEmpty:
 
-000003b8 <isRxBufferNotEmpty>:
+000003ea <UART_RxBufferNotEmpty>:
 
-bool isRxBufferNotEmpty()
+bool UART_RxBufferNotEmpty()
 {
 	return (bool)rx_counter;
- 3b8:	81 e0       	ldi	r24, 0x01	; 1
- 3ba:	90 91 0e 01 	lds	r25, 0x010E	; 0x80010e <rx_counter>
- 3be:	91 11       	cpse	r25, r1
- 3c0:	01 c0       	rjmp	.+2      	; 0x3c4 <isRxBufferNotEmpty+0xc>
- 3c2:	80 e0       	ldi	r24, 0x00	; 0
+ 3ea:	81 e0       	ldi	r24, 0x01	; 1
+ 3ec:	90 91 11 01 	lds	r25, 0x0111	; 0x800111 <rx_counter>
+ 3f0:	91 11       	cpse	r25, r1
+ 3f2:	01 c0       	rjmp	.+2      	; 0x3f6 <UART_RxBufferNotEmpty+0xc>
+ 3f4:	80 e0       	ldi	r24, 0x00	; 0
 }
- 3c4:	08 95       	ret
+ 3f6:	08 95       	ret
 
 Disassembly of section .text.__vector_20:
 
-000002f2 <__vector_20>:
+0000030c <__vector_20>:
 uint8_t tx_buffer[TX_BUFFER_SIZE];
 uint8_t tx_wr_index, tx_rd_index, tx_counter;
 
 // USART Transmitter interrupt service routine
 ISR(USART_TX_vect)
 {
- 2f2:	1f 92       	push	r1
- 2f4:	0f 92       	push	r0
- 2f6:	0f b6       	in	r0, 0x3f	; 63
- 2f8:	0f 92       	push	r0
- 2fa:	11 24       	eor	r1, r1
- 2fc:	8f 93       	push	r24
- 2fe:	ef 93       	push	r30
- 300:	ff 93       	push	r31
+ 30c:	1f 92       	push	r1
+ 30e:	0f 92       	push	r0
+ 310:	0f b6       	in	r0, 0x3f	; 63
+ 312:	0f 92       	push	r0
+ 314:	11 24       	eor	r1, r1
+ 316:	8f 93       	push	r24
+ 318:	ef 93       	push	r30
+ 31a:	ff 93       	push	r31
 	if (tx_counter)
- 302:	80 91 05 01 	lds	r24, 0x0105	; 0x800105 <tx_counter>
- 306:	88 23       	and	r24, r24
- 308:	a9 f0       	breq	.+42     	; 0x334 <__vector_20+0x42>
+ 31c:	80 91 08 01 	lds	r24, 0x0108	; 0x800108 <tx_counter>
+ 320:	88 23       	and	r24, r24
+ 322:	a9 f0       	breq	.+42     	; 0x34e <__vector_20+0x42>
 	{
 		--tx_counter;
- 30a:	81 50       	subi	r24, 0x01	; 1
- 30c:	80 93 05 01 	sts	0x0105, r24	; 0x800105 <tx_counter>
+ 324:	81 50       	subi	r24, 0x01	; 1
+ 326:	80 93 08 01 	sts	0x0108, r24	; 0x800108 <tx_counter>
 		UDR0=tx_buffer[tx_rd_index++];
- 310:	e0 91 20 01 	lds	r30, 0x0120	; 0x800120 <tx_rd_index>
- 314:	81 e0       	ldi	r24, 0x01	; 1
- 316:	8e 0f       	add	r24, r30
- 318:	80 93 20 01 	sts	0x0120, r24	; 0x800120 <tx_rd_index>
- 31c:	f0 e0       	ldi	r31, 0x00	; 0
- 31e:	ea 5f       	subi	r30, 0xFA	; 250
- 320:	fe 4f       	sbci	r31, 0xFE	; 254
- 322:	80 81       	ld	r24, Z
- 324:	80 93 c6 00 	sts	0x00C6, r24	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7fe0c6>
+ 32a:	e0 91 23 01 	lds	r30, 0x0123	; 0x800123 <tx_rd_index>
+ 32e:	81 e0       	ldi	r24, 0x01	; 1
+ 330:	8e 0f       	add	r24, r30
+ 332:	80 93 23 01 	sts	0x0123, r24	; 0x800123 <tx_rd_index>
+ 336:	f0 e0       	ldi	r31, 0x00	; 0
+ 338:	e7 5f       	subi	r30, 0xF7	; 247
+ 33a:	fe 4f       	sbci	r31, 0xFE	; 254
+ 33c:	80 81       	ld	r24, Z
+ 33e:	80 93 c6 00 	sts	0x00C6, r24	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7fe0c6>
 		
 		#if TX_BUFFER_SIZE != 256
 			if (tx_rd_index == TX_BUFFER_SIZE) tx_rd_index = 0;
- 328:	80 91 20 01 	lds	r24, 0x0120	; 0x800120 <tx_rd_index>
- 32c:	88 30       	cpi	r24, 0x08	; 8
- 32e:	11 f4       	brne	.+4      	; 0x334 <__vector_20+0x42>
- 330:	10 92 20 01 	sts	0x0120, r1	; 0x800120 <tx_rd_index>
+ 342:	80 91 23 01 	lds	r24, 0x0123	; 0x800123 <tx_rd_index>
+ 346:	88 30       	cpi	r24, 0x08	; 8
+ 348:	11 f4       	brne	.+4      	; 0x34e <__vector_20+0x42>
+ 34a:	10 92 23 01 	sts	0x0123, r1	; 0x800123 <tx_rd_index>
 		#endif
 	}
 }
- 334:	ff 91       	pop	r31
- 336:	ef 91       	pop	r30
- 338:	8f 91       	pop	r24
- 33a:	0f 90       	pop	r0
- 33c:	0f be       	out	0x3f, r0	; 63
- 33e:	0f 90       	pop	r0
- 340:	1f 90       	pop	r1
- 342:	18 95       	reti
+ 34e:	ff 91       	pop	r31
+ 350:	ef 91       	pop	r30
+ 352:	8f 91       	pop	r24
+ 354:	0f 90       	pop	r0
+ 356:	0f be       	out	0x3f, r0	; 63
+ 358:	0f 90       	pop	r0
+ 35a:	1f 90       	pop	r1
+ 35c:	18 95       	reti
 
 Disassembly of section .text.__dummy_fini:
 
-000003f0 <_fini>:
- 3f0:	08 95       	ret
+00000424 <_fini>:
+ 424:	08 95       	ret
 
 Disassembly of section .text.__dummy_funcs_on_exit:
 
-000003f2 <__funcs_on_exit>:
- 3f2:	08 95       	ret
+00000426 <__funcs_on_exit>:
+ 426:	08 95       	ret
 
 Disassembly of section .text.__dummy_simulator_exit:
 
-000003f4 <__simulator_exit>:
- 3f4:	08 95       	ret
+00000428 <__simulator_exit>:
+ 428:	08 95       	ret
 
 Disassembly of section .text.exit:
 
-000003c6 <exit>:
- 3c6:	ec 01       	movw	r28, r24
- 3c8:	14 d0       	rcall	.+40     	; 0x3f2 <__funcs_on_exit>
- 3ca:	12 d0       	rcall	.+36     	; 0x3f0 <_fini>
- 3cc:	ce 01       	movw	r24, r28
- 3ce:	12 d0       	rcall	.+36     	; 0x3f4 <__simulator_exit>
- 3d0:	ce 01       	movw	r24, r28
- 3d2:	11 d0       	rcall	.+34     	; 0x3f6 <_Exit>
+000003f8 <exit>:
+ 3f8:	ec 01       	movw	r28, r24
+ 3fa:	15 d0       	rcall	.+42     	; 0x426 <__funcs_on_exit>
+ 3fc:	13 d0       	rcall	.+38     	; 0x424 <_fini>
+ 3fe:	ce 01       	movw	r24, r28
+ 400:	13 d0       	rcall	.+38     	; 0x428 <__simulator_exit>
+ 402:	ce 01       	movw	r24, r28
+ 404:	12 d0       	rcall	.+36     	; 0x42a <_Exit>
 
 Disassembly of section .text._Exit:
 
-000003f6 <_Exit>:
- 3f6:	ce de       	rcall	.-612    	; 0x194 <_exit>
+0000042a <_Exit>:
+ 42a:	b4 de       	rcall	.-664    	; 0x194 <_exit>

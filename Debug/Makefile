@@ -52,6 +52,7 @@ SUBDIRS :=  \
 C_SRCS +=  \
 ../main.c \
 ../midi.c \
+../midi_controller.c \
 ../midi_parser.c \
 ../uart.c
 
@@ -65,24 +66,28 @@ ASM_SRCS +=
 OBJS +=  \
 main.o \
 midi.o \
+midi_controller.o \
 midi_parser.o \
 uart.o
 
 OBJS_AS_ARGS +=  \
 main.o \
 midi.o \
+midi_controller.o \
 midi_parser.o \
 uart.o
 
 C_DEPS +=  \
 main.d \
 midi.d \
+midi_controller.d \
 midi_parser.d \
 uart.d
 
 C_DEPS_AS_ARGS +=  \
 main.d \
 midi.d \
+midi_controller.d \
 midi_parser.d \
 uart.d
 
@@ -108,6 +113,13 @@ LINKER_SCRIPT_DEP+=
 	
 
 ./midi.o: .././midi.c
+	@echo Building file: $<
+	@echo Invoking: XC8 C Compiler : 2.36
+	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88__ -DDEBUG  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./midi_controller.o: .././midi_controller.c
 	@echo Building file: $<
 	@echo Invoking: XC8 C Compiler : 2.36
 	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88__ -DDEBUG  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

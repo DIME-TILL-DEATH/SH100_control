@@ -46,6 +46,13 @@ typedef enum
 	MIDI_TYPE_STOP_SYS_EX	
 }MIDI_StatusType_t;
 
+typedef struct  
+{
+	MIDI_Status_t status;
+	uint8_t data1;
+	uint8_t data2;
+}MIDI_Command_t;
+
 bool MIDI_IsStatusWord(uint8_t word);
 bool MIDI_IsSysRealTime(uint8_t word);
 

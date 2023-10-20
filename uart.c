@@ -1,6 +1,6 @@
 #include "uart.h"
 
-void uart_init()
+void UART_init()
 {
 	// Rx INT: On
 	// Tx INT: On
@@ -54,7 +54,7 @@ ISR(USART_RX_vect)
 	}
 }
 
-uint8_t usart_pop_word()
+uint8_t UART_PopWord()
 {
 	uint8_t data;
 	
@@ -72,7 +72,7 @@ uint8_t usart_pop_word()
 	return data;
 }
 
-bool isRxBufferNotEmpty()
+bool UART_RxBufferNotEmpty()
 {
 	return (bool)rx_counter;
 }
@@ -97,7 +97,7 @@ ISR(USART_TX_vect)
 }
 
 // Write a character to the USART Transmitter buffer
-void usart_push_word(uint8_t c)
+void UART_PushWord(uint8_t c)
 {	
 	while (tx_counter == TX_BUFFER_SIZE);
 	

@@ -163,6 +163,12 @@
     <Compile Include="midi.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="midi_controller.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="midi_controller.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="midi_parser.c">
       <SubType>compile</SubType>
     </Compile>

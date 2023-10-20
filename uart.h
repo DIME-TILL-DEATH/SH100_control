@@ -9,12 +9,12 @@
 #include <stdint.h>
 
 
-void uart_init();
+void UART_init();
 
-uint8_t usart_pop_word();
-void usart_push_word(uint8_t c);
+uint8_t UART_PopWord();
+void UART_PushWord(uint8_t c);
 
-bool isRxBufferNotEmpty();
+bool UART_RxBufferNotEmpty();
 
 
 #endif /* UART_INTERFACE_H_ */
