@@ -11,7 +11,9 @@
 
 void uart_init();
 
-uint8_t usart_pop_next_word();
+uint8_t usart_pop_word();
+void usart_push_word(uint8_t c);
+
 bool isRxBufferNotEmpty();
 
 

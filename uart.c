@@ -34,7 +34,7 @@ uint8_t rx_wr_index, rx_rd_index, rx_counter;
 
 bool rx_buffer_overflow;
 
-ISR(USART0_RX_vect)
+ISR(USART_RX_vect)
 {
 	uint8_t status, data;
 	status = UCSR0A;
@@ -54,7 +54,7 @@ ISR(USART0_RX_vect)
 	}
 }
 
-uint8_t usart_pop_next_word()
+uint8_t usart_pop_word()
 {
 	uint8_t data;
 	
@@ -83,7 +83,7 @@ uint8_t tx_buffer[TX_BUFFER_SIZE];
 uint8_t tx_wr_index, tx_rd_index, tx_counter;
 
 // USART Transmitter interrupt service routine
-ISR(USART0_TX_vect)
+ISR(USART_TX_vect)
 {
 	if (tx_counter)
 	{

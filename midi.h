@@ -38,12 +38,17 @@ typedef enum
 
 typedef enum
 {
-	MIDI_ONE_BYTE = 1,
-	MIDI_TWO,
-	MIDI_REAL_TIME	
-}MIDI_CommandType;
+	MIDI_TYPE_UNDEFINED = 0,
+	MIDI_TYPE_ONE_BYTE = 1,
+	MIDI_TYPE_TWO_BYTE,
+	MIDI_TYPE_REAL_TIME,
+	MIDI_TYPE_START_SYS_EX,
+	MIDI_TYPE_STOP_SYS_EX	
+}MIDI_StatusType_t;
 
 bool MIDI_IsStatusWord(uint8_t word);
 bool MIDI_IsSysRealTime(uint8_t word);
+
+MIDI_StatusType_t MIDI_GetStatusType(MIDI_Status_t status);
 
 #endif /* MIDI_H_ */

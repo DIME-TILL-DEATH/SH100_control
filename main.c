@@ -4,6 +4,9 @@
 
 int main(void)
 {
+	uart_init();
+	
+	
 	cpu_irq_enable();
 	
     while(1)
