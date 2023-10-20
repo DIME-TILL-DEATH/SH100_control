@@ -10,5 +10,7 @@ midi_controller.c
 
 midi_parser.c
 
+sh100_controller.c
+
 uart.c
 

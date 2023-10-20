@@ -223,6 +223,12 @@
     <None Include="src\asf.h">
       <SubType>compile</SubType>
     </None>
+    <Compile Include="sh100_controller.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sh100_controller.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="uart.c">
       <SubType>compile</SubType>
     </Compile>
