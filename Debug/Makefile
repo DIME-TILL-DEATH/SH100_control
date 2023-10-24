@@ -55,6 +55,7 @@ C_SRCS +=  \
 ../midi_controller.c \
 ../midi_parser.c \
 ../sh100_controller.c \
+../sh100_hardware.c \
 ../uart.c
 
 
@@ -70,6 +71,7 @@ midi.o \
 midi_controller.o \
 midi_parser.o \
 sh100_controller.o \
+sh100_hardware.o \
 uart.o
 
 OBJS_AS_ARGS +=  \
@@ -78,6 +80,7 @@ midi.o \
 midi_controller.o \
 midi_parser.o \
 sh100_controller.o \
+sh100_hardware.o \
 uart.o
 
 C_DEPS +=  \
@@ -86,6 +89,7 @@ midi.d \
 midi_controller.d \
 midi_parser.d \
 sh100_controller.d \
+sh100_hardware.d \
 uart.d
 
 C_DEPS_AS_ARGS +=  \
@@ -94,6 +98,7 @@ midi.d \
 midi_controller.d \
 midi_parser.d \
 sh100_controller.d \
+sh100_hardware.d \
 uart.d
 
 OUTPUT_FILE_PATH +=SH100_control.elf
@@ -139,6 +144,13 @@ LINKER_SCRIPT_DEP+=
 	
 
 ./sh100_controller.o: .././sh100_controller.c
+	@echo Building file: $<
+	@echo Invoking: XC8 C Compiler : 2.36
+	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88__ -DDEBUG  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./sh100_hardware.o: .././sh100_hardware.c
 	@echo Building file: $<
 	@echo Invoking: XC8 C Compiler : 2.36
 	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88__ -DDEBUG  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
