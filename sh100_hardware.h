@@ -10,6 +10,14 @@ typedef enum
 	BT_ON
 }SH100HW_ButtonState_t;
 
+typedef enum
+{
+	LED_OFF = 0,
+	LED_ON,
+	LED_FAST_BLINKING,
+	LED_SLOW_BLINKING
+}SH100HW_LedState_t;
+
 typedef struct  
 {
 	uint8_t midiChNum;
