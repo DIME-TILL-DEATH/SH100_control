@@ -4,6 +4,16 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define LED_CH1 0
+#define LED_CH2 1
+#define LED_CH3 2
+#define LED_CH4 3
+#define LED_LOOP 5
+#define LED_A 6
+#define LED_B 7
+#define LED_PWR_GRN 7
+#define LED_PWR_RED 8
+
 typedef enum
 {
 	BT_OFF = 0,
@@ -15,7 +25,7 @@ typedef enum
 	LED_OFF = 0,
 	LED_ON,
 	LED_FAST_BLINKING,
-	LED_SLOW_BLINKING
+	LED_SLOW_BLINKING,
 }SH100HW_LedState_t;
 
 typedef struct  
@@ -42,5 +52,11 @@ typedef struct
 
 void SH100HW_Init();
 SH100HW_Buttons_t SH100HW_GetButtonsState();
+void SH100HW_SwitchCh(uint8_t chNum);
+void SH100HW_LoopEn(bool isEnabled);
+void SH100HW_SwitchAB(bool isBEn);
+void SH100HW_ChangeLedState(uint8_t ledId, SH100HW_LedState_t newState);
+
+void SH100HW_MainTask();
 
 #endif /* SH100_HARDWARE_H_ */

@@ -2,6 +2,7 @@
 
 #include "sh100_memory.h"
 #include "sh100_controller.h"
+#include "sh100_hardware.h"
 
 SH100_State_t ampState;
 
@@ -26,34 +27,45 @@ void SH100CTRL_Init()
 	SH100CTRL_SetAmpState(ampState);
 }
 
-void SH100CTRL_SwChannel1()
+void setChannelLeds()
 {
+	SH100HW_ChangeLedState(LED_CH1, LED_OFF);
+	SH100HW_ChangeLedState(LED_CH2, LED_OFF);
+	SH100HW_ChangeLedState(LED_CH3, LED_OFF);
+	SH100HW_ChangeLedState(LED_CH4, LED_OFF);
 	
+	SH100HW_ChangeLedState(ampState.channelNum, LED_ON);
 }
 
-void SH100CTRL_SwChannel2()
+void SH100CTRL_SetAmpLeds()
 {
-	
+	setChannelLeds();
+	SH100HW_ChangeLedState(LED_LOOP, ampState.loopOn);
+	SH100HW_ChangeLedState(LED_A, !ampState.swAB);
+	SH100HW_ChangeLedState(LED_B, ampState.swAB);
 }
 
-void SH100CTRL_SwChannel3()
+void SH100CTRL_SwChannel(uint8_t chNum)
 {
+	ampState.channelNum = chNum;
 	
-}
-
-void SH100CTRL_SwChannel4()
-{
-	
+	SH100HW_SwitchCh(chNum);
+	setChannelLeds();
 }
 
 void SH100CTRL_SwLoop()
 {
-	
+	ampState.loopOn = !ampState.loopOn;
+	SH100HW_LoopEn(ampState.loopOn);
+	SH100HW_ChangeLedState(LED_LOOP, ampState.loopOn);
 }
 
 void SH100CTRL_SwAB()
 {
-	
+	ampState.swAB = !ampState.swAB;
+	SH100HW_SwitchAB(ampState.swAB);
+	SH100HW_ChangeLedState(LED_A, !ampState.swAB);
+	SH100HW_ChangeLedState(LED_B, ampState.swAB);
 }
 
 void SH100CTRL_MuteAmp()
@@ -63,7 +75,16 @@ void SH100CTRL_MuteAmp()
 
 void SH100CTRL_SetAmpState(SH100_State_t state)
 {
+	ampState = state;
 	
+	SH100HW_SwitchCh(ampState.channelNum);
+	SH100HW_LoopEn(ampState.loopOn);
+	SH100HW_SwitchAB(ampState.swAB);
+	
+	setChannelLeds();
+	SH100HW_ChangeLedState(LED_LOOP, ampState.loopOn);
+	SH100HW_ChangeLedState(LED_A, !ampState.swAB);
+	SH100HW_ChangeLedState(LED_B, ampState.swAB);
 }
 
 void SH100CTRL_StoreAmpState()

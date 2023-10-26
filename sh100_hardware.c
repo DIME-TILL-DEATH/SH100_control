@@ -58,16 +58,6 @@ SH100HW_LedState_t ledLoop;
 SH100HW_LedState_t ledPwrGrn;
 SH100HW_LedState_t ledPwrRed;	
 
-#define LED_CH1_NUM 0
-#define LED_CH2_NUM 1
-#define LED_CH3_NUM 2
-#define LED_CH4_NUM 3
-#define LED_A_NUM 4 
-#define LED_B_NUM 5
-#define LED_LOOP_NUM 6
-#define LED_PWR_GRN_NUM 7
-#define LED_PWR_RED_NUM 8
-
 SH100HW_Buttons_t buttonsState;
 void readButtonsState();
 void writeShiftRegs(uint16_t data);
@@ -96,26 +86,64 @@ void SH100HW_Init()
 	gpio_configure_pin(PIN_RELE_W, IOPORT_INIT_LOW | IOPORT_DIR_OUTPUT);
 	gpio_configure_pin(PIN_RELAY_LOOP, IOPORT_INIT_LOW | IOPORT_DIR_OUTPUT);
 	
-	// Timer0 init
-	TCCR0B |= 0x05; // psc = 1024
-	TIMSK0 |= 0x01; // OVF INT enable, count pulse = 100us
-	TCNT0 = 100;
-	
 	// forming led pointers for iteration
-	led_ptr[0] = &ledCh1;
-	led_ptr[1] = &ledCh2;
-	led_ptr[2] = &ledCh3;
-	led_ptr[3] = &ledCh4;
-	led_ptr[4] = &ledA;
-	led_ptr[5] = &ledB;
-	led_ptr[6] = &ledLoop;
-	led_ptr[7] = &ledPwrGrn;
-	led_ptr[8] = &ledPwrRed;
+	led_ptr[LED_CH1] = &ledCh1;
+	led_ptr[LED_CH2] = &ledCh2;
+	led_ptr[LED_CH3] = &ledCh3;
+	led_ptr[LED_CH4] = &ledCh4;
+	led_ptr[LED_LOOP] = &ledLoop;
+	led_ptr[LED_A] = &ledA;
+	led_ptr[LED_B] = &ledB;
+	led_ptr[LED_PWR_GRN] = &ledPwrGrn;
+	led_ptr[LED_PWR_RED] = &ledPwrRed;
 }
 
 SH100HW_Buttons_t SH100HW_GetButtonsState()
 {
 	return buttonsState;
+}
+
+void SH100HW_SwitchCh(uint8_t chNum)
+{
+	switch(chNum)
+	{
+		case 0:
+		{
+			
+			break;
+		}
+		case 1:
+		{
+			
+			break;
+		}
+		case 2:
+		{
+			
+			break;
+		}
+		case 3:
+		{
+			
+			break;
+		}
+		default: break;
+	}
+}
+
+void SH100HW_LoopEn(bool isEnabled)
+{
+	
+}
+
+void SH100HW_SwitchAB(bool isBEn)
+{
+	
+}
+
+void SH100HW_ChangeLedState(uint8_t ledId, SH100HW_LedState_t newState)
+{
+	*led_ptr[ledId] = newState;
 }
 
 //=================================== PRIVATE FUNCTIONS==============================
@@ -240,7 +268,8 @@ void writeShiftRegs(uint16_t data)
 uint8_t blinkCounter = 0;
 bool slowBlink = false;
 bool fastBlink = false;
-ISR(TIMER0_OVF_vect)
+uint8_t indErrorCnt = 0;
+void SH100HW_MainTask()
 {
 	readButtonsState();
 	
@@ -267,26 +296,36 @@ ISR(TIMER0_OVF_vect)
 		{
 			case LED_OFF: isLedOn[i] = false; break;
 			case LED_ON: isLedOn[i] = true; break;
-			case LED_FAST_BLINKING: isLedOn[i] = fastBlink; break;
-			case LED_SLOW_BLINKING: isLedOn[i] = slowBlink; break;
+			case LED_FAST_BLINKING: 
+			{
+				isLedOn[i] = fastBlink; 
+				//isLedOn[LED_PWR_GRN] = !fastBlink; // Green led blink 180deg phase of red led
+				break;
+			}
+			case LED_SLOW_BLINKING: 
+			{
+				isLedOn[i] = slowBlink;
+				isLedOn[LED_PWR_GRN] = !slowBlink; // Green led slow blink 180deg phase of red led
+				break;
+			}	
 		}
 	}
 	
 	// form result--------------------------------------------------------------
 	uint16_t resultSendWord =	((uint16_t)RELAY_13_24)				|
 								((uint16_t)RELAY_1_3 << 1)			|
-								((uint16_t)isLedOn[LED_CH3_NUM] << 2)	|
-								((uint16_t)isLedOn[LED_CH1_NUM] << 3)	|
-								((uint16_t)isLedOn[LED_CH2_NUM] << 4)	|
-								((uint16_t)isLedOn[LED_CH4_NUM] << 5)	|
+								((uint16_t)isLedOn[LED_CH3] << 2)	|
+								((uint16_t)isLedOn[LED_CH1] << 3)	|
+								((uint16_t)isLedOn[LED_CH2] << 4)	|
+								((uint16_t)isLedOn[LED_CH4] << 5)	|
 								(0 << 6)					|
 								((uint16_t)RELAY_8_16 << 7)			|
 								((uint16_t)RELAY_2_4 << 8)			|
-								((uint16_t)isLedOn[LED_A_NUM] << 9)	|
-								((uint16_t)isLedOn[LED_B_NUM] << 10)	|
-								((uint16_t)isLedOn[LED_PWR_GRN_NUM] << 11)	|
-								((uint16_t)isLedOn[LED_PWR_RED_NUM] << 12)	|
-								((uint16_t)isLedOn[LED_LOOP_NUM] << 13);
+								((uint16_t)isLedOn[LED_A] << 9)	|
+								((uint16_t)isLedOn[LED_B] << 10)	|
+								((uint16_t)isLedOn[LED_PWR_GRN] << 11)	|
+								((uint16_t)isLedOn[LED_PWR_RED] << 12)	|
+								((uint16_t)isLedOn[LED_LOOP] << 13);
 
 	writeShiftRegs(resultSendWord);
 }
