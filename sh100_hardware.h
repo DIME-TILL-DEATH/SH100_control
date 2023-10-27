@@ -28,6 +28,14 @@ typedef enum
 	LED_SLOW_BLINKING,
 }SH100HW_LedState_t;
 
+typedef enum
+{
+	OUT_NONE=0,
+	OUT_16OHM=1,
+	OUT_8OHM=2,
+	OUT_BOTH=3
+}SH100HW_OutputJacks_t;
+
 typedef struct  
 {
 	uint8_t midiChNum;
@@ -59,6 +67,22 @@ void SH100HW_SwitchAB(bool isBEn);
 
 void SH100HW_SetNewLedState(uint8_t ledId, SH100HW_LedState_t newState);
 void SH100HW_SetPreviousLedState(uint8_t ledId);
+
+SH100HW_OutputJacks_t SH100HW_GetOutputJacks();
+
+typedef enum
+{
+	OUTPUT_MUTE = 0,
+	OUTPUT_ENABLED	
+}SH100HW_OutputState_t;
+void SH100HW_SetPAState(SH100HW_OutputState_t state);
+
+typedef enum
+{
+	OUTPUT_8OHM = 0,
+	OUTPUT_16OHM = 1
+}SH100HW_PAMode_t;
+void SH100HW_SetOutputMode(SH100HW_PAMode_t mode);
 
 void SH100HW_MainTask();
 

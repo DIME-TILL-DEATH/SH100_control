@@ -2,9 +2,10 @@
 #include <avr/eeprom.h>
 #include <asf.h>
 
-#include "sh100_memory.h"
-
+#include "midi_parser.h"
 #include "midi_controller.h"
+
+#include "sh100_memory.h"
 #include "sh100_controller.h"
 #include "sh100_hardware.h"
 
@@ -162,14 +163,20 @@ void MIDICTRL_SwitchMode(MIDICTRL_Mode_t newMode)
 {	
 	if(mode == RUNNING)
 	{
+		MIDI_SetRetranslateState(false);
+		
 		for(uint8_t i=0; i<MIDI_PROG_BTN_COUNT;i++) 
 			midiProgBtnState[i] = PROG_CLEAR;
 		
 		MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_CH1);
 		setMidiLeds();
 		
-			SH100HW_SetNewLedState(LED_PWR_GRN, LED_SLOW_BLINKING);
-			SH100HW_SetNewLedState(LED_PWR_RED, LED_SLOW_BLINKING);
+		SH100HW_SetNewLedState(LED_PWR_GRN, LED_SLOW_BLINKING);
+		SH100HW_SetNewLedState(LED_PWR_RED, LED_SLOW_BLINKING);
+	}
+	else
+	{
+		MIDI_SetRetranslateState(true);
 	}
 	mode = newMode;
 }
@@ -230,7 +237,11 @@ void MIDICTRL_HandleCommand(MIDI_Command_t command)
 			
 			if(muteCommandEnabled)
 			{
-				if(isEqualCommands(command, muteCommand)) SH100CTRL_MuteAmp();
+				if(isEqualCommands(command, muteCommand)) 
+				{
+					if(command.data2>0) SH100CTRL_MuteAmp();
+					else SH100CTRL_UnmuteAmp();
+				}
 			}
 			
 			MIDICTRL_CommandBlock_t* currentCommandBlock;
@@ -243,8 +254,16 @@ void MIDICTRL_HandleCommand(MIDI_Command_t command)
 			if(isEqualCommands(command, currentCommandBlock->channel3)) SH100CTRL_SwChannel(2); return;
 			if(isEqualCommands(command, currentCommandBlock->channel4)) SH100CTRL_SwChannel(3); return;
 			
-			if(isEqualCommands(command, currentCommandBlock->loopOn)) SH100CTRL_SwLoop(); return;
-			if(isEqualCommands(command, currentCommandBlock->outAB)) SH100CTRL_SwAB(); return;
+			if(isEqualCommands(command, currentCommandBlock->loopOn)) 
+			{
+				SH100CTRL_SetLoop((command.data2>0)); 
+				return;
+			}
+			if(isEqualCommands(command, currentCommandBlock->outAB)) 
+			{
+				SH100CTRL_SwAB((command.data2>0)); 
+				return;
+			}
 			break;
 		}
 		

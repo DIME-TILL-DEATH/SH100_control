@@ -32,6 +32,7 @@ uint8_t leaveDefSettings_cnt = 0;
 ISR(TIMER0_OVF_vect)
 {
 	SH100HW_MainTask();
+	SH100CTRL_CheckOutputJacks();
 	
 	SH100HW_Buttons_t pressedButtons = SH100HW_GetButtonsState();
 	
@@ -44,10 +45,13 @@ ISR(TIMER0_OVF_vect)
 	{
 		if(leaveDefSettings_cnt == 200)
 		{
-			leaveDefSettings_cnt = 0;
-			MIDICTRL_DiscardCommands();
-			SH100CTRL_SetAmpLeds();
-			// unmute amp
+			if(MIDICTRL_MidiMode() == PROGRAMMING)
+			{
+				leaveDefSettings_cnt = 0;
+				MIDICTRL_DiscardCommands();
+				SH100CTRL_SetAmpLeds();
+				SH100CTRL_UnmuteAmp();
+			}
 		}
 		else
 		{
@@ -111,13 +115,13 @@ ISR(TIMER0_OVF_vect)
 			if(MIDICTRL_MidiMode() == RUNNING)
 			{
 				MIDICTRL_SwitchMode(PROGRAMMING);
-				//mute amp
+				SH100CTRL_MuteAmp();
 			}
 			else
 			{
 				MIDICTRL_StoreUserCommands();
 				SH100CTRL_SetAmpLeds();
-				// unmute amp
+				SH100CTRL_UnmuteAmp();
 			}
 		}
 		else

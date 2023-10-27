@@ -1,5 +1,7 @@
 #include <avr/eeprom.h>
 
+#include "midi_controller.h"
+
 #include "sh100_memory.h"
 #include "sh100_controller.h"
 #include "sh100_hardware.h"
@@ -53,24 +55,42 @@ void SH100CTRL_SwChannel(uint8_t chNum)
 	setChannelLeds();
 }
 
-void SH100CTRL_SwLoop()
+void SH100CTRL_SetLoop(bool en)
 {
-	ampState.loopOn = !ampState.loopOn;
+	ampState.loopOn = en;
 	SH100HW_LoopEn(ampState.loopOn);
 	SH100HW_SetNewLedState(LED_LOOP, ampState.loopOn);
 }
 
-void SH100CTRL_SwAB()
+void SH100CTRL_SetAB(bool isB)
 {
-	ampState.swAB = !ampState.swAB;
+	ampState.swAB = isB;
 	SH100HW_SwitchAB(ampState.swAB);
 	SH100HW_SetNewLedState(LED_A, !ampState.swAB);
 	SH100HW_SetNewLedState(LED_B, ampState.swAB);
 }
 
+void SH100CTRL_SwLoop()
+{
+	SH100CTRL_SetLoop(!ampState.loopOn);
+}
+
+void SH100CTRL_SwAB()
+{
+	SH100CTRL_SetAB(!ampState.swAB);
+}
+
 void SH100CTRL_MuteAmp()
 {
-	
+	SH100HW_SetPAState(OUTPUT_MUTE);
+}
+
+void SH100CTRL_UnmuteAmp()
+{
+	if(SH100HW_GetOutputJacks() != OUT_NONE)
+	{
+		SH100HW_SetPAState(OUTPUT_ENABLED);	
+	}		
 }
 
 void SH100CTRL_SetAmpState(SH100_State_t state)
@@ -90,4 +110,46 @@ void SH100CTRL_SetAmpState(SH100_State_t state)
 void SH100CTRL_StoreAmpState()
 {
 	eeprom_write_block(&ampState, (void*)MEMORY_AMP_STATE_OFFSET, sizeof(SH100_State_t));
+}
+
+void SH100CTRL_CheckOutputJacks()
+{
+	SH100HW_OutputJacks_t outJacksState = SH100HW_GetOutputJacks();
+	
+	switch(outJacksState)
+	{
+		case OUT_NONE:
+		{
+			SH100CTRL_MuteAmp();
+			SH100HW_SetNewLedState(LED_PWR_GRN, LED_OFF);
+			SH100HW_SetNewLedState(LED_PWR_RED, LED_ON);
+			break;
+		}
+		case OUT_16OHM:
+		{
+			if(MIDICTRL_MidiMode() == RUNNING)
+			{
+				SH100CTRL_UnmuteAmp();
+			}
+			SH100HW_SetOutputMode(OUTPUT_16OHM);
+			SH100HW_SetNewLedState(LED_PWR_GRN, LED_ON);
+			break;
+		}
+		case OUT_8OHM:
+		{
+			if(MIDICTRL_MidiMode() == RUNNING)
+			{
+				SH100CTRL_UnmuteAmp();
+			}
+			SH100HW_SetOutputMode(OUTPUT_8OHM);
+			SH100HW_SetNewLedState(LED_PWR_GRN, LED_ON);
+			break;
+		}
+		case OUT_BOTH:
+		{
+			SH100HW_SetNewLedState(LED_PWR_GRN, LED_SLOW_BLINKING);
+			//SH100CTRL_MuteAmp(); //can load be less than 8Ohm?
+			break;
+		}
+	}
 }

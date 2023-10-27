@@ -115,22 +115,30 @@ void SH100HW_SwitchCh(uint8_t chNum)
 	{
 		case 0:
 		{
-			
+			RELAY_13_24 = REL_OFF;
+			RELAY_1_3 = REL_OFF;
+			RELAY_2_4 = REL_OFF;
 			break;
 		}
 		case 1:
 		{
-			
+			RELAY_13_24 = REL_ON;
+			RELAY_1_3 = REL_OFF;
+			RELAY_2_4 = REL_OFF;
 			break;
 		}
 		case 2:
 		{
-			
+			RELAY_13_24 = REL_OFF;
+			RELAY_1_3 = REL_ON;
+			RELAY_2_4 = REL_OFF;
 			break;
 		}
 		case 3:
 		{
-			
+			RELAY_13_24 = REL_ON;
+			RELAY_1_3 = REL_OFF;
+			RELAY_2_4 = REL_ON;
 			break;
 		}
 		default: break;
@@ -139,12 +147,13 @@ void SH100HW_SwitchCh(uint8_t chNum)
 
 void SH100HW_LoopEn(bool isEnabled)
 {
-	
+	RELAY_LOOP = isEnabled;
+	ioport_set_pin_level(PIN_RELAY_LOOP, RELAY_LOOP);
 }
 
 void SH100HW_SwitchAB(bool isBEn)
 {
-	
+	RELAY_AB = isBEn;
 }
 
 void SH100HW_SetNewLedState(uint8_t ledId, SH100HW_LedState_t newState)
@@ -158,6 +167,23 @@ void SH100HW_SetPreviousLedState(uint8_t ledId)
 	*led_ptr[ledId] = *led_ptr[ledId+LED_PREVIOUS_STATE_OFFSET];
 }
 
+SH100HW_OutputJacks_t SH100HW_GetOutputJacks()
+{
+	bool is16Ohm = ioport_get_pin_level(PIN_M16_DETECT);
+	bool is8Ohm = ioport_get_pin_level(PIN_M8_DETECT);
+	return ((is16Ohm) | (is8Ohm<<1));
+}
+
+void SH100HW_SetPAState(SH100HW_OutputState_t state)
+{
+	ioport_set_pin_level(PIN_MUTE, !state);
+	ioport_set_pin_level(PIN_RELE_W, state);
+}
+
+void SH100HW_SetOutputMode(SH100HW_PAMode_t mode)
+{
+	RELAY_8_16 = mode;
+}
 //=================================== PRIVATE FUNCTIONS==============================
 void readButtonsState()
 {

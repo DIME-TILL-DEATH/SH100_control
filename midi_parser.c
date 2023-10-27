@@ -7,6 +7,8 @@ MIDI_Command_t currentCommand;
 MIDI_StatusType_t currentStatusType;
 bool isSecondDataWord;
 
+bool retranslate = true;
+
 enum 
 {
 	RESET=0,
@@ -20,7 +22,7 @@ enum
 
 void handleRealTimeStatus(MIDI_Status_t status)
 {
-	
+	UART_PushWord(status);
 };
 
 uint8_t recievedWord;
@@ -64,6 +66,11 @@ void MIDI_ParserTask()
 						case MIDI_TYPE_STOP_SYS_EX: state = HADLE_SYS_EX; break;
 						default: state = WAIT_WORD;
 					}
+				}
+				
+				if(retranslate)
+				{
+					UART_PushWord(recievedWord);
 				}
 			}
 			break;
@@ -120,5 +127,46 @@ void MIDI_ParserTask()
 			state = WAIT_WORD;
 			break;	
 		}
+	}
+}
+
+void MIDI_SetRetranslateState(bool enabled)
+{
+	retranslate = enabled;
+}
+
+void MIDI_SendCommand(MIDI_Command_t command)
+{
+	switch(MIDI_GetStatusType(command.status))
+	{
+		case MIDI_TYPE_REAL_TIME:
+		{
+			UART_PushWord(command.status);
+			break;
+		}
+		case MIDI_TYPE_ONE_BYTE:
+		{
+			UART_PushWord(command.status);
+			UART_PushWord(command.data1);
+			break;
+		}
+		case MIDI_TYPE_TWO_BYTE:
+		{
+			UART_PushWord(command.status);
+			UART_PushWord(command.data1);
+			UART_PushWord(command.data2);
+			break;
+		}
+		case MIDI_TYPE_START_SYS_EX:
+		{
+			UART_PushWord(command.status);
+			break;
+		}
+		case MIDI_TYPE_STOP_SYS_EX:
+		{
+			UART_PushWord(command.status);
+			break;
+		}
+		case MIDI_TYPE_UNDEFINED: break;
 	}
 }

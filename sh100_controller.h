@@ -24,11 +24,16 @@ void SH100CTRL_Init();
 void SH100CTRL_SwChannel(uint8_t chNum);
 void SH100CTRL_SwLoop();
 void SH100CTRL_SwAB();
+void SH100CTRL_SetLoop(bool en);
+void SH100CTRL_SetAB(bool isB);
 
 void SH100CTRL_MuteAmp();
+void SH100CTRL_UnmuteAmp();
 
 void SH100CTRL_SetAmpState(SH100_State_t state);
 void SH100CTRL_StoreAmpState();
 void SH100CTRL_SetAmpLeds();
+
+void SH100CTRL_CheckOutputJacks();
 
 #endif /* SH100_CONTROLLER_H_ */
