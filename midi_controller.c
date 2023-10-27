@@ -132,15 +132,15 @@ void setMidiLeds()
 		{
 			switch(midiProgBtnState[i])
 			{
-				case PROG_CLEAR: SH100HW_ChangeLedState(i, LED_OFF); break;
-				case PROG_ACTING: SH100HW_ChangeLedState(i, LED_FAST_BLINKING); break;
-				case PROG_PROGRAMMED: SH100HW_ChangeLedState(i, LED_ON); break;
+				case PROG_CLEAR: SH100HW_SetNewLedState(i, LED_OFF); break;
+				case PROG_ACTING: SH100HW_SetNewLedState(i, LED_FAST_BLINKING); break;
+				case PROG_PROGRAMMED: SH100HW_SetNewLedState(i, LED_ON); break;
 			}
 		}
 		
 		if(currentErrBtnId != MIDI_PROG_BTN_UNDEFINED)
 		{
-			SH100HW_ChangeLedState(currentErrBtnId, LED_ON);
+			SH100HW_SetNewLedState(currentErrBtnId, LED_ON);
 		}
 	}
 }
@@ -167,6 +167,9 @@ void MIDICTRL_SwitchMode(MIDICTRL_Mode_t newMode)
 		
 		MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_CH1);
 		setMidiLeds();
+		
+			SH100HW_SetNewLedState(LED_PWR_GRN, LED_SLOW_BLINKING);
+			SH100HW_SetNewLedState(LED_PWR_RED, LED_SLOW_BLINKING);
 	}
 	mode = newMode;
 }
@@ -313,10 +316,16 @@ void indicateMidiError()
 	TCNT1 = 100;
 	currentErrBtnId = currentProgBtn;
 	setMidiLeds();
+	
+	SH100HW_SetNewLedState(LED_PWR_GRN, LED_OFF);
+	SH100HW_SetNewLedState(LED_PWR_RED, LED_ON);
 }
 
 ISR(TIMER1_OVF_vect)
 {
 	currentErrBtnId = MIDI_PROG_BTN_UNDEFINED;
 	setMidiLeds();
+	
+	SH100HW_SetPreviousLedState(LED_PWR_GRN);
+	SH100HW_SetPreviousLedState(LED_PWR_RED);
 }

@@ -1,6 +1,7 @@
 #include "sh100_hardware.h"
 
 #include <asf.h>
+#include <stdlib.h>
 
 #ifndef SH100_PINS
 #define SH100_PINS
@@ -46,17 +47,18 @@ RelayState_t RELAY_AB;
 RelayState_t RELAY_LOOP;
 
 #define LED_COUNT 9
-SH100HW_LedState_t* led_ptr[LED_COUNT]; // for iterating
+#define LED_PREVIOUS_STATE_OFFSET LED_COUNT
+SH100HW_LedState_t* led_ptr[LED_COUNT*2]; // for iterating
 
-SH100HW_LedState_t ledCh1;	
-SH100HW_LedState_t ledCh2;	
-SH100HW_LedState_t ledCh3;	
-SH100HW_LedState_t ledCh4;	
-SH100HW_LedState_t ledA;	
-SH100HW_LedState_t ledB;	
-SH100HW_LedState_t ledLoop;	
-SH100HW_LedState_t ledPwrGrn;
-SH100HW_LedState_t ledPwrRed;	
+//SH100HW_LedState_t ledCh1;	
+//SH100HW_LedState_t ledCh2;	
+//SH100HW_LedState_t ledCh3;	
+//SH100HW_LedState_t ledCh4;	
+//SH100HW_LedState_t ledA;	
+//SH100HW_LedState_t ledB;	
+//SH100HW_LedState_t ledLoop;	
+//SH100HW_LedState_t ledPwrGrn;
+//SH100HW_LedState_t ledPwrRed;	
 
 SH100HW_Buttons_t buttonsState;
 void readButtonsState();
@@ -87,15 +89,19 @@ void SH100HW_Init()
 	gpio_configure_pin(PIN_RELAY_LOOP, IOPORT_INIT_LOW | IOPORT_DIR_OUTPUT);
 	
 	// forming led pointers for iteration
-	led_ptr[LED_CH1] = &ledCh1;
-	led_ptr[LED_CH2] = &ledCh2;
-	led_ptr[LED_CH3] = &ledCh3;
-	led_ptr[LED_CH4] = &ledCh4;
-	led_ptr[LED_LOOP] = &ledLoop;
-	led_ptr[LED_A] = &ledA;
-	led_ptr[LED_B] = &ledB;
-	led_ptr[LED_PWR_GRN] = &ledPwrGrn;
-	led_ptr[LED_PWR_RED] = &ledPwrRed;
+	//led_ptr[LED_CH1] = &ledCh1;
+	//led_ptr[LED_CH2] = &ledCh2;
+	//led_ptr[LED_CH3] = &ledCh3;
+	//led_ptr[LED_CH4] = &ledCh4;
+	//led_ptr[LED_LOOP] = &ledLoop;
+	//led_ptr[LED_A] = &ledA;
+	//led_ptr[LED_B] = &ledB;
+	//led_ptr[LED_PWR_GRN] = &ledPwrGrn;
+	//led_ptr[LED_PWR_RED] = &ledPwrRed;
+	for(uint8_t i=0; i < LED_COUNT*2; i++)
+	{
+		led_ptr[i] = malloc(sizeof(SH100HW_LedState_t));
+	}
 }
 
 SH100HW_Buttons_t SH100HW_GetButtonsState()
@@ -141,9 +147,15 @@ void SH100HW_SwitchAB(bool isBEn)
 	
 }
 
-void SH100HW_ChangeLedState(uint8_t ledId, SH100HW_LedState_t newState)
+void SH100HW_SetNewLedState(uint8_t ledId, SH100HW_LedState_t newState)
 {
+	*led_ptr[ledId+LED_PREVIOUS_STATE_OFFSET] = *led_ptr[ledId];
 	*led_ptr[ledId] = newState;
+}
+
+void SH100HW_SetPreviousLedState(uint8_t ledId)
+{
+	*led_ptr[ledId] = *led_ptr[ledId+LED_PREVIOUS_STATE_OFFSET];
 }
 
 //=================================== PRIVATE FUNCTIONS==============================
