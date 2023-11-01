@@ -33,6 +33,16 @@
 
 #endif
 
+#define ADC_REF_MASK 0xC0
+#define ADC_CHANNEL_MASK 0x0F
+
+typedef enum
+{
+	ADC_V_POSITIVE = 0x0,
+	ADC_V_SIGNAL = 0x6,
+	ADC_V_NEGATIVE = 0x7
+}ADC_Channels_t;
+
 typedef enum
 {
 	REL_OFF = 0,
@@ -48,17 +58,7 @@ RelayState_t RELAY_LOOP;
 
 #define LED_COUNT 9
 #define LED_PREVIOUS_STATE_OFFSET LED_COUNT
-SH100HW_LedState_t* led_ptr[LED_COUNT*2]; // for iterating
-
-//SH100HW_LedState_t ledCh1;	
-//SH100HW_LedState_t ledCh2;	
-//SH100HW_LedState_t ledCh3;	
-//SH100HW_LedState_t ledCh4;	
-//SH100HW_LedState_t ledA;	
-//SH100HW_LedState_t ledB;	
-//SH100HW_LedState_t ledLoop;	
-//SH100HW_LedState_t ledPwrGrn;
-//SH100HW_LedState_t ledPwrRed;	
+SH100HW_LedState_t* led_ptr[LED_COUNT*2]; 
 
 SH100HW_Buttons_t buttonsState;
 void readButtonsState();
@@ -76,32 +76,27 @@ void SH100HW_Init()
 	gpio_configure_pin(PIN_C, IOPORT_INIT_LOW | IOPORT_DIR_OUTPUT);
 
 	gpio_configure_pin(PIN_BUTTONS, IOPORT_DIR_INPUT);
-	gpio_configure_pin(PIN_MIDI_SWITCH, IOPORT_DIR_INPUT);
+	gpio_configure_pin(PIN_MIDI_SWITCH, IOPORT_DIR_INPUT | IOPORT_PULL_UP);
 	gpio_configure_pin(PIN_FOOTSWITCH, IOPORT_DIR_INPUT);
 	
 	gpio_configure_pin(PIN_SW_DETECT, IOPORT_DIR_INPUT);
 	gpio_configure_pin(PIN_M8_DETECT, IOPORT_DIR_INPUT);
 	gpio_configure_pin(PIN_M16_DETECT, IOPORT_DIR_INPUT);
 	
-	gpio_configure_pin(PIN_SW, IOPORT_INIT_LOW | IOPORT_DIR_OUTPUT);
+	//gpio_configure_pin(PIN_SW, IOPORT_INIT_LOW | IOPORT_DIR_OUTPUT);
 	gpio_configure_pin(PIN_MUTE, IOPORT_INIT_LOW | IOPORT_DIR_OUTPUT);
 	gpio_configure_pin(PIN_RELE_W, IOPORT_INIT_LOW | IOPORT_DIR_OUTPUT);
 	gpio_configure_pin(PIN_RELAY_LOOP, IOPORT_INIT_LOW | IOPORT_DIR_OUTPUT);
 	
-	// forming led pointers for iteration
-	//led_ptr[LED_CH1] = &ledCh1;
-	//led_ptr[LED_CH2] = &ledCh2;
-	//led_ptr[LED_CH3] = &ledCh3;
-	//led_ptr[LED_CH4] = &ledCh4;
-	//led_ptr[LED_LOOP] = &ledLoop;
-	//led_ptr[LED_A] = &ledA;
-	//led_ptr[LED_B] = &ledB;
-	//led_ptr[LED_PWR_GRN] = &ledPwrGrn;
-	//led_ptr[LED_PWR_RED] = &ledPwrRed;
 	for(uint8_t i=0; i < LED_COUNT*2; i++)
 	{
 		led_ptr[i] = malloc(sizeof(SH100HW_LedState_t));
 	}
+	
+	// ADC settings
+	ADMUX = (1<<REFS0) | (1<<ADLAR); // AREF ext pin, Left-adjustment result
+	DIDR0 = 0x01; // Disable digital io on PC0
+	ADCSRA = (1<<ADEN) | (1<<ADIE) | (1<<ADPS2) | (1<<ADPS1); // ADC enable, INT enable, prescaler = 64
 }
 
 SH100HW_Buttons_t SH100HW_GetButtonsState()
@@ -151,7 +146,7 @@ void SH100HW_LoopEn(bool isEnabled)
 	ioport_set_pin_level(PIN_RELAY_LOOP, RELAY_LOOP);
 }
 
-void SH100HW_SwitchAB(bool isBEn)
+void SH100HW_SetAB(bool isBEn)
 {
 	RELAY_AB = isBEn;
 }
@@ -195,91 +190,91 @@ void readButtonsState()
 		{
 			case 0:
 			{
-				arch_ioport_set_pin_level(PIN_A, 0);
-				arch_ioport_set_pin_level(PIN_B, 0);
-				arch_ioport_set_pin_level(PIN_C, 0);
+				ioport_set_pin_level(PIN_A, 0);
+				ioport_set_pin_level(PIN_B, 0);
+				ioport_set_pin_level(PIN_C, 0);
 				
-				buttonsState.midiOmni = arch_ioport_get_pin_level(PIN_MIDI_SWITCH);
-				buttonsState.FS2_sleeve = arch_ioport_get_pin_level(PIN_FOOTSWITCH);
+				buttonsState.midiOmni = ioport_get_pin_level(PIN_MIDI_SWITCH);
+				buttonsState.FS2_sleeve = ioport_get_pin_level(PIN_FOOTSWITCH);
 				break;
 			}
 			
 			case 1:
 			{
-				arch_ioport_set_pin_level(PIN_A, 1);
-				arch_ioport_set_pin_level(PIN_B, 0);
-				arch_ioport_set_pin_level(PIN_C, 0);
+				ioport_set_pin_level(PIN_A, 1);
+				ioport_set_pin_level(PIN_B, 0);
+				ioport_set_pin_level(PIN_C, 0);
 				
-				midiChBit[3] = arch_ioport_get_pin_level(PIN_MIDI_SWITCH);
-				buttonsState.btnAB = arch_ioport_get_pin_level(PIN_BUTTONS);
-				buttonsState.FS2_presence = arch_ioport_get_pin_level(PIN_FOOTSWITCH);
+				midiChBit[3] = ioport_get_pin_level(PIN_MIDI_SWITCH);
+				buttonsState.btnAB = ioport_get_pin_level(PIN_BUTTONS);
+				buttonsState.FS2_presence = ioport_get_pin_level(PIN_FOOTSWITCH);
 				break;
 			}
 			
 			case 2:
 			{
-				arch_ioport_set_pin_level(PIN_A, 0);
-				arch_ioport_set_pin_level(PIN_B, 1);
-				arch_ioport_set_pin_level(PIN_C, 0);
+				ioport_set_pin_level(PIN_A, 0);
+				ioport_set_pin_level(PIN_B, 1);
+				ioport_set_pin_level(PIN_C, 0);
 				
-				midiChBit[2] = arch_ioport_get_pin_level(PIN_MIDI_SWITCH);
-				buttonsState.btnLoop = arch_ioport_get_pin_level(PIN_BUTTONS);
-				buttonsState.FS1_presence = arch_ioport_get_pin_level(PIN_FOOTSWITCH);
+				midiChBit[2] = ioport_get_pin_level(PIN_MIDI_SWITCH);
+				buttonsState.btnLoop = ioport_get_pin_level(PIN_BUTTONS);
+				buttonsState.FS1_presence = ioport_get_pin_level(PIN_FOOTSWITCH);
 				break;
 			}
 			
 			case 3:
 			{
-				arch_ioport_set_pin_level(PIN_A, 1);
-				arch_ioport_set_pin_level(PIN_B, 1);
-				arch_ioport_set_pin_level(PIN_C, 0);
+				ioport_set_pin_level(PIN_A, 1);
+				ioport_set_pin_level(PIN_B, 1);
+				ioport_set_pin_level(PIN_C, 0);
 				
-				buttonsState.midiMuteComm = arch_ioport_get_pin_level(PIN_MIDI_SWITCH);
-				buttonsState.FS1_sleeve = arch_ioport_get_pin_level(PIN_FOOTSWITCH);
+				buttonsState.midiMuteComm = ioport_get_pin_level(PIN_MIDI_SWITCH);
+				buttonsState.FS1_sleeve = ioport_get_pin_level(PIN_FOOTSWITCH);
 				break;
 			}
 			
 			case 4:
 			{
-				arch_ioport_set_pin_level(PIN_A, 0);
-				arch_ioport_set_pin_level(PIN_B, 0);
-				arch_ioport_set_pin_level(PIN_C, 1);
+				ioport_set_pin_level(PIN_A, 0);
+				ioport_set_pin_level(PIN_B, 0);
+				ioport_set_pin_level(PIN_C, 1);
 				
-				midiChBit[0] = arch_ioport_get_pin_level(PIN_MIDI_SWITCH);
-				buttonsState.btnCh2 = arch_ioport_get_pin_level(PIN_BUTTONS);
-				buttonsState.FS1_tip = arch_ioport_get_pin_level(PIN_FOOTSWITCH);
+				midiChBit[0] = ioport_get_pin_level(PIN_MIDI_SWITCH);
+				buttonsState.btnCh2 = ioport_get_pin_level(PIN_BUTTONS);
+				buttonsState.FS1_tip = ioport_get_pin_level(PIN_FOOTSWITCH);
 				break;
 			}
 			
 			case 5:
 			{
-				arch_ioport_set_pin_level(PIN_A, 1);
-				arch_ioport_set_pin_level(PIN_B, 0);
-				arch_ioport_set_pin_level(PIN_C, 1);
+				ioport_set_pin_level(PIN_A, 1);
+				ioport_set_pin_level(PIN_B, 0);
+				ioport_set_pin_level(PIN_C, 1);
 				
-				buttonsState.btnCh3 = arch_ioport_get_pin_level(PIN_BUTTONS);
+				buttonsState.btnCh3 = ioport_get_pin_level(PIN_BUTTONS);
 				break;
 			}
 			
 			case 6:
 			{
-				arch_ioport_set_pin_level(PIN_A, 0);
-				arch_ioport_set_pin_level(PIN_B, 1);
-				arch_ioport_set_pin_level(PIN_C, 1);
+				ioport_set_pin_level(PIN_A, 0);
+				ioport_set_pin_level(PIN_B, 1);
+				ioport_set_pin_level(PIN_C, 1);
 				
-				midiChBit[2] = arch_ioport_get_pin_level(PIN_MIDI_SWITCH);
-				buttonsState.btnCh4 = arch_ioport_get_pin_level(PIN_BUTTONS);
-				buttonsState.FS2_tip = arch_ioport_get_pin_level(PIN_FOOTSWITCH);
+				midiChBit[2] = ioport_get_pin_level(PIN_MIDI_SWITCH);
+				buttonsState.btnCh4 = ioport_get_pin_level(PIN_BUTTONS);
+				buttonsState.FS2_tip = ioport_get_pin_level(PIN_FOOTSWITCH);
 				break;
 			}
 			
 			case 7:
 			{
-				arch_ioport_set_pin_level(PIN_A, 1);
-				arch_ioport_set_pin_level(PIN_B, 1);
-				arch_ioport_set_pin_level(PIN_C, 1);
+				ioport_set_pin_level(PIN_A, 1);
+				ioport_set_pin_level(PIN_B, 1);
+				ioport_set_pin_level(PIN_C, 1);
 				
-				buttonsState.btnCh1 = arch_ioport_get_pin_level(PIN_BUTTONS);
+				buttonsState.btnCh1 = ioport_get_pin_level(PIN_BUTTONS);
 				break;
 			}
 			default: break;
@@ -291,16 +286,16 @@ void readButtonsState()
 
 void writeShiftRegs(uint16_t data)
 {
-	arch_ioport_set_pin_level(PIN_ST, 1);
+	ioport_set_pin_level(PIN_ST, 0);
 	for(uint8_t i=0; i<16; i++)
 	{
-		data = data << i;
-		arch_ioport_set_pin_level(PIN_SCK, 0);
-		arch_ioport_set_pin_level(PIN_MOSI, (data & 0x80));
-		arch_ioport_set_pin_level(PIN_SCK, 1);
+		ioport_set_pin_level(PIN_SCK, 0);
+		ioport_set_pin_level(PIN_MOSI, (data & 0x8000));
+		ioport_set_pin_level(PIN_SCK, 1);
+		data = data << 1;
 	}
-	arch_ioport_set_pin_level(PIN_SCK, 0);
-	arch_ioport_set_pin_level(PIN_ST, 1);
+	ioport_set_pin_level(PIN_SCK, 0);
+	ioport_set_pin_level(PIN_ST, 1);
 }
 
 uint8_t blinkCounter = 0;
@@ -318,7 +313,7 @@ void SH100HW_MainTask()
 		fastBlink = !fastBlink;
 	}
 	
-	if(blinkCounter == 100)
+	if(blinkCounter == 50)
 	{
 		blinkCounter = 0;
 		slowBlink = !slowBlink;
@@ -346,6 +341,7 @@ void SH100HW_MainTask()
 				isLedOn[LED_PWR_GRN] = !slowBlink; // Green led slow blink 180deg phase of red led
 				break;
 			}	
+			default: isLedOn[i] = LED_OFF;
 		}
 	}
 	
@@ -358,12 +354,14 @@ void SH100HW_MainTask()
 								((uint16_t)isLedOn[LED_CH4] << 5)	|
 								(0 << 6)					|
 								((uint16_t)RELAY_8_16 << 7)			|
-								((uint16_t)RELAY_2_4 << 8)			|
-								((uint16_t)isLedOn[LED_A] << 9)	|
-								((uint16_t)isLedOn[LED_B] << 10)	|
-								((uint16_t)isLedOn[LED_PWR_GRN] << 11)	|
-								((uint16_t)isLedOn[LED_PWR_RED] << 12)	|
-								((uint16_t)isLedOn[LED_LOOP] << 13);
+								((uint16_t)RELAY_2_4 << (8+0))			|
+								((uint16_t)isLedOn[LED_A] << (8+1))	|
+								((uint16_t)isLedOn[LED_B] << (8+2))	|
+								((uint16_t)isLedOn[LED_PWR_GRN] << (8+3))	|
+								((uint16_t)isLedOn[LED_PWR_RED] << (8+4))	|
+								((uint16_t)isLedOn[LED_LOOP] << (8+5))		|
+								((uint16_t)RELAY_AB << (8+6)) |
+								(0 << (8+7));
 
 	writeShiftRegs(resultSendWord);
 }

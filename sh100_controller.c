@@ -15,7 +15,7 @@ void SH100CTRL_Init()
 	if(readedMagicWord == MEMORY_MAGIC_WORD)
 	{
 		uint8_t readedData[sizeof(SH100_State_t)];
-		eeprom_read_block(&readedData, (uint16_t*)MEMORY_USER_COMMANDS_OFFSET, sizeof(SH100_State_t));
+		eeprom_read_block(&readedData, (uint16_t*)MEMORY_AMP_STATE_OFFSET, sizeof(SH100_State_t));
 		SH100_State_t* ampState_ptr = (SH100_State_t*)readedData;
 		ampState = *ampState_ptr;
 	}
@@ -65,7 +65,7 @@ void SH100CTRL_SetLoop(bool en)
 void SH100CTRL_SetAB(bool isB)
 {
 	ampState.swAB = isB;
-	SH100HW_SwitchAB(ampState.swAB);
+	SH100HW_SetAB(ampState.swAB);
 	SH100HW_SetNewLedState(LED_A, !ampState.swAB);
 	SH100HW_SetNewLedState(LED_B, ampState.swAB);
 }
@@ -99,7 +99,7 @@ void SH100CTRL_SetAmpState(SH100_State_t state)
 	
 	SH100HW_SwitchCh(ampState.channelNum);
 	SH100HW_LoopEn(ampState.loopOn);
-	SH100HW_SwitchAB(ampState.swAB);
+	SH100HW_SetAB(ampState.swAB);
 	
 	setChannelLeds();
 	SH100HW_SetNewLedState(LED_LOOP, ampState.loopOn);
@@ -109,6 +109,7 @@ void SH100CTRL_SetAmpState(SH100_State_t state)
 
 void SH100CTRL_StoreAmpState()
 {
+	eeprom_write_word(0x00, MEMORY_MAGIC_WORD);
 	eeprom_write_block(&ampState, (void*)MEMORY_AMP_STATE_OFFSET, sizeof(SH100_State_t));
 }
 
@@ -120,9 +121,12 @@ void SH100CTRL_CheckOutputJacks()
 	{
 		case OUT_NONE:
 		{
+			if(MIDICTRL_MidiMode() == RUNNING)
+			{
+				SH100HW_SetNewLedState(LED_PWR_GRN, LED_OFF);
+				SH100HW_SetNewLedState(LED_PWR_RED, LED_ON);
+			}
 			SH100CTRL_MuteAmp();
-			SH100HW_SetNewLedState(LED_PWR_GRN, LED_OFF);
-			SH100HW_SetNewLedState(LED_PWR_RED, LED_ON);
 			break;
 		}
 		case OUT_16OHM:
@@ -130,9 +134,9 @@ void SH100CTRL_CheckOutputJacks()
 			if(MIDICTRL_MidiMode() == RUNNING)
 			{
 				SH100CTRL_UnmuteAmp();
-			}
-			SH100HW_SetOutputMode(OUTPUT_16OHM);
-			SH100HW_SetNewLedState(LED_PWR_GRN, LED_ON);
+				SH100HW_SetOutputMode(OUTPUT_16OHM);
+				SH100HW_SetNewLedState(LED_PWR_GRN, LED_ON);
+			}			
 			break;
 		}
 		case OUT_8OHM:
@@ -140,14 +144,18 @@ void SH100CTRL_CheckOutputJacks()
 			if(MIDICTRL_MidiMode() == RUNNING)
 			{
 				SH100CTRL_UnmuteAmp();
+				SH100HW_SetOutputMode(OUTPUT_8OHM);
+				SH100HW_SetNewLedState(LED_PWR_GRN, LED_ON);
 			}
-			SH100HW_SetOutputMode(OUTPUT_8OHM);
-			SH100HW_SetNewLedState(LED_PWR_GRN, LED_ON);
+
 			break;
 		}
 		case OUT_BOTH:
 		{
-			SH100HW_SetNewLedState(LED_PWR_GRN, LED_SLOW_BLINKING);
+			if(MIDICTRL_MidiMode() == RUNNING)
+			{
+				SH100HW_SetNewLedState(LED_PWR_GRN, LED_SLOW_BLINKING);
+			}
 			//SH100CTRL_MuteAmp(); //can load be less than 8Ohm?
 			break;
 		}

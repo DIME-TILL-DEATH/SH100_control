@@ -10,12 +10,12 @@ void UART_init()
 	UCSR0B = (1<<RXCIE0) | (1<<TXCIE0) | (1<<RXEN0) | (1<<TXEN0); //UCSR1B=0x98;
 	
 	// 8 Data, 1 Stop, No Parity
-	UCSR0C=0x06; 
+	UCSR0C= (1<<UCSZ01) | (1<<UCSZ00); 
 	
 	// USART0 Mode: Asynchronous
 	// USART Baud Rate: Fosc/320 = Fosc/16(UBRR+1)
-	UBRR0H=0x00;
-	UBRR0L=0x13;
+	UBRR0H=0;
+	UBRR0L=19;
 }
 
 

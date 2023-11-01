@@ -5,7 +5,7 @@
     <ProjectVersion>7.0</ProjectVersion>
     <ToolchainName>com.microchip.xc8</ToolchainName>
     <ProjectGuid>2285C48D-296E-43FD-A7B6-69885F64CFFD</ProjectGuid>
-    <avrdevice>ATmega88</avrdevice>
+    <avrdevice>ATmega88P</avrdevice>
     <avrdeviceseries>none</avrdeviceseries>
     <OutputType>Executable</OutputType>
     <Language>C</Language>
@@ -26,19 +26,18 @@
     <OverrideVtorValue>exception_table</OverrideVtorValue>
     <BootSegment>2</BootSegment>
     <ResetRule>0</ResetRule>
-    <eraseonlaunchrule>0</eraseonlaunchrule>
+    <eraseonlaunchrule>1</eraseonlaunchrule>
     <EraseKey />
     <AsfFrameworkConfig>
       <framework-data>
   <options>
     <option id="common.services.basic.gpio" value="Add" config="" content-id="Atmel.ASF" />
-    <option id="common.utils.interrupt" value="Add" config="" content-id="Atmel.ASF" />
-    <option id="mega.drivers.ioport" value="Add" config="" content-id="Atmel.ASF" />
-    <option id="common.services.delay" value="Add" config="" content-id="Atmel.ASF" />
     <option id="mega.drivers.adc" value="Add" config="" content-id="Atmel.ASF" />
   </options>
   <configurations />
   <files>
+    <file path="src/ASF/mega/drivers/adc/adc.h" framework="" version="3.52.0" source="mega\drivers\adc\adc.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/mega/drivers/adc/adc_megaxx8.h" framework="" version="3.52.0" source="mega\drivers\adc\adc_megaxx8.h" changed="False" content-id="Atmel.ASF" />
     <file path="src/ASF/common/services/gpio/gpio.h" framework="" version="3.52.0" source="common\services\gpio\gpio.h" changed="False" content-id="Atmel.ASF" />
     <file path="src/ASF/common/services/gpio/mega_gpio/mega_gpio.h" framework="" version="3.52.0" source="common\services\gpio\mega_gpio\mega_gpio.h" changed="False" content-id="Atmel.ASF" />
     <file path="src/ASF/common/services/ioport/ioport.h" framework="" version="3.52.0" source="common\services\ioport\ioport.h" changed="False" content-id="Atmel.ASF" />
@@ -54,15 +53,6 @@
     <file path="src/ASF/mega/utils/preprocessor/preprocessor.h" framework="" version="3.52.0" source="mega\utils\preprocessor\preprocessor.h" changed="False" content-id="Atmel.ASF" />
     <file path="src/ASF/mega/utils/preprocessor/tpaste.h" framework="" version="3.52.0" source="mega\utils\preprocessor\tpaste.h" changed="False" content-id="Atmel.ASF" />
     <file path="src/ASF/mega/utils/assembler.h" framework="" version="3.52.0" source="mega\utils\assembler.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/mega/drivers/cpu/mega_reset_cause.h" framework="" version="3.52.0" source="mega\drivers\cpu\mega_reset_cause.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/common/services/clock/mega/sysclk.c" framework="" version="3.52.0" source="common\services\clock\mega\sysclk.c" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/common/services/clock/mega/sysclk.h" framework="" version="3.52.0" source="common\services\clock\mega\sysclk.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/common/services/clock/sysclk.h" framework="" version="3.52.0" source="common\services\clock\sysclk.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/Config/conf_clock.h" framework="" version="3.52.0" source="common\services\clock\mega\module_config\conf_clock.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/common/services/delay/mega/cycle_counter.h" framework="" version="3.52.0" source="common\services\delay\mega\cycle_counter.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/common/services/delay/delay.h" framework="" version="3.52.0" source="common\services\delay\delay.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/mega/drivers/adc/adc.h" framework="" version="3.52.0" source="mega\drivers\adc\adc.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/mega/drivers/adc/adc_megaxx8.h" framework="" version="3.52.0" source="mega\drivers\adc\adc_megaxx8.h" changed="False" content-id="Atmel.ASF" />
   </files>
   <documentation help="" />
   <offline-documentation help="" />
@@ -72,6 +62,20 @@
 </framework-data>
     </AsfFrameworkConfig>
     <Compiler>xc8</Compiler>
+    <avrtool>com.atmel.avrdbg.tool.pickit4</avrtool>
+    <avrtoolserialnumber>BUR210372099</avrtoolserialnumber>
+    <avrdeviceexpectedsignature>0x1E930F</avrdeviceexpectedsignature>
+    <com_atmel_avrdbg_tool_pickit4>
+      <ToolOptions>
+        <InterfaceProperties>
+        </InterfaceProperties>
+        <InterfaceName>debugWIRE</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.pickit4</ToolType>
+      <ToolNumber>BUR210372099</ToolNumber>
+      <ToolName>MPLAB® PICkit 4</ToolName>
+    </com_atmel_avrdbg_tool_pickit4>
+    <avrtoolinterface>debugWIRE</avrtoolinterface>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -88,15 +92,12 @@
   <com.microchip.xc8.compiler.directories.IncludePaths>
     <ListValues>
       <Value>../src/Config</Value>
+      <Value>../src/ASF/mega/drivers/adc</Value>
       <Value>../src/ASF/common/services/gpio</Value>
       <Value>../src/ASF/common/services/ioport</Value>
       <Value>../src/ASF/common/utils</Value>
       <Value>../src/ASF/mega/utils/preprocessor</Value>
       <Value>../src/ASF/mega/utils</Value>
-      <Value>../src/ASF/mega/drivers/cpu</Value>
-      <Value>../src/ASF/common/services/clock</Value>
-      <Value>../src/ASF/common/services/delay</Value>
-      <Value>../src/ASF/mega/drivers/adc</Value>
     </ListValues>
   </com.microchip.xc8.compiler.directories.IncludePaths>
   <com.microchip.xc8.compiler.optimization.level>Optimize for size (-Os)</com.microchip.xc8.compiler.optimization.level>
@@ -111,15 +112,12 @@
   <com.microchip.xc8.assembler.general.IncludePaths>
     <ListValues>
       <Value>../src/Config</Value>
+      <Value>../src/ASF/mega/drivers/adc</Value>
       <Value>../src/ASF/common/services/gpio</Value>
       <Value>../src/ASF/common/services/ioport</Value>
       <Value>../src/ASF/common/utils</Value>
       <Value>../src/ASF/mega/utils/preprocessor</Value>
       <Value>../src/ASF/mega/utils</Value>
-      <Value>../src/ASF/mega/drivers/cpu</Value>
-      <Value>../src/ASF/common/services/clock</Value>
-      <Value>../src/ASF/common/services/delay</Value>
-      <Value>../src/ASF/mega/drivers/adc</Value>
     </ListValues>
   </com.microchip.xc8.assembler.general.IncludePaths>
 </com.microchip.xc8>
@@ -141,15 +139,12 @@
       <Value>../src/Config</Value>
       <Value>../src</Value>
       <Value>%24(PackRepoDir)\atmel\ATmega_DFP\2.0.401\include\avr\</Value>
+      <Value>../src/ASF/mega/drivers/adc</Value>
       <Value>../src/ASF/common/services/gpio</Value>
       <Value>../src/ASF/common/services/ioport</Value>
       <Value>../src/ASF/common/utils</Value>
       <Value>../src/ASF/mega/utils/preprocessor</Value>
       <Value>../src/ASF/mega/utils</Value>
-      <Value>../src/ASF/mega/drivers/cpu</Value>
-      <Value>../src/ASF/common/services/clock</Value>
-      <Value>../src/ASF/common/services/delay</Value>
-      <Value>../src/ASF/mega/drivers/adc</Value>
     </ListValues>
   </com.microchip.xc8.compiler.directories.IncludePaths>
   <com.microchip.xc8.compiler.optimization.level>Optimize debugging experience (-Og)</com.microchip.xc8.compiler.optimization.level>
@@ -165,15 +160,12 @@
   <com.microchip.xc8.assembler.general.IncludePaths>
     <ListValues>
       <Value>../src/Config</Value>
+      <Value>../src/ASF/mega/drivers/adc</Value>
       <Value>../src/ASF/common/services/gpio</Value>
       <Value>../src/ASF/common/services/ioport</Value>
       <Value>../src/ASF/common/utils</Value>
       <Value>../src/ASF/mega/utils/preprocessor</Value>
       <Value>../src/ASF/mega/utils</Value>
-      <Value>../src/ASF/mega/drivers/cpu</Value>
-      <Value>../src/ASF/common/services/clock</Value>
-      <Value>../src/ASF/common/services/delay</Value>
-      <Value>../src/ASF/mega/drivers/adc</Value>
     </ListValues>
   </com.microchip.xc8.assembler.general.IncludePaths>
   <com.microchip.xc8.assembler.debugging.DebugLevel>Default (-Wa,-g)</com.microchip.xc8.assembler.debugging.DebugLevel>
@@ -202,6 +194,27 @@
     <Compile Include="midi_parser.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="sh100_controller.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sh100_controller.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sh100_hardware.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sh100_hardware.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sh100_memory.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\ASF\mega\drivers\adc\adc.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\mega\drivers\adc\adc_megaxx8.h">
+      <SubType>compile</SubType>
+    </None>
     <None Include="src\ASF\common\services\gpio\gpio.h">
       <SubType>compile</SubType>
     </None>
@@ -250,48 +263,6 @@
     <None Include="src\asf.h">
       <SubType>compile</SubType>
     </None>
-    <Compile Include="sh100_controller.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="sh100_controller.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="sh100_hardware.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="sh100_hardware.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="sh100_memory.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <None Include="src\ASF\mega\drivers\cpu\mega_reset_cause.h">
-      <SubType>compile</SubType>
-    </None>
-    <Compile Include="src\ASF\common\services\clock\mega\sysclk.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <None Include="src\ASF\common\services\clock\mega\sysclk.h">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="src\ASF\common\services\clock\sysclk.h">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="src\Config\conf_clock.h">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="src\ASF\common\services\delay\mega\cycle_counter.h">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="src\ASF\common\services\delay\delay.h">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="src\ASF\mega\drivers\adc\adc.h">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="src\ASF\mega\drivers\adc\adc_megaxx8.h">
-      <SubType>compile</SubType>
-    </None>
     <Compile Include="uart.c">
       <SubType>compile</SubType>
     </Compile>
@@ -304,10 +275,6 @@
     <Folder Include="src\ASF\" />
     <Folder Include="src\ASF\common\" />
     <Folder Include="src\ASF\common\services\" />
-    <Folder Include="src\ASF\common\services\clock\" />
-    <Folder Include="src\ASF\common\services\clock\mega\" />
-    <Folder Include="src\ASF\common\services\delay\" />
-    <Folder Include="src\ASF\common\services\delay\mega\" />
     <Folder Include="src\ASF\common\services\gpio\" />
     <Folder Include="src\ASF\common\services\gpio\mega_gpio\" />
     <Folder Include="src\ASF\common\services\ioport\" />
@@ -317,10 +284,8 @@
     <Folder Include="src\ASF\mega\" />
     <Folder Include="src\ASF\mega\drivers\" />
     <Folder Include="src\ASF\mega\drivers\adc\" />
-    <Folder Include="src\ASF\mega\drivers\cpu\" />
     <Folder Include="src\ASF\mega\utils\" />
     <Folder Include="src\ASF\mega\utils\preprocessor\" />
-    <Folder Include="src\Config\" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>

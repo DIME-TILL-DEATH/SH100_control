@@ -15,13 +15,13 @@
 			<Description></Description>
 			<Files xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 				<d4p1:anyType i:type="FileInfo">
-					<AbsolutePath>D:/Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\xc8\avr\include\avr\iom88.h</AbsolutePath>
+					<AbsolutePath>D:/Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\xc8\avr\include\avr\iom88p.h</AbsolutePath>
 					<Attribute></Attribute>
 					<Category>header</Category>
 					<Condition>XC</Condition>
-					<FileContentHash>jpFWh1r1YXwKckzI5TgSqw==</FileContentHash>
+					<FileContentHash>8Uo83M1jILDTCAMw0T59TA==</FileContentHash>
 					<FileVersion></FileVersion>
-					<Name>xc8/avr/include/avr/iom88.h</Name>
+					<Name>xc8/avr/include/avr/iom88p.h</Name>
 					<SelectString></SelectString>
 					<SourcePath></SourcePath>
 				</d4p1:anyType>
@@ -30,7 +30,7 @@
 			<PackPath>D:/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/2.0.401/Atmel.ATmega_DFP.pdsc</PackPath>
 			<PackVersion>2.0.401</PackVersion>
 			<PresentInProject>true</PresentInProject>
-			<ReferenceConditionId>ATmega88</ReferenceConditionId>
+			<ReferenceConditionId>ATmega88P</ReferenceConditionId>
 			<RteComponents xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 				<d4p1:string></d4p1:string>
 			</RteComponents>

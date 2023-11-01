@@ -105,7 +105,7 @@ bool isEqualCommands(MIDI_Command_t commandRecieved, MIDI_Command_t commandSaved
 
 void loadCommSetFromMemory()
 {
-	uint16_t readedMagicWord = eeprom_read_word(0x00);
+	uint16_t readedMagicWord = eeprom_read_word((uint16_t*)0x02);
 		
 	if(readedMagicWord == MEMORY_MAGIC_WORD)
 	{
@@ -149,7 +149,7 @@ void setMidiLeds()
 void MIDICTRL_Init()
 {
 	// Timer1 init. For error indication
-	TCCR1B |= 0x05; // psc = 1024
+	TCCR1B |= 0x00; // psc = 1024 if on
 	TIMSK1 |= 0x01; // OVF INT enable, count pulse = 100us
 	TCNT1 = 0;
 	
@@ -173,9 +173,15 @@ void MIDICTRL_SwitchMode(MIDICTRL_Mode_t newMode)
 		
 		SH100HW_SetNewLedState(LED_PWR_GRN, LED_SLOW_BLINKING);
 		SH100HW_SetNewLedState(LED_PWR_RED, LED_SLOW_BLINKING);
+		
+		SH100HW_SetNewLedState(LED_B, LED_OFF);
 	}
 	else
 	{
+		//SH100HW_SetPreviousLedState(LED_PWR_GRN);
+		//SH100HW_SetPreviousLedState(LED_PWR_RED);
+		SH100HW_SetPreviousLedState(LED_B);
+		
 		MIDI_SetRetranslateState(true);
 	}
 	mode = newMode;
@@ -311,7 +317,7 @@ void MIDICTRL_StoreUserCommands()
 	{
 		commandSet = USER;
 		
-		eeprom_write_word(0x00, MEMORY_MAGIC_WORD);
+		eeprom_write_word((uint16_t*)0x02, MEMORY_MAGIC_WORD);
 		eeprom_write_byte((void*)MEMORY_COMMAND_BLOCK_TYPE_OFFSET, commandSet);
 		eeprom_write_block(&userCommands, (void*)MEMORY_USER_COMMANDS_OFFSET, sizeof(MIDICTRL_CommandBlock_t));
 		
@@ -332,7 +338,8 @@ void MIDICTRL_DiscardCommands()
 //===================ERROR indication=================
 void indicateMidiError()
 {
-	TCNT1 = 100;
+	TCNT1 = 255 - 100;
+	TCCR1B |= 0x05; // psc = 1024, timer on
 	currentErrBtnId = currentProgBtn;
 	setMidiLeds();
 	
@@ -342,6 +349,7 @@ void indicateMidiError()
 
 ISR(TIMER1_OVF_vect)
 {
+	TCCR1B |= 0x00; // psc = 0, timer off
 	currentErrBtnId = MIDI_PROG_BTN_UNDEFINED;
 	setMidiLeds();
 	

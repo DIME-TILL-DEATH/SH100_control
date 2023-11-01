@@ -8,16 +8,16 @@
 #define LED_CH2 1
 #define LED_CH3 2
 #define LED_CH4 3
-#define LED_LOOP 5
-#define LED_A 6
-#define LED_B 7
+#define LED_LOOP 4
+#define LED_A 5
+#define LED_B 6
 #define LED_PWR_GRN 7
 #define LED_PWR_RED 8
 
 typedef enum
 {
-	BT_OFF = 0,
-	BT_ON
+	BT_OFF = 1,
+	BT_ON = 0
 }SH100HW_ButtonState_t;
 
 typedef enum
