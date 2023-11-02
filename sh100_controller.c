@@ -91,6 +91,13 @@ void SH100CTRL_SwChannel(uint8_t chNum)
 	SH100HW_SetCh(chNum);
 	SH100HW_LoopEn(ampState.loopOn[ampState.channelNum]);
 	setChannelLeds();
+	
+	MIDICTRL_SendSwChComm(chNum);
+}
+
+void SH100CTRL_SwLoop()
+{
+	SH100CTRL_SetLoop(!ampState.loopOn);
 }
 
 void SH100CTRL_SetLoop(bool en)
@@ -98,6 +105,13 @@ void SH100CTRL_SetLoop(bool en)
 	ampState.loopOn[ampState.channelNum] = en;
 	SH100HW_LoopEn(ampState.loopOn[ampState.channelNum]);
 	SH100HW_SetNewLedState(LED_LOOP, ampState.loopOn[ampState.channelNum]);
+	
+	MIDICTRL_SendLoopEnComm();
+}
+
+void SH100CTRL_SwAB()
+{
+	SH100CTRL_SetAB(!ampState.swAB);
 }
 
 void SH100CTRL_SetAB(bool isB)
@@ -106,16 +120,8 @@ void SH100CTRL_SetAB(bool isB)
 	SH100HW_SetAB(ampState.swAB);
 	SH100HW_SetNewLedState(LED_A, !ampState.swAB);
 	SH100HW_SetNewLedState(LED_B, ampState.swAB);
-}
-
-void SH100CTRL_SwLoop()
-{
-	SH100CTRL_SetLoop(!ampState.loopOn);
-}
-
-void SH100CTRL_SwAB()
-{
-	SH100CTRL_SetAB(!ampState.swAB);
+	
+	MIDICTRL_SendSwABComm();
 }
 
 void SH100CTRL_MuteAmp()

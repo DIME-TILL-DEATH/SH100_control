@@ -230,6 +230,49 @@ void programmBtn(MIDI_Command_t* targetComm, const MIDI_Command_t* srcComm, uint
 	}
 }
 
+void MIDICTRL_SendSwChComm(uint8_t chNum)
+{
+	if(mode == RUNNING)
+	{
+		MIDICTRL_CommandBlock_t* currentCommandBlock;
+		if(commandSet == USER) currentCommandBlock = &userCommands;
+		else currentCommandBlock = &defaultCommands;
+		
+		switch(chNum)
+		{
+			case SH100_CHANNEL1: MIDI_SendCommand(currentCommandBlock->channel1); break;
+			case SH100_CHANNEL2: MIDI_SendCommand(currentCommandBlock->channel2); break;
+			case SH100_CHANNEL3: MIDI_SendCommand(currentCommandBlock->channel3); break;
+			case SH100_CHANNEL4: MIDI_SendCommand(currentCommandBlock->channel4); break;
+			default: break;
+		}
+	}
+}
+
+void MIDICTRL_SendLoopEnComm()
+{
+	if(mode == RUNNING)
+	{
+		MIDICTRL_CommandBlock_t* currentCommandBlock;
+		if(commandSet == USER) currentCommandBlock = &userCommands;
+		else currentCommandBlock = &defaultCommands;
+		
+		MIDI_SendCommand(currentCommandBlock->loopOn);
+	}
+}
+
+void MIDICTRL_SendSwABComm()
+{
+	if(mode == RUNNING)
+	{
+		MIDICTRL_CommandBlock_t* currentCommandBlock;
+		if(commandSet == USER) currentCommandBlock = &userCommands;
+		else currentCommandBlock = &defaultCommands;
+		
+		MIDI_SendCommand(currentCommandBlock->outAB);
+	}
+}
+
 void MIDICTRL_HandleCommand(MIDI_Command_t command)
 {
 	switch(mode)

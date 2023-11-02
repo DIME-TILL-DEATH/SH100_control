@@ -43,4 +43,8 @@ void MIDICTRL_MuteCommEn(bool isEnabled);
 void MIDICTRL_StoreUserCommands();
 void MIDICTRL_DiscardCommands();
 
+void MIDICTRL_SendSwChComm(uint8_t chNum);
+void MIDICTRL_SendLoopEnComm();
+void MIDICTRL_SendSwABComm();
+
 #endif /* MIDI_CONTROLLER_H_ */
