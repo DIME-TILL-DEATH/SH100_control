@@ -38,14 +38,9 @@ void SH100CTRL_SetAmpState(SH100_State_t state)
 {
 	ampState = state;
 	
-	SH100HW_SetCh(ampState.channelNum);
-	SH100HW_LoopEn(ampState.loopOn[ampState.channelNum]);
-	SH100HW_SetAB(ampState.swAB);
-	
-	setChannelLeds();
-	SH100HW_SetNewLedState(LED_LOOP, ampState.loopOn[ampState.channelNum]);
-	SH100HW_SetNewLedState(LED_A, !ampState.swAB);
-	SH100HW_SetNewLedState(LED_B, ampState.swAB);
+	SH100CTRL_SwChannel(ampState.channelNum);
+	SH100CTRL_SetLoop(ampState.loopOn[ampState.channelNum]);
+	SH100CTRL_SetAB(ampState.swAB);
 }
 
 void setChannelLeds()
@@ -89,7 +84,7 @@ void SH100CTRL_SwChannel(uint8_t chNum)
 	ampState.channelNum = chNum;
 	
 	SH100HW_SetCh(chNum);
-	SH100HW_LoopEn(ampState.loopOn[ampState.channelNum]);
+	SH100CTRL_SetLoop(ampState.loopOn[ampState.channelNum]);
 	setChannelLeds();
 	
 	MIDICTRL_SendSwChComm(chNum);
@@ -97,7 +92,7 @@ void SH100CTRL_SwChannel(uint8_t chNum)
 
 void SH100CTRL_SwLoop()
 {
-	SH100CTRL_SetLoop(!ampState.loopOn);
+	SH100CTRL_SetLoop(!ampState.loopOn[ampState.channelNum]);
 }
 
 void SH100CTRL_SetLoop(bool en)
@@ -160,6 +155,7 @@ void SH100CTRL_CheckOutputJacks()
 				SH100CTRL_UnmuteAmp();
 				SH100HW_SetOutputMode(OUTPUT_16OHM);
 				SH100HW_SetNewLedState(LED_PWR_GRN, LED_ON);
+				SH100HW_SetNewLedState(LED_PWR_RED, LED_OFF);
 			}			
 			break;
 		}
@@ -170,6 +166,7 @@ void SH100CTRL_CheckOutputJacks()
 				SH100CTRL_UnmuteAmp();
 				SH100HW_SetOutputMode(OUTPUT_8OHM);
 				SH100HW_SetNewLedState(LED_PWR_GRN, LED_ON);
+				SH100HW_SetNewLedState(LED_PWR_RED, LED_OFF);
 			}
 
 			break;
@@ -178,9 +175,10 @@ void SH100CTRL_CheckOutputJacks()
 		{
 			if(MIDICTRL_MidiMode() == RUNNING)
 			{
-				SH100HW_SetNewLedState(LED_PWR_GRN, LED_SLOW_BLINKING);
+				SH100HW_SetNewLedState(LED_PWR_GRN, LED_OFF);
+				SH100HW_SetNewLedState(LED_PWR_RED, LED_ON);
 			}
-			//SH100CTRL_MuteAmp(); //can load be less than 8Ohm?
+			SH100CTRL_MuteAmp(); //can load be less than 8Ohm?
 			break;
 		}
 	}

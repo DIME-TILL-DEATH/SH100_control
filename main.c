@@ -31,7 +31,8 @@ int main(void)
 	}
 }
 
-#define PROTECTION_INTERVAL 10
+#define PROTECTION_INTERVAL 20
+#define SWITCH_MODE_DELAY 200/PROTECTION_INTERVAL
 uint8_t protectionInterval_cnt = PROTECTION_INTERVAL;
 uint8_t swProgrammingMode_cnt = 0;
 uint8_t leaveDefSettings_cnt = 0;
@@ -50,11 +51,12 @@ ISR(TIMER0_OVF_vect)
 	// FOOTSWITCH handling
 	
 	if(protectionInterval_cnt == 0)
-	{	
+	{		
 		//=============BTN CH1==========================
 		if(pressedButtons.btnCh1 == BT_ON)
 		{
-			if(swProgrammingMode_cnt == 200)
+			protectionInterval_cnt = PROTECTION_INTERVAL;
+			if(swProgrammingMode_cnt == SWITCH_MODE_DELAY)
 			{
 				swProgrammingMode_cnt = 0;
 				//enter prog mode, or save settings
@@ -89,6 +91,7 @@ ISR(TIMER0_OVF_vect)
 		//=============BTN CH2==========================
 		if(pressedButtons.btnCh2 == BT_ON)
 		{
+			protectionInterval_cnt = PROTECTION_INTERVAL;
 			switch(MIDICTRL_MidiMode())
 			{
 				case RUNNING: SH100CTRL_BtnSwChannel(SH100_CHANNEL2); break;
@@ -100,6 +103,7 @@ ISR(TIMER0_OVF_vect)
 		//=============BTN CH3==========================
 		if(pressedButtons.btnCh3 == BT_ON)
 		{
+			protectionInterval_cnt = PROTECTION_INTERVAL;
 			switch(MIDICTRL_MidiMode())
 			{
 				case RUNNING: SH100CTRL_BtnSwChannel(SH100_CHANNEL3); break;
@@ -111,6 +115,7 @@ ISR(TIMER0_OVF_vect)
 		//=============BTN CH4==========================
 		if(pressedButtons.btnCh4 == BT_ON)
 		{
+			protectionInterval_cnt = PROTECTION_INTERVAL;
 			switch(MIDICTRL_MidiMode())
 			{
 				case RUNNING: SH100CTRL_BtnSwChannel(SH100_CHANNEL4); break;
@@ -122,12 +127,13 @@ ISR(TIMER0_OVF_vect)
 		//=============BTN LOOP=========================
 		if(pressedButtons.btnLoop == BT_ON)
 		{
+			protectionInterval_cnt = PROTECTION_INTERVAL;
 			switch(MIDICTRL_MidiMode())
 			{
 				case RUNNING:
 				{
 					SH100CTRL_SwLoop();
-					protectionInterval_cnt = PROTECTION_INTERVAL;
+					//protectionInterval_cnt = PROTECTION_INTERVAL;
 					break;
 				}
 				case PROGRAMMING: MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_LOOP); break;
@@ -138,7 +144,8 @@ ISR(TIMER0_OVF_vect)
 		//=============BTN AB===========================
 		if(pressedButtons.btnAB == BT_ON)
 		{
-			if(leaveDefSettings_cnt == 200)
+			protectionInterval_cnt = PROTECTION_INTERVAL;
+			if(leaveDefSettings_cnt == SWITCH_MODE_DELAY)
 			{
 				if(MIDICTRL_MidiMode() == PROGRAMMING)
 				{
@@ -156,7 +163,7 @@ ISR(TIMER0_OVF_vect)
 					case RUNNING: 
 					{
 						SH100CTRL_SwAB(); 
-						protectionInterval_cnt = PROTECTION_INTERVAL;
+						//protectionInterval_cnt = PROTECTION_INTERVAL;
 						break;
 					}
 					case PROGRAMMING: MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_AB); break;
