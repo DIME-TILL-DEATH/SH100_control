@@ -29,6 +29,20 @@ void SH100CTRL_Init()
 	SH100CTRL_SetAmpState(ampState);
 }
 
+void SH100CTRL_SetAmpState(SH100_State_t state)
+{
+	ampState = state;
+	
+	SH100HW_SwitchCh(ampState.channelNum);
+	SH100HW_LoopEn(ampState.loopOn);
+	SH100HW_SetAB(ampState.swAB);
+	
+	setChannelLeds();
+	SH100HW_SetNewLedState(LED_LOOP, ampState.loopOn);
+	SH100HW_SetNewLedState(LED_A, !ampState.swAB);
+	SH100HW_SetNewLedState(LED_B, ampState.swAB);
+}
+
 void setChannelLeds()
 {
 	SH100HW_SetNewLedState(LED_CH1, LED_OFF);
@@ -45,6 +59,24 @@ void SH100CTRL_SetAmpLeds()
 	SH100HW_SetNewLedState(LED_LOOP, ampState.loopOn);
 	SH100HW_SetNewLedState(LED_A, !ampState.swAB);
 	SH100HW_SetNewLedState(LED_B, ampState.swAB);
+}
+
+void SH100CTRL_StoreAmpState()
+{
+	eeprom_write_word(0x00, MEMORY_MAGIC_WORD);
+	eeprom_write_block(&ampState, (void*)MEMORY_AMP_STATE_OFFSET, sizeof(SH100_State_t));
+}
+
+void SH100CTRL_BtnSwChannel(uint8_t chNum)
+{
+	if(ampState.channelNum != chNum)
+	{
+		SH100CTRL_SwChannel(chNum);
+	}
+	else
+	{
+		SH100CTRL_SwLoop();
+	}
 }
 
 void SH100CTRL_SwChannel(uint8_t chNum)
@@ -91,26 +123,6 @@ void SH100CTRL_UnmuteAmp()
 	{
 		SH100HW_SetPAState(OUTPUT_ENABLED);	
 	}		
-}
-
-void SH100CTRL_SetAmpState(SH100_State_t state)
-{
-	ampState = state;
-	
-	SH100HW_SwitchCh(ampState.channelNum);
-	SH100HW_LoopEn(ampState.loopOn);
-	SH100HW_SetAB(ampState.swAB);
-	
-	setChannelLeds();
-	SH100HW_SetNewLedState(LED_LOOP, ampState.loopOn);
-	SH100HW_SetNewLedState(LED_A, !ampState.swAB);
-	SH100HW_SetNewLedState(LED_B, ampState.swAB);
-}
-
-void SH100CTRL_StoreAmpState()
-{
-	eeprom_write_word(0x00, MEMORY_MAGIC_WORD);
-	eeprom_write_block(&ampState, (void*)MEMORY_AMP_STATE_OFFSET, sizeof(SH100_State_t));
 }
 
 void SH100CTRL_CheckOutputJacks()

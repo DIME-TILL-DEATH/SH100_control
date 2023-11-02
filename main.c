@@ -31,7 +31,7 @@ int main(void)
 	}
 }
 
-#define PROTECTION_INTERVAL 20
+#define PROTECTION_INTERVAL 10
 uint8_t protectionInterval_cnt = PROTECTION_INTERVAL;
 uint8_t swProgrammingMode_cnt = 0;
 uint8_t leaveDefSettings_cnt = 0;
@@ -71,13 +71,16 @@ ISR(TIMER0_OVF_vect)
 				}
 			}
 			else
-			{
-				swProgrammingMode_cnt++;
-				switch(MIDICTRL_MidiMode())
+			{		
+				if(swProgrammingMode_cnt == 0)
 				{
-					case RUNNING: SH100CTRL_SwChannel(SH100_CHANNEL1); break;
-					case PROGRAMMING: MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_CH1); break;
+					switch(MIDICTRL_MidiMode())
+					{
+						case RUNNING: SH100CTRL_BtnSwChannel(SH100_CHANNEL1); break;
+						case PROGRAMMING: MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_CH1); break;
+					}
 				}
+				swProgrammingMode_cnt++;
 			}
 			return;
 		}
@@ -88,7 +91,7 @@ ISR(TIMER0_OVF_vect)
 		{
 			switch(MIDICTRL_MidiMode())
 			{
-				case RUNNING: SH100CTRL_SwChannel(SH100_CHANNEL2); break;
+				case RUNNING: SH100CTRL_BtnSwChannel(SH100_CHANNEL2); break;
 				case PROGRAMMING: MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_CH2); break;
 			}
 			return;
@@ -99,7 +102,7 @@ ISR(TIMER0_OVF_vect)
 		{
 			switch(MIDICTRL_MidiMode())
 			{
-				case RUNNING: SH100CTRL_SwChannel(SH100_CHANNEL3); break;
+				case RUNNING: SH100CTRL_BtnSwChannel(SH100_CHANNEL3); break;
 				case PROGRAMMING: MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_CH3); break;
 			}
 			return;
@@ -110,7 +113,7 @@ ISR(TIMER0_OVF_vect)
 		{
 			switch(MIDICTRL_MidiMode())
 			{
-				case RUNNING: SH100CTRL_SwChannel(SH100_CHANNEL4); break;
+				case RUNNING: SH100CTRL_BtnSwChannel(SH100_CHANNEL4); break;
 				case PROGRAMMING: MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_CH4); break;
 			}
 			return;
