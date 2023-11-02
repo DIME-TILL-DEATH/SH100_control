@@ -6,23 +6,26 @@
 
 typedef enum
 {
-	MIDI_COMM_UNDEFINED = 0x00,
+	MIDI_COMM_UNDEFINED = 0x0,
 	
 	// Status messages with 2 bytes
-	MIDI_COMM_NOTE_OFF = 0x80,
-	MIDI_COMM_NOTE_ON =	0x90,
-	MIDI_COMM_POLY_PRESSURE = 0xA0,
-	MIDI_COMM_CONTROL_CHANGE = 0xB0,
-	MIDI_COMM_PITCH_BEND = 0xE0,
+	MIDI_COMM_NOTE_OFF = 0x8,
+	MIDI_COMM_NOTE_ON =	0x9,
+	MIDI_COMM_POLY_PRESSURE = 0xA,
+	MIDI_COMM_CONTROL_CHANGE = 0xB,
+	MIDI_COMM_PITCH_BEND = 0xE,
+	// second nymble parse!
 	MIDI_COMM_SONG_POSITION = 0xF2,
 
 	// Status messages with 1 byte
-	MIDI_COMM_PROGRAM_CHANGE = 0xC0,
-	MIDI_COMM_CHANNEL_PRESSURE = 0xD0,
+	MIDI_COMM_PROGRAM_CHANGE = 0xC,
+	MIDI_COMM_CHANNEL_PRESSURE = 0xD,
+	// second nymble parse!
 	MIDI_COMM_TIME_CODE = 0xF1,
 	MIDI_COMM_SONG_SELECT = 0xF3,
 
 	// System real-time messages(no data bytes)
+	// second nymble parse!
 	MIDI_COMM_TIMING_CLOCK = 0xF8,
 	MIDI_COMM_START	= 0xFA,
 	MIDI_COMM_CONTINUE = 0xFB,
@@ -31,6 +34,7 @@ typedef enum
 	MIDI_COMM_SYSTEM_RESET = 0xFF,
 
 	// System exclusive
+	// second nymble parse!
 	MIDI_COMM_START_SYS_EX = 0xF0,
 	MIDI_COMM_STOP_SYS_EX = 0xF7
 }MIDI_Status_t;
@@ -49,7 +53,7 @@ typedef enum
 typedef struct  
 {
 	MIDI_Status_t status;
-	uint8_t channel;
+	uint8_t channel_type;
 	uint8_t data1;
 	uint8_t data2;
 }MIDI_Command_t;

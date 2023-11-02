@@ -37,7 +37,7 @@ uint8_t channelNum = 0;
 const MIDI_Command_t muteCommand =
 {
 	.status = MIDI_COMM_CONTROL_CHANGE,
-	.channel = 0,
+	.channel_type = 0,
 	.data1 = 7,
 	.data2 = 0
 };
@@ -48,7 +48,7 @@ MIDICTRL_CommandBlock_t defaultCommands =
 	.channel1 =
 	{
 		.status = MIDI_COMM_PROGRAM_CHANGE,
-		.channel = 0,
+		.channel_type = 0,
 		.data1 = 0,
 		.data2 = 0
 	},	
@@ -56,23 +56,23 @@ MIDICTRL_CommandBlock_t defaultCommands =
 	.channel2 =
 	{
 		.status = MIDI_COMM_PROGRAM_CHANGE,
-		.channel = 0,
+		.channel_type = 0,
 		.data1 = 1,
-		.data2 = 0
-	},
-	
-	.channel2 =
-	{
-		.status = MIDI_COMM_PROGRAM_CHANGE,
-		.channel = 0,
-		.data1 = 2,
 		.data2 = 0
 	},
 	
 	.channel3 =
 	{
 		.status = MIDI_COMM_PROGRAM_CHANGE,
-		.channel = 0,
+		.channel_type = 0,
+		.data1 = 2,
+		.data2 = 0
+	},
+	
+	.channel4 =
+	{
+		.status = MIDI_COMM_PROGRAM_CHANGE,
+		.channel_type = 0,
 		.data1 = 3,
 		.data2 = 0
 	},
@@ -80,7 +80,7 @@ MIDICTRL_CommandBlock_t defaultCommands =
 	.loopOn =
 	{
 		.status = MIDI_COMM_CONTROL_CHANGE,
-		.channel = 0,
+		.channel_type = 0,
 		.data1 = 15,
 		.data2 = 0
 	},
@@ -88,7 +88,7 @@ MIDICTRL_CommandBlock_t defaultCommands =
 	.outAB =
 	{
 		.status = MIDI_COMM_CONTROL_CHANGE,
-		.channel = 0,
+		.channel_type = 0,
 		.data1 = 14,
 		.data2 = 0
 	}
@@ -99,7 +99,8 @@ void indicateMidiError();
 bool isEqualCommands(MIDI_Command_t commandRecieved, MIDI_Command_t commandSaved)
 {
 	if(commandRecieved.status != commandSaved.status) return false;
-	if(commandRecieved.data1 != commandSaved.data2) return false;	
+	if(commandRecieved.data1 != commandSaved.data1) return false;
+			
 	return true;
 }
 
@@ -178,8 +179,6 @@ void MIDICTRL_SwitchMode(MIDICTRL_Mode_t newMode)
 	}
 	else
 	{
-		//SH100HW_SetPreviousLedState(LED_PWR_GRN);
-		//SH100HW_SetPreviousLedState(LED_PWR_RED);
 		SH100HW_SetPreviousLedState(LED_B);
 		
 		MIDI_SetRetranslateState(true);
@@ -240,10 +239,10 @@ void MIDICTRL_SendSwChComm(uint8_t chNum)
 		
 		switch(chNum)
 		{
-			case SH100_CHANNEL1: MIDI_SendCommand(currentCommandBlock->channel1); break;
-			case SH100_CHANNEL2: MIDI_SendCommand(currentCommandBlock->channel2); break;
-			case SH100_CHANNEL3: MIDI_SendCommand(currentCommandBlock->channel3); break;
-			case SH100_CHANNEL4: MIDI_SendCommand(currentCommandBlock->channel4); break;
+			case SH100_CHANNEL1: MIDI_SendCommand(currentCommandBlock->channel1, channelNum); break;
+			case SH100_CHANNEL2: MIDI_SendCommand(currentCommandBlock->channel2, channelNum); break;
+			case SH100_CHANNEL3: MIDI_SendCommand(currentCommandBlock->channel3, channelNum); break;
+			case SH100_CHANNEL4: MIDI_SendCommand(currentCommandBlock->channel4, channelNum); break;
 			default: break;
 		}
 	}
@@ -257,7 +256,7 @@ void MIDICTRL_SendLoopEnComm()
 		if(commandSet == USER) currentCommandBlock = &userCommands;
 		else currentCommandBlock = &defaultCommands;
 		
-		MIDI_SendCommand(currentCommandBlock->loopOn);
+		MIDI_SendCommand(currentCommandBlock->loopOn, channelNum);
 	}
 }
 
@@ -269,7 +268,7 @@ void MIDICTRL_SendSwABComm()
 		if(commandSet == USER) currentCommandBlock = &userCommands;
 		else currentCommandBlock = &defaultCommands;
 		
-		MIDI_SendCommand(currentCommandBlock->outAB);
+		MIDI_SendCommand(currentCommandBlock->outAB, channelNum);
 	}
 }
 
@@ -281,14 +280,14 @@ void MIDICTRL_HandleCommand(MIDI_Command_t command)
 		{
 			if(!omniModeEnabled)
 			{
-				if(channelNum != command.channel) return;
+				if(channelNum != command.channel_type) return;
 			}
 			
 			if(muteCommandEnabled)
 			{
 				if(isEqualCommands(command, muteCommand)) 
 				{
-					if(command.data2>0) SH100CTRL_MuteAmp();
+					if((command.data2>63) ? 1 : 0) SH100CTRL_MuteAmp();
 					else SH100CTRL_UnmuteAmp();
 				}
 			}
@@ -298,19 +297,34 @@ void MIDICTRL_HandleCommand(MIDI_Command_t command)
 			else currentCommandBlock = &defaultCommands;
 			
 			// priority ch1, ch2, ch3, ch4, loop, AB. After handling, return. Only one switch by one command
-			if(isEqualCommands(command, currentCommandBlock->channel1)) SH100CTRL_SwChannel(0); return;
-			if(isEqualCommands(command, currentCommandBlock->channel2)) SH100CTRL_SwChannel(1); return;
-			if(isEqualCommands(command, currentCommandBlock->channel3)) SH100CTRL_SwChannel(2); return;
-			if(isEqualCommands(command, currentCommandBlock->channel4)) SH100CTRL_SwChannel(3); return;
-			
+			if(isEqualCommands(command, currentCommandBlock->channel1)) 
+			{
+				SH100CTRL_SwChannel(0); 
+				return;
+			}
+			if(isEqualCommands(command, currentCommandBlock->channel2)) 
+			{
+				SH100CTRL_SwChannel(1); 
+				return;
+			}
+			if(isEqualCommands(command, currentCommandBlock->channel3)) 
+			{
+				SH100CTRL_SwChannel(2); 
+				return;
+			}
+			if(isEqualCommands(command, currentCommandBlock->channel4)) 
+			{
+				SH100CTRL_SwChannel(3); 
+				return;
+			}		
 			if(isEqualCommands(command, currentCommandBlock->loopOn)) 
 			{
-				SH100CTRL_SetLoop((command.data2>0)); 
+				SH100CTRL_SetLoop((command.data2>63) ? 1 : 0); 
 				return;
 			}
 			if(isEqualCommands(command, currentCommandBlock->outAB)) 
 			{
-				SH100CTRL_SwAB((command.data2>0)); 
+				SH100CTRL_SetAB((command.data2>63) ? 1 : 0); 
 				return;
 			}
 			break;

@@ -4,7 +4,7 @@
 #include "midi.h"
 
 void MIDI_ParserTask();
-void MIDI_SendCommand(MIDI_Command_t command);
+void MIDI_SendCommand(MIDI_Command_t command, uint8_t channel);
 
 void MIDI_SetRetranslateState(bool enabled);
 
