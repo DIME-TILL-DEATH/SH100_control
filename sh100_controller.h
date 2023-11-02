@@ -15,7 +15,7 @@ typedef struct
 {
 	uint8_t channelNum;
 	
-	bool loopOn;
+	bool loopOn[4]; // every channel
 	bool swAB;
 }SH100_State_t;
 

@@ -24,7 +24,10 @@ void SH100CTRL_Init()
 	else
 	{
 		ampState.channelNum = 0;
-		ampState.loopOn = false;
+		for(int i=0; i<4; i++)
+		{
+			ampState.loopOn[i] = false;
+		}		
 		ampState.swAB = false;		
 	}
 	
@@ -36,11 +39,11 @@ void SH100CTRL_SetAmpState(SH100_State_t state)
 	ampState = state;
 	
 	SH100HW_SetCh(ampState.channelNum);
-	SH100HW_LoopEn(ampState.loopOn);
+	SH100HW_LoopEn(ampState.loopOn[ampState.channelNum]);
 	SH100HW_SetAB(ampState.swAB);
 	
 	setChannelLeds();
-	SH100HW_SetNewLedState(LED_LOOP, ampState.loopOn);
+	SH100HW_SetNewLedState(LED_LOOP, ampState.loopOn[ampState.channelNum]);
 	SH100HW_SetNewLedState(LED_A, !ampState.swAB);
 	SH100HW_SetNewLedState(LED_B, ampState.swAB);
 }
@@ -58,7 +61,7 @@ void setChannelLeds()
 void SH100CTRL_SetAmpLeds()
 {
 	setChannelLeds();
-	SH100HW_SetNewLedState(LED_LOOP, ampState.loopOn);
+	SH100HW_SetNewLedState(LED_LOOP, ampState.loopOn[ampState.channelNum]);
 	SH100HW_SetNewLedState(LED_A, !ampState.swAB);
 	SH100HW_SetNewLedState(LED_B, ampState.swAB);
 }
@@ -86,14 +89,15 @@ void SH100CTRL_SwChannel(uint8_t chNum)
 	ampState.channelNum = chNum;
 	
 	SH100HW_SetCh(chNum);
+	SH100HW_LoopEn(ampState.loopOn[ampState.channelNum]);
 	setChannelLeds();
 }
 
 void SH100CTRL_SetLoop(bool en)
 {
-	ampState.loopOn = en;
-	SH100HW_LoopEn(ampState.loopOn);
-	SH100HW_SetNewLedState(LED_LOOP, ampState.loopOn);
+	ampState.loopOn[ampState.channelNum] = en;
+	SH100HW_LoopEn(ampState.loopOn[ampState.channelNum]);
+	SH100HW_SetNewLedState(LED_LOOP, ampState.loopOn[ampState.channelNum]);
 }
 
 void SH100CTRL_SetAB(bool isB)
