@@ -21,6 +21,7 @@ typedef struct
 
 void SH100CTRL_Init();
 
+void SH100CTRL_BtnSwChannel(uint8_t chNum); // with loop on/off
 void SH100CTRL_SwChannel(uint8_t chNum);
 void SH100CTRL_SwLoop();
 void SH100CTRL_SwAB();

@@ -61,9 +61,9 @@ typedef struct
 void SH100HW_Init();
 SH100HW_Buttons_t SH100HW_GetButtonsState();
 
-void SH100HW_SwitchCh(uint8_t chNum);
+void SH100HW_SetCh(uint8_t chNum);
 void SH100HW_LoopEn(bool isEnabled);
-void SH100HW_SwitchAB(bool isBEn);
+void SH100HW_SetAB(bool isBEn);
 
 void SH100HW_SetNewLedState(uint8_t ledId, SH100HW_LedState_t newState);
 void SH100HW_SetPreviousLedState(uint8_t ledId);

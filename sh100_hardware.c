@@ -104,7 +104,7 @@ SH100HW_Buttons_t SH100HW_GetButtonsState()
 	return buttonsState;
 }
 
-void SH100HW_SwitchCh(uint8_t chNum)
+void SH100HW_SetCh(uint8_t chNum)
 {
 	switch(chNum)
 	{

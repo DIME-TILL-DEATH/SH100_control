@@ -8,6 +8,8 @@
 
 SH100_State_t ampState;
 
+void setChannelLeds();
+
 void SH100CTRL_Init()
 {
 	uint16_t readedMagicWord = eeprom_read_word(0x00);
@@ -33,7 +35,7 @@ void SH100CTRL_SetAmpState(SH100_State_t state)
 {
 	ampState = state;
 	
-	SH100HW_SwitchCh(ampState.channelNum);
+	SH100HW_SetCh(ampState.channelNum);
 	SH100HW_LoopEn(ampState.loopOn);
 	SH100HW_SetAB(ampState.swAB);
 	
@@ -83,7 +85,7 @@ void SH100CTRL_SwChannel(uint8_t chNum)
 {
 	ampState.channelNum = chNum;
 	
-	SH100HW_SwitchCh(chNum);
+	SH100HW_SetCh(chNum);
 	setChannelLeds();
 }
 
