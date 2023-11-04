@@ -39,8 +39,8 @@ typedef enum
 typedef struct  
 {
 	uint8_t midiChNum;
-	SH100HW_ButtonState_t midiOmni;
-	SH100HW_ButtonState_t midiMuteComm;
+	bool midiOmni;
+	bool midiMuteComm;
 	
 	SH100HW_ButtonState_t btnCh1;
 	SH100HW_ButtonState_t btnCh2;

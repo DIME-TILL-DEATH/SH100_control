@@ -262,7 +262,7 @@ void readButtonsState()
 				ioport_set_pin_level(PIN_B, 1);
 				ioport_set_pin_level(PIN_C, 1);
 				
-				midiChBit[2] = ioport_get_pin_level(PIN_MIDI_SWITCH);
+				midiChBit[1] = ioport_get_pin_level(PIN_MIDI_SWITCH);
 				buttonsState.btnCh4 = ioport_get_pin_level(PIN_BUTTONS);
 				buttonsState.FS2_tip = ioport_get_pin_level(PIN_FOOTSWITCH);
 				break;

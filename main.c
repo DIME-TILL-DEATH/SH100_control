@@ -133,7 +133,6 @@ ISR(TIMER0_OVF_vect)
 				case RUNNING:
 				{
 					SH100CTRL_SwLoop();
-					//protectionInterval_cnt = PROTECTION_INTERVAL;
 					break;
 				}
 				case PROGRAMMING: MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_LOOP); break;
@@ -163,7 +162,6 @@ ISR(TIMER0_OVF_vect)
 					case RUNNING: 
 					{
 						SH100CTRL_SwAB(); 
-						//protectionInterval_cnt = PROTECTION_INTERVAL;
 						break;
 					}
 					case PROGRAMMING: MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_AB); break;

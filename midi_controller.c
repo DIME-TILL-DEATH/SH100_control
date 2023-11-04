@@ -112,7 +112,7 @@ void loadCommSetFromMemory()
 	{
 		// memory is not empty. Load EEPROM values
 		uint8_t readedData[sizeof(MIDICTRL_CommandBlock_t)];
-		eeprom_read_block(&readedData, (uint16_t*)MEMORY_USER_COMMANDS_OFFSET, sizeof(MIDICTRL_CommandBlock_t));
+		eeprom_read_block(&readedData, (void*)MEMORY_USER_COMMANDS_OFFSET, sizeof(MIDICTRL_CommandBlock_t));
 		MIDICTRL_CommandBlock_t* userCommands_ptr = (MIDICTRL_CommandBlock_t*)readedData;
 		userCommands = *userCommands_ptr;
 			
@@ -170,7 +170,7 @@ void MIDICTRL_SwitchMode(MIDICTRL_Mode_t newMode)
 			midiProgBtnState[i] = PROG_CLEAR;
 		
 		MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_CH1);
-		setMidiLeds();
+		
 		
 		SH100HW_SetNewLedState(LED_PWR_GRN, LED_SLOW_BLINKING);
 		SH100HW_SetNewLedState(LED_PWR_RED, LED_SLOW_BLINKING);
@@ -184,6 +184,8 @@ void MIDICTRL_SwitchMode(MIDICTRL_Mode_t newMode)
 		MIDI_SetRetranslateState(true);
 	}
 	mode = newMode;
+	
+	setMidiLeds();
 }
 
 MIDICTRL_Mode_t MIDICTRL_MidiMode()
@@ -387,7 +389,7 @@ void MIDICTRL_DiscardCommands()
 	if(mode == PROGRAMMING)
 	{
 		commandSet = DEFAULT;
-		loadCommSetFromMemory();
+		eeprom_write_byte((void*)MEMORY_COMMAND_BLOCK_TYPE_OFFSET, commandSet);		
 		mode = RUNNING;
 	}
 }
