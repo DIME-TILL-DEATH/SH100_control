@@ -1,4 +1,5 @@
 #include <asf.h>
+#include <math.h>
 
 #include "uart.h"
 #include "midi_parser.h"
@@ -7,8 +8,56 @@
 #include "sh100_hardware.h"
 #include "sh100_controller.h"
 
+bool isAmpStarted = false;
+int16_t negVdd;
+int16_t posVdd;
+void initTest()
+{
+	SH100HW_SetNewLedState(LED_PWR_GRN, LED_FAST_BLINKING);
+	delay_ms(20000);
+	
+	SH100HW_StartADConvertion(ADC_V_SIGNAL);
+	while(ADCSRA & (1<<ADSC)){}
+		
+	int32_t outLineValue = ADC;
+	
+	if(fabs(outLineValue - 0x3FF/2) > 100)
+	{
+		// DC on output!
+		SH100HW_SetPAFailure(true);
+		SH100HW_SetNewLedState(LED_PWR_GRN, LED_OFF);
+		SH100HW_SetNewLedState(LED_PWR_RED, LED_FAST_BLINKING);
+		while(1) {}
+	}
+	
+	SH100HW_StartADConvertion(ADC_V_NEGATIVE);
+	while(ADCSRA & (1<<ADSC)){}
+		
+	negVdd = ADC;
+	
+	SH100HW_StartADConvertion(ADC_V_POSITIVE);
+	while(ADCSRA & (1<<ADSC)){}
+		
+	posVdd = ADC;
+	
+	if(fabs(negVdd-posVdd) > 100)
+	{
+		// one of Vdd rail is out
+		SH100HW_SetPAFailure(true);
+		SH100HW_SetNewLedState(LED_PWR_GRN, LED_OFF);
+		SH100HW_SetNewLedState(LED_PWR_RED, LED_FAST_BLINKING);
+		while(1) {}
+	}
+		
+	SH100HW_SetPAFailure(false);
+	SH100CTRL_CheckOutputJacks();
+	isAmpStarted = true;
+}
+
 int main(void)
 {
+	board_init();
+	
 	UART_init();
 	SH100HW_Init();
 	SH100CTRL_Init();
@@ -25,6 +74,8 @@ int main(void)
 	
 	cpu_irq_enable();
 	
+	initTest();
+		
     while(1)
     {
 		MIDI_ParserTask();
@@ -40,7 +91,12 @@ uint8_t leaveDefSettings_cnt = 0;
 ISR(TIMER0_OVF_vect)
 {
 	SH100HW_MainTask();
-	SH100CTRL_CheckOutputJacks();
+	
+	if(isAmpStarted)
+	{
+		SH100CTRL_CheckOutputJacks();
+		SH100HW_StartADConvertion(ADC_V_NEGATIVE);
+	}
 	
 	SH100HW_Buttons_t pressedButtons = SH100HW_GetButtonsState();
 	
@@ -182,4 +238,34 @@ ISR(PCINT1_vect)
 	// Power off
 	// need to check pin level?
 	SH100CTRL_StoreAmpState();
+}
+
+int16_t negVdd;
+int16_t posVdd;
+bool measSwitch = false;
+ISR(ADC_vect)
+{
+	if(isAmpStarted)
+	{
+		if(measSwitch)
+		{
+			posVdd = ADC;
+			measSwitch = false;
+			//SH100HW_StartADConvertion(ADC_V_NEGATIVE);
+		}
+		else
+		{
+			negVdd = ADC;
+			measSwitch = true;
+			SH100HW_StartADConvertion(ADC_V_POSITIVE);
+		}
+		
+		if(fabs(negVdd-posVdd) > 100)
+		{
+			// one of Vdd rail is out
+			SH100HW_SetPAFailure(true);
+			SH100HW_SetNewLedState(LED_PWR_GRN, LED_OFF);
+			SH100HW_SetNewLedState(LED_PWR_RED, LED_FAST_BLINKING);
+		}
+	}
 }

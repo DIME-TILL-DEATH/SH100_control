@@ -397,7 +397,7 @@ void MIDICTRL_DiscardCommands()
 //===================ERROR indication=================
 void indicateMidiError()
 {
-	TCNT1 = 255 - 100;
+	TCNT1 = 255 - 75;
 	TCCR1B |= 0x05; // psc = 1024, timer on
 	currentErrBtnId = currentProgBtn;
 	setMidiLeds();

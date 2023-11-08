@@ -134,6 +134,8 @@ void SH100CTRL_UnmuteAmp()
 
 void SH100CTRL_CheckOutputJacks()
 {
+	if(SH100HW_GetPAFailure()) return;
+	
 	SH100HW_OutputJacks_t outJacksState = SH100HW_GetOutputJacks();
 	
 	switch(outJacksState)
@@ -178,7 +180,7 @@ void SH100CTRL_CheckOutputJacks()
 				SH100HW_SetNewLedState(LED_PWR_GRN, LED_OFF);
 				SH100HW_SetNewLedState(LED_PWR_RED, LED_ON);
 			}
-			SH100CTRL_MuteAmp(); //can load be less than 8Ohm?
+			SH100CTRL_MuteAmp();
 			break;
 		}
 	}

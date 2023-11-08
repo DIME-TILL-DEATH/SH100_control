@@ -1,4 +1,5 @@
 #include "sh100_hardware.h"
+#include "sh100_controller.h"
 
 #include <asf.h>
 #include <stdlib.h>
@@ -38,13 +39,6 @@
 
 typedef enum
 {
-	ADC_V_POSITIVE = 0x0,
-	ADC_V_SIGNAL = 0x6,
-	ADC_V_NEGATIVE = 0x7
-}ADC_Channels_t;
-
-typedef enum
-{
 	REL_OFF = 0,
 	REL_ON = 1
 }RelayState_t;
@@ -64,8 +58,12 @@ SH100HW_Buttons_t buttonsState;
 void readButtonsState();
 void writeShiftRegs(uint16_t data);
 
+bool isPAOk;
+
 void SH100HW_Init()
 {
+	isPAOk = false;
+	
 	// PINS init
 	gpio_configure_pin(PIN_MOSI, IOPORT_INIT_LOW | IOPORT_DIR_OUTPUT);
 	gpio_configure_pin(PIN_SCK, IOPORT_INIT_LOW | IOPORT_DIR_OUTPUT);
@@ -92,11 +90,20 @@ void SH100HW_Init()
 	{
 		led_ptr[i] = malloc(sizeof(SH100HW_LedState_t));
 	}
-	
-	// ADC settings
-	ADMUX = (1<<REFS0) | (1<<ADLAR); // AREF ext pin, Left-adjustment result
-	DIDR0 = 0x01; // Disable digital io on PC0
-	ADCSRA = (1<<ADEN) | (1<<ADIE) | (1<<ADPS2) | (1<<ADPS1); // ADC enable, INT enable, prescaler = 64
+}
+
+void SH100HW_SetPAFailure(bool isFail)
+{
+	isPAOk = !isFail;
+	if(isFail)
+	{
+		SH100CTRL_MuteAmp();
+	}
+}
+
+bool SH100HW_GetPAFailure()
+{
+	return !isPAOk;
 }
 
 SH100HW_Buttons_t SH100HW_GetButtonsState()
@@ -171,13 +178,29 @@ SH100HW_OutputJacks_t SH100HW_GetOutputJacks()
 
 void SH100HW_SetPAState(SH100HW_OutputState_t state)
 {
-	ioport_set_pin_level(PIN_MUTE, !state);
-	ioport_set_pin_level(PIN_RELE_W, state);
+	if(isPAOk)
+	{
+		ioport_set_pin_level(PIN_MUTE, !state);
+		ioport_set_pin_level(PIN_RELE_W, state);
+	}
+	else
+	{		
+		// PA failure, mute AMP
+		ioport_set_pin_level(PIN_MUTE, 1);
+		ioport_set_pin_level(PIN_RELE_W, 0);
+	}
 }
 
 void SH100HW_SetOutputMode(SH100HW_PAMode_t mode)
 {
 	RELAY_8_16 = mode;
+}
+
+void SH100HW_StartADConvertion(ADC_Channels_t channel)
+{
+	ADMUX = (1<<REFS0) | channel; // AREF ext pin, Left-adjustment result
+	DIDR0 = 0x01; // Disable digital io on PC0
+	ADCSRA = (1<<ADEN) | (1<<ADSC) | (1<<ADIE) | (1<<ADPS2) | (1<<ADPS1); // ADC enable, INT enable, prescaler = 64
 }
 //=================================== PRIVATE FUNCTIONS==============================
 void readButtonsState()
@@ -304,6 +327,8 @@ bool fastBlink = false;
 uint8_t indErrorCnt = 0;
 void SH100HW_MainTask()
 {
+	if(!isPAOk) SH100CTRL_MuteAmp();
+	
 	readButtonsState();
 	
 	// blink work----------------------------------------------

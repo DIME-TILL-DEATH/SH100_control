@@ -36,18 +36,28 @@ SUBDIRS :=  \
 ../src/ \
 ../src/ASF/ \
 ../src/ASF/common/ \
+../src/ASF/common/boards/ \
+../src/ASF/common/boards/user_board/ \
 ../src/ASF/common/services/ \
+../src/ASF/common/services/clock/ \
+../src/ASF/common/services/clock/mega/ \
+../src/ASF/common/services/delay/ \
+../src/ASF/common/services/delay/mega/ \
 ../src/ASF/common/services/gpio/ \
 ../src/ASF/common/services/gpio/mega_gpio/ \
 ../src/ASF/common/services/ioport/ \
 ../src/ASF/common/services/ioport/mega/ \
 ../src/ASF/common/utils/ \
 ../src/ASF/common/utils/interrupt/ \
+../src/ASF/common/utils/make/ \
 ../src/ASF/mega/ \
 ../src/ASF/mega/drivers/ \
 ../src/ASF/mega/drivers/adc/ \
+../src/ASF/mega/drivers/cpu/ \
 ../src/ASF/mega/utils/ \
-../src/ASF/mega/utils/preprocessor/
+../src/ASF/mega/utils/assembler/ \
+../src/ASF/mega/utils/preprocessor/ \
+../src/config/
 
 
 # Add inputs and outputs from these tool invocations to the build variables 
@@ -58,6 +68,8 @@ C_SRCS +=  \
 ../midi_parser.c \
 ../sh100_controller.c \
 ../sh100_hardware.c \
+../src/ASF/common/boards/user_board/init.c \
+../src/ASF/common/services/clock/mega/sysclk.c \
 ../uart.c
 
 
@@ -74,6 +86,8 @@ midi_controller.o \
 midi_parser.o \
 sh100_controller.o \
 sh100_hardware.o \
+src/ASF/common/boards/user_board/init.o \
+src/ASF/common/services/clock/mega/sysclk.o \
 uart.o
 
 OBJS_AS_ARGS +=  \
@@ -83,6 +97,8 @@ midi_controller.o \
 midi_parser.o \
 sh100_controller.o \
 sh100_hardware.o \
+src/ASF/common/boards/user_board/init.o \
+src/ASF/common/services/clock/mega/sysclk.o \
 uart.o
 
 C_DEPS +=  \
@@ -92,6 +108,8 @@ midi_controller.d \
 midi_parser.d \
 sh100_controller.d \
 sh100_hardware.d \
+src/ASF/common/boards/user_board/init.d \
+src/ASF/common/services/clock/mega/sysclk.d \
 uart.d
 
 C_DEPS_AS_ARGS +=  \
@@ -101,6 +119,8 @@ midi_controller.d \
 midi_parser.d \
 sh100_controller.d \
 sh100_hardware.d \
+src/ASF/common/boards/user_board/init.d \
+src/ASF/common/services/clock/mega/sysclk.d \
 uart.d
 
 OUTPUT_FILE_PATH +=SH100_control.elf
@@ -120,49 +140,63 @@ LINKER_SCRIPT_DEP+=
 ./main.o: .././main.c
 	@echo Building file: $<
 	@echo Invoking: XC8 C Compiler : 2.36
-	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88P  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88P__ -DDEBUG  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/mega/drivers/adc" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88P  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88P__ -DDEBUG -D__ATmega88P__ -DBOARD=USER_BOARD  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/mega/drivers/adc" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils" -I"../src/ASF/common/boards/user_board" -I"../src/ASF/common/boards" -I"../src/ASF/mega/drivers/cpu" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
 ./midi.o: .././midi.c
 	@echo Building file: $<
 	@echo Invoking: XC8 C Compiler : 2.36
-	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88P  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88P__ -DDEBUG  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/mega/drivers/adc" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88P  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88P__ -DDEBUG -D__ATmega88P__ -DBOARD=USER_BOARD  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/mega/drivers/adc" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils" -I"../src/ASF/common/boards/user_board" -I"../src/ASF/common/boards" -I"../src/ASF/mega/drivers/cpu" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
 ./midi_controller.o: .././midi_controller.c
 	@echo Building file: $<
 	@echo Invoking: XC8 C Compiler : 2.36
-	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88P  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88P__ -DDEBUG  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/mega/drivers/adc" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88P  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88P__ -DDEBUG -D__ATmega88P__ -DBOARD=USER_BOARD  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/mega/drivers/adc" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils" -I"../src/ASF/common/boards/user_board" -I"../src/ASF/common/boards" -I"../src/ASF/mega/drivers/cpu" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
 ./midi_parser.o: .././midi_parser.c
 	@echo Building file: $<
 	@echo Invoking: XC8 C Compiler : 2.36
-	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88P  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88P__ -DDEBUG  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/mega/drivers/adc" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88P  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88P__ -DDEBUG -D__ATmega88P__ -DBOARD=USER_BOARD  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/mega/drivers/adc" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils" -I"../src/ASF/common/boards/user_board" -I"../src/ASF/common/boards" -I"../src/ASF/mega/drivers/cpu" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
 ./sh100_controller.o: .././sh100_controller.c
 	@echo Building file: $<
 	@echo Invoking: XC8 C Compiler : 2.36
-	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88P  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88P__ -DDEBUG  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/mega/drivers/adc" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88P  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88P__ -DDEBUG -D__ATmega88P__ -DBOARD=USER_BOARD  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/mega/drivers/adc" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils" -I"../src/ASF/common/boards/user_board" -I"../src/ASF/common/boards" -I"../src/ASF/mega/drivers/cpu" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
 ./sh100_hardware.o: .././sh100_hardware.c
 	@echo Building file: $<
 	@echo Invoking: XC8 C Compiler : 2.36
-	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88P  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88P__ -DDEBUG  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/mega/drivers/adc" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88P  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88P__ -DDEBUG -D__ATmega88P__ -DBOARD=USER_BOARD  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/mega/drivers/adc" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils" -I"../src/ASF/common/boards/user_board" -I"../src/ASF/common/boards" -I"../src/ASF/mega/drivers/cpu" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+src/ASF/common/boards/user_board/init.o: ../src/ASF/common/boards/user_board/init.c
+	@echo Building file: $<
+	@echo Invoking: XC8 C Compiler : 2.36
+	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88P  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88P__ -DDEBUG -D__ATmega88P__ -DBOARD=USER_BOARD  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/mega/drivers/adc" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils" -I"../src/ASF/common/boards/user_board" -I"../src/ASF/common/boards" -I"../src/ASF/mega/drivers/cpu" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+src/ASF/common/services/clock/mega/sysclk.o: ../src/ASF/common/services/clock/mega/sysclk.c
+	@echo Building file: $<
+	@echo Invoking: XC8 C Compiler : 2.36
+	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88P  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88P__ -DDEBUG -D__ATmega88P__ -DBOARD=USER_BOARD  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/mega/drivers/adc" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils" -I"../src/ASF/common/boards/user_board" -I"../src/ASF/common/boards" -I"../src/ASF/mega/drivers/cpu" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
 ./uart.o: .././uart.c
 	@echo Building file: $<
 	@echo Invoking: XC8 C Compiler : 2.36
-	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88P  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88P__ -DDEBUG  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/mega/drivers/adc" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88P  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88P__ -DDEBUG -D__ATmega88P__ -DBOARD=USER_BOARD  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/mega/drivers/adc" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils" -I"../src/ASF/common/boards/user_board" -I"../src/ASF/common/boards" -I"../src/ASF/mega/drivers/cpu" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 

@@ -14,5 +14,9 @@ sh100_controller.c
 
 sh100_hardware.c
 
+src\ASF\common\boards\user_board\init.c
+
+src\ASF\common\services\clock\mega\sysclk.c
+
 uart.c
 

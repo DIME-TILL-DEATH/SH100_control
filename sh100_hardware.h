@@ -58,6 +58,13 @@ typedef struct
 	SH100HW_ButtonState_t FS2_presence;
 }SH100HW_Buttons_t;
 
+typedef enum
+{
+	ADC_V_POSITIVE = 0x0,
+	ADC_V_SIGNAL = 0x6,
+	ADC_V_NEGATIVE = 0x7
+}ADC_Channels_t;
+
 void SH100HW_Init();
 SH100HW_Buttons_t SH100HW_GetButtonsState();
 
@@ -69,6 +76,8 @@ void SH100HW_SetNewLedState(uint8_t ledId, SH100HW_LedState_t newState);
 void SH100HW_SetPreviousLedState(uint8_t ledId);
 
 SH100HW_OutputJacks_t SH100HW_GetOutputJacks();
+
+void SH100HW_StartADConvertion(ADC_Channels_t channel);
 
 typedef enum
 {
@@ -83,6 +92,8 @@ typedef enum
 	OUTPUT_16OHM = 1
 }SH100HW_PAMode_t;
 void SH100HW_SetOutputMode(SH100HW_PAMode_t mode);
+void SH100HW_SetPAFailure(bool isFail);
+bool SH100HW_GetPAFailure();
 
 void SH100HW_MainTask();
 
