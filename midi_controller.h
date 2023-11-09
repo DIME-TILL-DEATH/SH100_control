@@ -16,7 +16,7 @@
 typedef enum
 {
 	RUNNING,
-	PROGRAMMING
+	PROGRAMMING,
 }MIDICTRL_Mode_t;
 
 typedef struct
@@ -32,7 +32,7 @@ typedef struct
 void MIDICTRL_Init();
 void MIDICTRL_HandleCommand(const MIDI_Command_t* command);
 
-void MIDICTRL_SwitchMode(MIDICTRL_Mode_t newMode);
+void MIDICTRL_EnterProgrammingMode();
 MIDICTRL_Mode_t MIDICTRL_MidiMode();
 
 void MIDICTRL_SetProgrammingButton(uint8_t progBtnId);

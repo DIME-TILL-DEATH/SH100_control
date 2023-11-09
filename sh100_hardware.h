@@ -56,7 +56,7 @@ typedef struct
 	SH100HW_ButtonState_t FS2_sleeve;
 	SH100HW_ButtonState_t FS2_tip;
 	SH100HW_ButtonState_t FS2_presence;
-}SH100HW_Buttons_t;
+}SH100HW_Controls_t;
 
 typedef enum
 {
@@ -66,7 +66,7 @@ typedef enum
 }ADC_Channels_t;
 
 void SH100HW_Init();
-SH100HW_Buttons_t SH100HW_GetButtonsState();
+SH100HW_Controls_t SH100HW_GetControlsState();
 
 void SH100HW_SetCh(uint8_t chNum);
 void SH100HW_LoopEn(bool isEnabled);

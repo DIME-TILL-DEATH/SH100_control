@@ -54,8 +54,6 @@ RelayState_t RELAY_LOOP;
 #define LED_PREVIOUS_STATE_OFFSET LED_COUNT
 SH100HW_LedState_t* led_ptr[LED_COUNT*2]; 
 
-SH100HW_Buttons_t buttonsState;
-void readButtonsState();
 void writeShiftRegs(uint16_t data);
 
 bool isPAOk;
@@ -104,11 +102,6 @@ void SH100HW_SetPAFailure(bool isFail)
 bool SH100HW_GetPAFailure()
 {
 	return !isPAOk;
-}
-
-SH100HW_Buttons_t SH100HW_GetButtonsState()
-{
-	return buttonsState;
 }
 
 void SH100HW_SetCh(uint8_t chNum)
@@ -202,9 +195,10 @@ void SH100HW_StartADConvertion(ADC_Channels_t channel)
 	DIDR0 = 0x01; // Disable digital io on PC0
 	ADCSRA = (1<<ADEN) | (1<<ADSC) | (1<<ADIE) | (1<<ADPS2) | (1<<ADPS1); // ADC enable, INT enable, prescaler = 64
 }
-//=================================== PRIVATE FUNCTIONS==============================
-void readButtonsState()
+
+SH100HW_Controls_t SH100HW_GetControlsState()
 {
+	SH100HW_Controls_t buttonsState;
 	uint8_t midiChBit[4];
 	for(uint8_t cnt = 0; cnt<8; cnt++)
 	{
@@ -305,6 +299,8 @@ void readButtonsState()
 	}
 	
 	buttonsState.midiChNum = midiChBit[0] | (midiChBit[1]<<1) | (midiChBit[2]<<2) | (midiChBit[3]<<3);
+	
+	return buttonsState;
 }
 
 void writeShiftRegs(uint16_t data)
@@ -329,7 +325,7 @@ void SH100HW_MainTask()
 {
 	if(!isPAOk) SH100CTRL_MuteAmp();
 	
-	readButtonsState();
+	//SH100HW_ReadControlsState();
 	
 	// blink work----------------------------------------------
 	bool isLedOn[LED_COUNT];	

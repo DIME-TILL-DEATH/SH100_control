@@ -160,32 +160,23 @@ void MIDICTRL_Init()
 	mode = RUNNING;
 }
 
-void MIDICTRL_SwitchMode(MIDICTRL_Mode_t newMode)
+void MIDICTRL_EnterProgrammingMode()
 {	
-	if(mode == RUNNING)
-	{
-		MIDI_SetRetranslateState(false);
-		
-		for(uint8_t i=0; i<MIDI_PROG_BTN_COUNT;i++) 
-			midiProgBtnState[i] = PROG_CLEAR;
-		
-		MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_CH1);
-		
-		
-		SH100HW_SetNewLedState(LED_PWR_GRN, LED_SLOW_BLINKING);
-		SH100HW_SetNewLedState(LED_PWR_RED, LED_SLOW_BLINKING);
-		
-		SH100HW_SetNewLedState(LED_B, LED_OFF);
-	}
-	else
-	{
-		SH100HW_SetPreviousLedState(LED_B);
-		
-		MIDI_SetRetranslateState(true);
-	}
-	mode = newMode;
+	MIDI_SetRetranslateState(false);
+	
+	for(uint8_t i=0; i<MIDI_PROG_BTN_COUNT;i++)
+	midiProgBtnState[i] = PROG_CLEAR;
+	
+	MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_CH1);
+	
+	SH100HW_SetNewLedState(LED_PWR_GRN, LED_SLOW_BLINKING);
+	SH100HW_SetNewLedState(LED_PWR_RED, LED_SLOW_BLINKING);
+	
+	SH100HW_SetNewLedState(LED_B, LED_OFF);
 	
 	setMidiLeds();
+	
+	mode = PROGRAMMING;
 }
 
 MIDICTRL_Mode_t MIDICTRL_MidiMode()
@@ -380,6 +371,9 @@ void MIDICTRL_StoreUserCommands()
 		eeprom_write_byte((void*)MEMORY_COMMAND_BLOCK_TYPE_OFFSET, commandSet);
 		eeprom_write_block(&userCommands, (void*)MEMORY_USER_COMMANDS_OFFSET, sizeof(MIDICTRL_CommandBlock_t));
 		
+		SH100HW_SetPreviousLedState(LED_B);
+		MIDI_SetRetranslateState(true);
+		
 		mode = RUNNING;
 	}
 }
@@ -390,6 +384,10 @@ void MIDICTRL_DiscardCommands()
 	{
 		commandSet = DEFAULT;
 		eeprom_write_byte((void*)MEMORY_COMMAND_BLOCK_TYPE_OFFSET, commandSet);		
+		
+		SH100HW_SetPreviousLedState(LED_B);
+		MIDI_SetRetranslateState(true);
+		
 		mode = RUNNING;
 	}
 }
