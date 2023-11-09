@@ -30,7 +30,7 @@ typedef struct
 }MIDICTRL_CommandBlock_t;
 
 void MIDICTRL_Init();
-void MIDICTRL_HandleCommand(MIDI_Command_t command);
+void MIDICTRL_HandleCommand(const MIDI_Command_t* command);
 
 void MIDICTRL_SwitchMode(MIDICTRL_Mode_t newMode);
 MIDICTRL_Mode_t MIDICTRL_MidiMode();

@@ -2,6 +2,8 @@
 # Automatically-generated file. Do not edit or delete the file
 ################################################################################
 
+front_buttons.c
+
 main.c
 
 midi.c

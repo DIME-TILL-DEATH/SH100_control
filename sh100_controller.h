@@ -31,7 +31,7 @@ void SH100CTRL_SetAB(bool isB);
 void SH100CTRL_MuteAmp();
 void SH100CTRL_UnmuteAmp();
 
-void SH100CTRL_SetAmpState(SH100_State_t state);
+void SH100CTRL_SetAmpState(const SH100_State_t* state);
 void SH100CTRL_StoreAmpState();
 void SH100CTRL_SetAmpLeds();
 

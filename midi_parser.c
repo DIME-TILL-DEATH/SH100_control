@@ -94,7 +94,7 @@ void MIDI_ParserTask()
 			{
 				currentCommand.data2 = recievedWord;
 				isSecondDataWord = false;			
-				MIDICTRL_HandleCommand(currentCommand);
+				MIDICTRL_HandleCommand(&currentCommand);
 			}
 			else
 			{
@@ -108,7 +108,7 @@ void MIDI_ParserTask()
 		case REC_ONE_BYTE:
 		{
 			currentCommand.data1 = recievedWord;
-			MIDICTRL_HandleCommand(currentCommand);
+			MIDICTRL_HandleCommand(&currentCommand);
 			state = WAIT_WORD;
 			break;
 		}

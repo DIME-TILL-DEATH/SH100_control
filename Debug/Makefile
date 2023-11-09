@@ -62,6 +62,7 @@ SUBDIRS :=  \
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
+../front_buttons.c \
 ../main.c \
 ../midi.c \
 ../midi_controller.c \
@@ -80,6 +81,7 @@ ASM_SRCS +=
 
 
 OBJS +=  \
+front_buttons.o \
 main.o \
 midi.o \
 midi_controller.o \
@@ -91,6 +93,7 @@ src/ASF/common/services/clock/mega/sysclk.o \
 uart.o
 
 OBJS_AS_ARGS +=  \
+front_buttons.o \
 main.o \
 midi.o \
 midi_controller.o \
@@ -102,6 +105,7 @@ src/ASF/common/services/clock/mega/sysclk.o \
 uart.o
 
 C_DEPS +=  \
+front_buttons.d \
 main.d \
 midi.d \
 midi_controller.d \
@@ -113,6 +117,7 @@ src/ASF/common/services/clock/mega/sysclk.d \
 uart.d
 
 C_DEPS_AS_ARGS +=  \
+front_buttons.d \
 main.d \
 midi.d \
 midi_controller.d \
@@ -137,6 +142,13 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+./front_buttons.o: .././front_buttons.c
+	@echo Building file: $<
+	@echo Invoking: XC8 C Compiler : 2.36
+	$(QUOTE)D:\Microchip\xc8\v2.36\bin\xc8-cc.exe$(QUOTE)  -mcpu=ATmega88P  -mdfp="D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\xc8"  -c -x c -funsigned-char -funsigned-bitfields -mext=cci -D__ATmega88P__ -DDEBUG -D__ATmega88P__ -DBOARD=USER_BOARD  -I"../src/Config" -I"../src" -I"D:\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\2.0.401\include\avr" -I"../src/ASF/mega/drivers/adc" -I"../src/ASF/common/services/gpio" -I"../src/ASF/common/services/ioport" -I"../src/ASF/common/utils" -I"../src/ASF/mega/utils/preprocessor" -I"../src/ASF/mega/utils" -I"../src/ASF/common/boards/user_board" -I"../src/ASF/common/boards" -I"../src/ASF/mega/drivers/cpu" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
 ./main.o: .././main.c
 	@echo Building file: $<
 	@echo Invoking: XC8 C Compiler : 2.36

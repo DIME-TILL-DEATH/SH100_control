@@ -31,12 +31,12 @@ void SH100CTRL_Init()
 		ampState.swAB = false;		
 	}
 	
-	SH100CTRL_SetAmpState(ampState);
+	SH100CTRL_SetAmpState(&ampState);
 }
 
-void SH100CTRL_SetAmpState(SH100_State_t state)
+void SH100CTRL_SetAmpState(const SH100_State_t* state)
 {
-	ampState = state;
+	ampState = *state;
 	
 	SH100CTRL_SwChannel(ampState.channelNum);
 	SH100CTRL_SetLoop(ampState.loopOn[ampState.channelNum]);

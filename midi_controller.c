@@ -96,10 +96,10 @@ MIDICTRL_CommandBlock_t defaultCommands =
 
 void indicateMidiError();
 
-bool isEqualCommands(MIDI_Command_t commandRecieved, MIDI_Command_t commandSaved)
+bool isEqualCommands(const MIDI_Command_t* commandRecieved, const MIDI_Command_t* commandSaved)
 {
-	if(commandRecieved.status != commandSaved.status) return false;
-	if(commandRecieved.data1 != commandSaved.data1) return false;
+	if(commandRecieved->status != commandSaved->status) return false;
+	if(commandRecieved->data1 != commandSaved->data1) return false;
 			
 	return true;
 }
@@ -274,7 +274,7 @@ void MIDICTRL_SendSwABComm()
 	}
 }
 
-void MIDICTRL_HandleCommand(MIDI_Command_t command)
+void MIDICTRL_HandleCommand(const MIDI_Command_t* command)
 {
 	switch(mode)
 	{
@@ -282,14 +282,14 @@ void MIDICTRL_HandleCommand(MIDI_Command_t command)
 		{
 			if(!omniModeEnabled)
 			{
-				if(channelNum != command.channel_type) return;
+				if(channelNum != command->channel_type) return;
 			}
 			
 			if(muteCommandEnabled)
 			{
-				if(isEqualCommands(command, muteCommand)) 
+				if(isEqualCommands(command, &muteCommand)) 
 				{
-					if((command.data2>63) ? 1 : 0) SH100CTRL_MuteAmp();
+					if((command->data2>63) ? 1 : 0) SH100CTRL_MuteAmp();
 					else SH100CTRL_UnmuteAmp();
 				}
 			}
@@ -299,34 +299,34 @@ void MIDICTRL_HandleCommand(MIDI_Command_t command)
 			else currentCommandBlock = &defaultCommands;
 			
 			// priority ch1, ch2, ch3, ch4, loop, AB. After handling, return. Only one switch by one command
-			if(isEqualCommands(command, currentCommandBlock->channel1)) 
+			if(isEqualCommands(command, &(currentCommandBlock->channel1))) 
 			{
 				SH100CTRL_SwChannel(0); 
 				return;
 			}
-			if(isEqualCommands(command, currentCommandBlock->channel2)) 
+			if(isEqualCommands(command, &(currentCommandBlock->channel2))) 
 			{
 				SH100CTRL_SwChannel(1); 
 				return;
 			}
-			if(isEqualCommands(command, currentCommandBlock->channel3)) 
+			if(isEqualCommands(command, &(currentCommandBlock->channel3))) 
 			{
 				SH100CTRL_SwChannel(2); 
 				return;
 			}
-			if(isEqualCommands(command, currentCommandBlock->channel4)) 
+			if(isEqualCommands(command, &(currentCommandBlock->channel4))) 
 			{
 				SH100CTRL_SwChannel(3); 
 				return;
 			}		
-			if(isEqualCommands(command, currentCommandBlock->loopOn)) 
+			if(isEqualCommands(command, &(currentCommandBlock->loopOn))) 
 			{
-				SH100CTRL_SetLoop((command.data2>63) ? 1 : 0); 
+				SH100CTRL_SetLoop((command->data2>63) ? 1 : 0); 
 				return;
 			}
-			if(isEqualCommands(command, currentCommandBlock->outAB)) 
+			if(isEqualCommands(command, &(currentCommandBlock->outAB))) 
 			{
-				SH100CTRL_SetAB((command.data2>63) ? 1 : 0); 
+				SH100CTRL_SetAB((command->data2>63) ? 1 : 0); 
 				return;
 			}
 			break;
@@ -334,20 +334,20 @@ void MIDICTRL_HandleCommand(MIDI_Command_t command)
 		
 		case PROGRAMMING:
 		{
-			if(command.status == MIDI_COMM_PROGRAM_CHANGE)
+			if(command->status == MIDI_COMM_PROGRAM_CHANGE)
 			{
 				switch(currentProgBtn)
 				{
-					case MIDI_PROG_BTN_CH1: programmBtn(&(userCommands.channel1), &command, MIDI_PROG_BTN_CH1); break;
-					case MIDI_PROG_BTN_CH2: programmBtn(&(userCommands.channel2), &command, MIDI_PROG_BTN_CH2); break;
-					case MIDI_PROG_BTN_CH3: programmBtn(&(userCommands.channel3), &command, MIDI_PROG_BTN_CH3); break;
-					case MIDI_PROG_BTN_CH4: programmBtn(&(userCommands.channel4), &command, MIDI_PROG_BTN_CH4); break;
+					case MIDI_PROG_BTN_CH1: programmBtn(&(userCommands.channel1), command, MIDI_PROG_BTN_CH1); break;
+					case MIDI_PROG_BTN_CH2: programmBtn(&(userCommands.channel2), command, MIDI_PROG_BTN_CH2); break;
+					case MIDI_PROG_BTN_CH3: programmBtn(&(userCommands.channel3), command, MIDI_PROG_BTN_CH3); break;
+					case MIDI_PROG_BTN_CH4: programmBtn(&(userCommands.channel4), command, MIDI_PROG_BTN_CH4); break;
 					default: indicateMidiError(); break; 
 				}
 			}
-			else if(command.status == MIDI_COMM_CONTROL_CHANGE)
+			else if(command->status == MIDI_COMM_CONTROL_CHANGE)
 			{
-				if(command.data1 == muteCommand.data1)
+				if(command->data1 == muteCommand.data1)
 				{
 					indicateMidiError();
 				}
@@ -355,8 +355,8 @@ void MIDICTRL_HandleCommand(MIDI_Command_t command)
 				{
 					switch(currentProgBtn)
 					{
-						case MIDI_PROG_BTN_AB: programmBtn(&(userCommands.outAB), &command, MIDI_PROG_BTN_AB); break;
-						case MIDI_PROG_BTN_LOOP: programmBtn(&(userCommands.loopOn), &command, MIDI_PROG_BTN_LOOP); break;
+						case MIDI_PROG_BTN_AB: programmBtn(&(userCommands.outAB), command, MIDI_PROG_BTN_AB); break;
+						case MIDI_PROG_BTN_LOOP: programmBtn(&(userCommands.loopOn), command, MIDI_PROG_BTN_LOOP); break;
 						default: indicateMidiError(); break;
 					}
 				}
