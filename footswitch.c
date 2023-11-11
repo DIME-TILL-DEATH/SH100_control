@@ -25,20 +25,20 @@ void FSW_SetMode(FSW_SwitchMode_t newSwitchMode)
 	eeprom_write_byte((uint8_t*)MEMORY_FSW_MODE_OFFSET, switchMode);
 }
 
-#define FSW_PROTECTION_INTERVAL 20
+#define FSW_PROTECTION_INTERVAL 100
 uint8_t zzCh12 = SH100_CHANNEL1;
 uint8_t zzCh34 = SH100_CHANNEL3;
 void FSW_MainTask(const SH100HW_Controls_t* activatedCtrls)
 {
 	if(protectionInterval_cnt == 0)
 	{		
-		if (activatedCtrls->FS1_presence == BT_ON)
+		if (activatedCtrls->FS1_presence == FSW_PRESENT)
 		{
 			switch(switchMode)
 			{		
 				case FSW_RELAY:
 				{
-					uint8_t channelNum = (!(activatedCtrls->FS1_sleeve) << 1) | (!(activatedCtrls->FS1_tip));
+					uint8_t channelNum = (!(activatedCtrls->FS1_tip) << 1) | (!(activatedCtrls->FS1_sleeve));
 			
 					if(SH100CTRL_GetAmpState().channelNum != channelNum)
 					{
@@ -49,7 +49,7 @@ void FSW_MainTask(const SH100HW_Controls_t* activatedCtrls)
 				case FSW_RING:
 				{
 					uint8_t currentChannel = SH100CTRL_GetAmpState().channelNum;
-					if(ctrlsPrevState.FS1_tip != activatedCtrls->FS1_tip)
+					if(ctrlsPrevState.FS1_sleeve != activatedCtrls->FS1_sleeve)
 					{
 						protectionInterval_cnt = FSW_PROTECTION_INTERVAL;
 											
@@ -57,7 +57,7 @@ void FSW_MainTask(const SH100HW_Controls_t* activatedCtrls)
 						else SH100CTRL_SetChannel(SH100_CHANNEL4);
 					}
 			
-					if(ctrlsPrevState.FS1_sleeve != activatedCtrls->FS1_sleeve)
+					if(ctrlsPrevState.FS1_tip != activatedCtrls->FS1_tip)
 					{
 						protectionInterval_cnt = FSW_PROTECTION_INTERVAL;
 						
@@ -69,20 +69,20 @@ void FSW_MainTask(const SH100HW_Controls_t* activatedCtrls)
 				case FSW_ZIGZAG:
 				{
 					uint8_t currentChannel = SH100CTRL_GetAmpState().channelNum;
-					if(ctrlsPrevState.FS1_tip != activatedCtrls->FS1_tip)
+					if(ctrlsPrevState.FS1_sleeve != activatedCtrls->FS1_sleeve)
 					{
 						protectionInterval_cnt = FSW_PROTECTION_INTERVAL;
-						if(currentChannel < SH100_CHANNEL2)
+						if(currentChannel < SH100_CHANNEL3)
 						{
 							zzCh12 = (currentChannel == SH100_CHANNEL1) ? SH100_CHANNEL2 : SH100_CHANNEL1;
 						}					
 						SH100CTRL_SetChannel(zzCh12);
 					}
 				
-					if(ctrlsPrevState.FS1_sleeve != activatedCtrls->FS1_sleeve)
+					if(ctrlsPrevState.FS1_tip != activatedCtrls->FS1_tip)
 					{
 						protectionInterval_cnt = FSW_PROTECTION_INTERVAL;
-						if(currentChannel > SH100_CHANNEL3)
+						if(currentChannel > SH100_CHANNEL2)
 						{
 							zzCh34 = (currentChannel == SH100_CHANNEL3) ? SH100_CHANNEL4 : SH100_CHANNEL3;
 						}
@@ -93,30 +93,30 @@ void FSW_MainTask(const SH100HW_Controls_t* activatedCtrls)
 			}
 		}
 
-		if (activatedCtrls->FS2_presence == BT_ON)
+		if (activatedCtrls->FS2_presence == FSW_PRESENT)
 		{
-			if(ctrlsPrevState.FS2_tip != activatedCtrls->FS2_tip)
+			if(ctrlsPrevState.FS2_sleeve != activatedCtrls->FS2_sleeve)
 			{
 				protectionInterval_cnt = FSW_PROTECTION_INTERVAL;
 				SH100CTRL_SwLoop();
 			}
 		
-			if (ctrlsPrevState.FS2_sleeve != activatedCtrls->FS2_sleeve)
+			if (ctrlsPrevState.FS2_tip != activatedCtrls->FS2_tip)
 			{
 				protectionInterval_cnt = FSW_PROTECTION_INTERVAL;
 				SH100CTRL_SwAB();
 			}
-		}
-	
-		ctrlsPrevState = *activatedCtrls;
+		}			
 	}
 	else
 	{
 		protectionInterval_cnt--;
-	}
+	}	
+	
+	ctrlsPrevState = *activatedCtrls;	
 }
 
 bool FSW_BlockFrontControls()
 {
-	return ((switchMode == FSW_RELAY) && (ctrlsPrevState.FS1_presence == BT_ON));
+	return ((switchMode == FSW_RELAY) && (ctrlsPrevState.FS1_presence == FSW_PRESENT));
 }

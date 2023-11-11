@@ -22,6 +22,12 @@ typedef enum
 
 typedef enum
 {
+	FSW_PRESENT = 1,
+	FSW_NOT_PRESENT = 0
+}SH100HW_FSWPresence_t;
+
+typedef enum
+{
 	LED_OFF = 0,
 	LED_ON,
 	LED_FAST_BLINKING,
@@ -51,11 +57,11 @@ typedef struct
 	
 	SH100HW_ButtonState_t FS1_sleeve;
 	SH100HW_ButtonState_t FS1_tip;
-	SH100HW_ButtonState_t FS1_presence;
+	SH100HW_FSWPresence_t FS1_presence;
 	
 	SH100HW_ButtonState_t FS2_sleeve;
 	SH100HW_ButtonState_t FS2_tip;
-	SH100HW_ButtonState_t FS2_presence;
+	SH100HW_FSWPresence_t FS2_presence;
 }SH100HW_Controls_t;
 
 typedef enum
