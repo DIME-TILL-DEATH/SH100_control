@@ -9,6 +9,7 @@
 #include "sh100_controller.h"
 
 #include "front_buttons.h"
+#include "footswitch.h"
 
 bool isAmpStarted = false;
 int16_t negVdd;
@@ -56,12 +57,13 @@ void initTest()
 	isAmpStarted = true;
 }
 
+#define MAIN_TIMER_PERIOD 97
 void ISRInit()
 {
 	// Timer0 init. For main task
 	TCCR0B |= 0x05; // psc = 1024
 	TIMSK0 |= 0x01; // OVF INT enable, count pulse = 100us
-	TCNT0 = 100;
+	TCNT0 = 0xFF - MAIN_TIMER_PERIOD;
 		
 	// PCINT10, interrupt for PC2 pin(SW detect)
 	PCICR |= 0x02;
@@ -74,6 +76,7 @@ int main(void)
 	SH100HW_Init();
 	SH100CTRL_Init();
 	MIDICTRL_Init();
+	FSW_Init();
 	
 	ISRInit();	
 	cpu_irq_enable();
@@ -104,6 +107,9 @@ ISR(TIMER0_OVF_vect)
 	MIDICTRL_MuteCommEn(pressedButtons.midiMuteComm);
 	
 	FBTNS_MainTask(&pressedButtons);
+	FSW_MainTask(&pressedButtons);
+	
+	TCNT0 = 0xFF - MAIN_TIMER_PERIOD;
 }
 
 int16_t negVdd;
@@ -139,8 +145,7 @@ ISR(ADC_vect)
 //=========================PWR Turn off INT=================================
 ISR(PCINT1_vect)
 {
-	// Power off
-	// need to check pin level?
 	SH100CTRL_StoreAmpState();
+	SH100CTRL_MuteAmp();
 }
 

@@ -25,7 +25,7 @@ typedef enum
 	LED_OFF = 0,
 	LED_ON,
 	LED_FAST_BLINKING,
-	LED_SLOW_BLINKING,
+	LED_SLOW_BLINKING
 }SH100HW_LedState_t;
 
 typedef enum
@@ -74,6 +74,7 @@ void SH100HW_SetAB(bool isBEn);
 
 void SH100HW_SetNewLedState(uint8_t ledId, SH100HW_LedState_t newState);
 void SH100HW_SetPreviousLedState(uint8_t ledId);
+void SH100HW_SetLedBlinkCount(uint8_t ledId, uint8_t blinkCount);
 
 SH100HW_OutputJacks_t SH100HW_GetOutputJacks();
 

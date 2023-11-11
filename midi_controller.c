@@ -1,4 +1,3 @@
-//#include <avr/pgmspace.h>  // use only if SRAM is over. Can put commandBlocks in FLASH
 #include <avr/eeprom.h>
 #include <asf.h>
 
@@ -8,6 +7,8 @@
 #include "sh100_memory.h"
 #include "sh100_controller.h"
 #include "sh100_hardware.h"
+
+#include "footswitch.h"
 
 enum 
 {
@@ -148,12 +149,7 @@ void setMidiLeds()
 }
 
 void MIDICTRL_Init()
-{
-	// Timer1 init. For error indication
-	TCCR1B |= 0x00; // psc = 1024 if on
-	TIMSK1 |= 0x01; // OVF INT enable, count pulse = 100us
-	TCNT1 = 0;
-	
+{	
 	currentErrBtnId = MIDI_PROG_BTN_UNDEFINED;
 	
 	loadCommSetFromMemory();
@@ -162,21 +158,19 @@ void MIDICTRL_Init()
 
 void MIDICTRL_EnterProgrammingMode()
 {	
+	mode = PROGRAMMING;
 	MIDI_SetRetranslateState(false);
 	
 	for(uint8_t i=0; i<MIDI_PROG_BTN_COUNT;i++)
-	midiProgBtnState[i] = PROG_CLEAR;
-	
-	MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_CH1);
-	
+		midiProgBtnState[i] = PROG_CLEAR;
+		
 	SH100HW_SetNewLedState(LED_PWR_GRN, LED_SLOW_BLINKING);
 	SH100HW_SetNewLedState(LED_PWR_RED, LED_SLOW_BLINKING);
 	
 	SH100HW_SetNewLedState(LED_B, LED_OFF);
 	
+	MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_CH1);	
 	setMidiLeds();
-	
-	mode = PROGRAMMING;
 }
 
 MIDICTRL_Mode_t MIDICTRL_MidiMode()
@@ -267,6 +261,8 @@ void MIDICTRL_SendSwABComm()
 
 void MIDICTRL_HandleCommand(const MIDI_Command_t* command)
 {
+	if(FSW_BlockFrontControls()) return;
+	
 	switch(mode)
 	{
 		case RUNNING:
@@ -292,22 +288,22 @@ void MIDICTRL_HandleCommand(const MIDI_Command_t* command)
 			// priority ch1, ch2, ch3, ch4, loop, AB. After handling, return. Only one switch by one command
 			if(isEqualCommands(command, &(currentCommandBlock->channel1))) 
 			{
-				SH100CTRL_SwChannel(0); 
+				SH100CTRL_SetChannel(0); 
 				return;
 			}
 			if(isEqualCommands(command, &(currentCommandBlock->channel2))) 
 			{
-				SH100CTRL_SwChannel(1); 
+				SH100CTRL_SetChannel(1); 
 				return;
 			}
 			if(isEqualCommands(command, &(currentCommandBlock->channel3))) 
 			{
-				SH100CTRL_SwChannel(2); 
+				SH100CTRL_SetChannel(2); 
 				return;
 			}
 			if(isEqualCommands(command, &(currentCommandBlock->channel4))) 
 			{
-				SH100CTRL_SwChannel(3); 
+				SH100CTRL_SetChannel(3); 
 				return;
 			}		
 			if(isEqualCommands(command, &(currentCommandBlock->loopOn))) 
@@ -393,9 +389,11 @@ void MIDICTRL_DiscardCommands()
 }
 
 //===================ERROR indication=================
+#define MIDI_ERR_TIMER_PERIOD 9765
 void indicateMidiError()
 {
-	TCNT1 = 255 - 75;
+	TCNT1 = 0xFFFF - MIDI_ERR_TIMER_PERIOD;
+	TIMSK1 |= 0x01; // OVF INT enable, count pulse = 100us
 	TCCR1B |= 0x05; // psc = 1024, timer on
 	currentErrBtnId = currentProgBtn;
 	setMidiLeds();
@@ -406,6 +404,7 @@ void indicateMidiError()
 
 ISR(TIMER1_OVF_vect)
 {
+	TIMSK1 |= 0x00; // OVF INT disable
 	TCCR1B |= 0x00; // psc = 0, timer off
 	currentErrBtnId = MIDI_PROG_BTN_UNDEFINED;
 	setMidiLeds();

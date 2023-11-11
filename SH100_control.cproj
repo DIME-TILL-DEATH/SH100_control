@@ -218,6 +218,12 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="footswitch.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="footswitch.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="front_buttons.c">
       <SubType>compile</SubType>
     </Compile>

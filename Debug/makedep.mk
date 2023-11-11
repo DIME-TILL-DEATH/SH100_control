@@ -2,6 +2,8 @@
 # Automatically-generated file. Do not edit or delete the file
 ################################################################################
 
+footswitch.c
+
 front_buttons.c
 
 main.c

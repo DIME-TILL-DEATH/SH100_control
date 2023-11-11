@@ -8,6 +8,4 @@
 
 void FBTNS_MainTask(const SH100HW_Controls_t* pressedBtns);
 
-
-
 #endif /* FRONT_BUTTONS_H_ */

@@ -51,8 +51,15 @@ RelayState_t RELAY_AB;
 RelayState_t RELAY_LOOP;
 
 #define LED_COUNT 9
-#define LED_PREVIOUS_STATE_OFFSET LED_COUNT
-SH100HW_LedState_t* led_ptr[LED_COUNT*2]; 
+//#define LED_PREVIOUS_STATE_OFFSET LED_COUNT
+typedef struct 
+{
+	SH100HW_LedState_t curState;
+	SH100HW_LedState_t prevState;
+	uint8_t blinkCount; // 255 - unlimited
+}SH100HW_Led_t;
+
+SH100HW_Led_t led[LED_COUNT]; 
 
 void writeShiftRegs(uint16_t data);
 
@@ -80,13 +87,13 @@ void SH100HW_Init()
 	gpio_configure_pin(PIN_M16_DETECT, IOPORT_DIR_INPUT);
 	
 	//gpio_configure_pin(PIN_SW, IOPORT_INIT_LOW | IOPORT_DIR_OUTPUT);
-	gpio_configure_pin(PIN_MUTE, IOPORT_INIT_LOW | IOPORT_DIR_OUTPUT);
+	gpio_configure_pin(PIN_MUTE, IOPORT_INIT_HIGH | IOPORT_DIR_OUTPUT); // MUTE on start
 	gpio_configure_pin(PIN_RELE_W, IOPORT_INIT_LOW | IOPORT_DIR_OUTPUT);
 	gpio_configure_pin(PIN_RELAY_LOOP, IOPORT_INIT_LOW | IOPORT_DIR_OUTPUT);
 	
-	for(uint8_t i=0; i < LED_COUNT*2; i++)
+	for(int i=0; i< LED_COUNT; i++)
 	{
-		led_ptr[i] = malloc(sizeof(SH100HW_LedState_t));
+		led[i].blinkCount = 255; // set default blink count to infinite
 	}
 }
 
@@ -153,13 +160,26 @@ void SH100HW_SetAB(bool isBEn)
 
 void SH100HW_SetNewLedState(uint8_t ledId, SH100HW_LedState_t newState)
 {
-	*led_ptr[ledId+LED_PREVIOUS_STATE_OFFSET] = *led_ptr[ledId];
-	*led_ptr[ledId] = newState;
+	if(led[ledId].curState != newState)
+	{
+		led[ledId].prevState = led[ledId].curState;
+		led[ledId].curState = newState;
+	}
 }
 
 void SH100HW_SetPreviousLedState(uint8_t ledId)
 {
-	*led_ptr[ledId] = *led_ptr[ledId+LED_PREVIOUS_STATE_OFFSET];
+	led[ledId].curState = led[ledId].prevState;
+}
+
+void SH100HW_SetLedBlinkCount(uint8_t ledId, uint8_t blinkCount)
+{
+	if(led[ledId].curState != LED_FAST_BLINKING)
+	{
+		led[ledId].prevState = led[ledId].curState;
+	}
+	led[ledId].curState = LED_FAST_BLINKING;
+	led[ledId].blinkCount = blinkCount*2;
 }
 
 SH100HW_OutputJacks_t SH100HW_GetOutputJacks()
@@ -318,6 +338,7 @@ void writeShiftRegs(uint16_t data)
 }
 
 uint8_t blinkCounter = 0;
+uint8_t blinkDecrement;
 bool slowBlink = false;
 bool fastBlink = false;
 uint8_t indErrorCnt = 0;
@@ -332,6 +353,11 @@ void SH100HW_MainTask()
 	if((blinkCounter % 25) == 0 && blinkCounter != 0)
 	{
 		fastBlink = !fastBlink;
+		blinkDecrement = 1;
+	}
+	else
+	{
+		blinkDecrement = 0;
 	}
 	
 	if(blinkCounter == 50)
@@ -346,14 +372,27 @@ void SH100HW_MainTask()
 	
 	for(uint8_t i=0; i<LED_COUNT; i++)
 	{
-		switch(*led_ptr[i])
+		switch(led[i].curState)
 		{
 			case LED_OFF: isLedOn[i] = false; break;
 			case LED_ON: isLedOn[i] = true; break;
 			case LED_FAST_BLINKING: 
 			{
 				isLedOn[i] = fastBlink; 
-				//isLedOn[LED_PWR_GRN] = !fastBlink; // Green led blink 180deg phase of red led
+				isLedOn[LED_PWR_GRN] = !fastBlink; // Green led blink 180deg phase of red led
+				
+				if(led[i].blinkCount != 255)
+				{
+					if(led[i].blinkCount == 0)
+					{
+						led[i].curState = led[i].prevState;
+						led[i].blinkCount = 255;
+					}
+					else
+					{
+						led[i].blinkCount -= blinkDecrement;
+					}
+				}
 				break;
 			}
 			case LED_SLOW_BLINKING: 

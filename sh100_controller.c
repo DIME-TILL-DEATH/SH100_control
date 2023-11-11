@@ -38,9 +38,14 @@ void SH100CTRL_SetAmpState(const SH100_State_t* state)
 {
 	ampState = *state;
 	
-	SH100CTRL_SwChannel(ampState.channelNum);
+	SH100CTRL_SetChannel(ampState.channelNum);
 	SH100CTRL_SetLoop(ampState.loopOn[ampState.channelNum]);
 	SH100CTRL_SetAB(ampState.swAB);
+}
+
+SH100_State_t SH100CTRL_GetAmpState()
+{
+	return ampState;
 }
 
 void setChannelLeds()
@@ -71,7 +76,7 @@ void SH100CTRL_BtnSwChannel(uint8_t chNum)
 {
 	if(ampState.channelNum != chNum)
 	{
-		SH100CTRL_SwChannel(chNum);
+		SH100CTRL_SetChannel(chNum);
 	}
 	else
 	{
@@ -79,7 +84,7 @@ void SH100CTRL_BtnSwChannel(uint8_t chNum)
 	}
 }
 
-void SH100CTRL_SwChannel(uint8_t chNum)
+void SH100CTRL_SetChannel(uint8_t chNum)
 {
 	ampState.channelNum = chNum;
 	
