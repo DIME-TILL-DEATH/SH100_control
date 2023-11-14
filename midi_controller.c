@@ -235,7 +235,7 @@ void MIDICTRL_SendSwChComm(uint8_t chNum)
 	}
 }
 
-void MIDICTRL_SendLoopEnComm()
+void MIDICTRL_SendLoopEnComm(bool isEn)
 {
 	if(mode == RUNNING)
 	{
@@ -243,11 +243,14 @@ void MIDICTRL_SendLoopEnComm()
 		if(commandSet == USER) currentCommandBlock = &userCommands;
 		else currentCommandBlock = &defaultCommands;
 		
-		MIDI_SendCommand(currentCommandBlock->loopOn, channelNum);
+		MIDI_Command_t loopComm = currentCommandBlock->loopOn;
+		loopComm.data2 = isEn ? 0x7F : 0x00;
+		
+		MIDI_SendCommand(loopComm, channelNum);
 	}
 }
 
-void MIDICTRL_SendSwABComm()
+void MIDICTRL_SendSwABComm(bool isEn)
 {
 	if(mode == RUNNING)
 	{
@@ -255,7 +258,10 @@ void MIDICTRL_SendSwABComm()
 		if(commandSet == USER) currentCommandBlock = &userCommands;
 		else currentCommandBlock = &defaultCommands;
 		
-		MIDI_SendCommand(currentCommandBlock->outAB, channelNum);
+		MIDI_Command_t abComm = currentCommandBlock->outAB;
+		abComm.data2 = isEn ? 0x7F : 0x00;
+		
+		MIDI_SendCommand(abComm, channelNum);
 	}
 }
 

@@ -106,7 +106,7 @@ void SH100CTRL_SetLoop(bool en)
 	SH100HW_LoopEn(ampState.loopOn[ampState.channelNum]);
 	SH100HW_SetNewLedState(LED_LOOP, ampState.loopOn[ampState.channelNum]);
 	
-	MIDICTRL_SendLoopEnComm();
+	MIDICTRL_SendLoopEnComm(en);
 }
 
 void SH100CTRL_SwAB()
@@ -121,7 +121,7 @@ void SH100CTRL_SetAB(bool isB)
 	SH100HW_SetNewLedState(LED_A, !ampState.swAB);
 	SH100HW_SetNewLedState(LED_B, ampState.swAB);
 	
-	MIDICTRL_SendSwABComm();
+	MIDICTRL_SendSwABComm(isB);
 }
 
 void SH100CTRL_MuteAmp()

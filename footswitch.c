@@ -38,7 +38,7 @@ void FSW_MainTask(const SH100HW_Controls_t* activatedCtrls)
 			{		
 				case FSW_RELAY:
 				{
-					uint8_t channelNum = (!(activatedCtrls->FS1_tip) << 1) | (!(activatedCtrls->FS1_sleeve));
+					uint8_t channelNum = (!(activatedCtrls->FS1_sleeve) << 1) | (!(activatedCtrls->FS1_tip));
 			
 					if(SH100CTRL_GetAmpState().channelNum != channelNum)
 					{
@@ -49,7 +49,7 @@ void FSW_MainTask(const SH100HW_Controls_t* activatedCtrls)
 				case FSW_RING:
 				{
 					uint8_t currentChannel = SH100CTRL_GetAmpState().channelNum;
-					if(ctrlsPrevState.FS1_sleeve != activatedCtrls->FS1_sleeve)
+					if(ctrlsPrevState.FS1_tip != activatedCtrls->FS1_tip)
 					{
 						protectionInterval_cnt = FSW_PROTECTION_INTERVAL;
 											
@@ -57,7 +57,7 @@ void FSW_MainTask(const SH100HW_Controls_t* activatedCtrls)
 						else SH100CTRL_SetChannel(SH100_CHANNEL4);
 					}
 			
-					if(ctrlsPrevState.FS1_tip != activatedCtrls->FS1_tip)
+					if(ctrlsPrevState.FS1_sleeve != activatedCtrls->FS1_sleeve)
 					{
 						protectionInterval_cnt = FSW_PROTECTION_INTERVAL;
 						
@@ -69,7 +69,7 @@ void FSW_MainTask(const SH100HW_Controls_t* activatedCtrls)
 				case FSW_ZIGZAG:
 				{
 					uint8_t currentChannel = SH100CTRL_GetAmpState().channelNum;
-					if(ctrlsPrevState.FS1_sleeve != activatedCtrls->FS1_sleeve)
+					if(ctrlsPrevState.FS1_tip != activatedCtrls->FS1_tip)
 					{
 						protectionInterval_cnt = FSW_PROTECTION_INTERVAL;
 						if(currentChannel < SH100_CHANNEL3)
@@ -79,7 +79,7 @@ void FSW_MainTask(const SH100HW_Controls_t* activatedCtrls)
 						SH100CTRL_SetChannel(zzCh12);
 					}
 				
-					if(ctrlsPrevState.FS1_tip != activatedCtrls->FS1_tip)
+					if(ctrlsPrevState.FS1_sleeve != activatedCtrls->FS1_sleeve)
 					{
 						protectionInterval_cnt = FSW_PROTECTION_INTERVAL;
 						if(currentChannel > SH100_CHANNEL2)

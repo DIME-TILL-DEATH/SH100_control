@@ -44,7 +44,7 @@ void MIDICTRL_StoreUserCommands();
 void MIDICTRL_DiscardCommands();
 
 void MIDICTRL_SendSwChComm(uint8_t chNum);
-void MIDICTRL_SendLoopEnComm();
-void MIDICTRL_SendSwABComm();
+void MIDICTRL_SendLoopEnComm(bool isEn);
+void MIDICTRL_SendSwABComm(bool isEn);
 
 #endif /* MIDI_CONTROLLER_H_ */
