@@ -21,12 +21,15 @@ typedef struct
 
 void SH100CTRL_Init();
 
-void SH100CTRL_BtnSwChannel(uint8_t chNum); // with loop on/off
+void SH100CTRL_FsSetChannel(uint8_t chNum);
+void SH100CTRL_BtnSetChannel(uint8_t chNum); // with loop on/off
 void SH100CTRL_SetChannel(uint8_t chNum);
 void SH100CTRL_SwLoop();
 void SH100CTRL_SwAB();
 void SH100CTRL_SetLoop(bool en);
 void SH100CTRL_SetAB(bool isB);
+
+void SH100CTRL_SetSendMidiCommEn(bool en);
 
 void SH100CTRL_MuteAmp();
 void SH100CTRL_UnmuteAmp();

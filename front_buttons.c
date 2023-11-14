@@ -54,7 +54,7 @@ void FBTNS_MainTask(const SH100HW_Controls_t* pressedButtons)
 				{
 					switch(MIDICTRL_MidiMode())
 					{
-						case RUNNING: SH100CTRL_BtnSwChannel(SH100_CHANNEL1); break;
+						case RUNNING: SH100CTRL_BtnSetChannel(SH100_CHANNEL1); break;
 						case PROGRAMMING: MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_CH1); break;
 					}
 				}
@@ -83,7 +83,7 @@ void FBTNS_MainTask(const SH100HW_Controls_t* pressedButtons)
 				{
 					switch(MIDICTRL_MidiMode())
 					{
-						case RUNNING: SH100CTRL_BtnSwChannel(SH100_CHANNEL2); break;
+						case RUNNING: SH100CTRL_BtnSetChannel(SH100_CHANNEL2); break;
 						case PROGRAMMING: MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_CH2); break;
 					}
 				}
@@ -111,7 +111,7 @@ void FBTNS_MainTask(const SH100HW_Controls_t* pressedButtons)
 				{
 					switch(MIDICTRL_MidiMode())
 					{
-						case RUNNING: SH100CTRL_BtnSwChannel(SH100_CHANNEL3); break;
+						case RUNNING: SH100CTRL_BtnSetChannel(SH100_CHANNEL3); break;
 						case PROGRAMMING: MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_CH3); break;
 					}
 				}				
@@ -139,7 +139,7 @@ void FBTNS_MainTask(const SH100HW_Controls_t* pressedButtons)
 				{
 					switch(MIDICTRL_MidiMode())
 					{
-						case RUNNING: SH100CTRL_BtnSwChannel(SH100_CHANNEL4); break;
+						case RUNNING: SH100CTRL_BtnSetChannel(SH100_CHANNEL4); break;
 						case PROGRAMMING: MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_CH4); break;
 					}
 				}	

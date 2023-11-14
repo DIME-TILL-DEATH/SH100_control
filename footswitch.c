@@ -42,7 +42,7 @@ void FSW_MainTask(const SH100HW_Controls_t* activatedCtrls)
 			
 					if(SH100CTRL_GetAmpState().channelNum != channelNum)
 					{
-						SH100CTRL_SetChannel(channelNum); // send midi comm only once
+						SH100CTRL_FsSetChannel(channelNum); // send midi comm only once
 					}		
 					break;	
 				}
@@ -53,16 +53,16 @@ void FSW_MainTask(const SH100HW_Controls_t* activatedCtrls)
 					{
 						protectionInterval_cnt = FSW_PROTECTION_INTERVAL;
 											
-						if(currentChannel > SH100_CHANNEL1) SH100CTRL_SetChannel(currentChannel-1);
-						else SH100CTRL_SetChannel(SH100_CHANNEL4);
+						if(currentChannel > SH100_CHANNEL1) SH100CTRL_FsSetChannel(currentChannel-1);
+						else SH100CTRL_FsSetChannel(SH100_CHANNEL4);
 					}
 			
 					if(ctrlsPrevState.FS1_sleeve != activatedCtrls->FS1_sleeve)
 					{
 						protectionInterval_cnt = FSW_PROTECTION_INTERVAL;
 						
-						if(currentChannel < SH100_CHANNEL4) SH100CTRL_SetChannel(currentChannel+1);
-						else SH100CTRL_SetChannel(SH100_CHANNEL1);
+						if(currentChannel < SH100_CHANNEL4) SH100CTRL_FsSetChannel(currentChannel+1);
+						else SH100CTRL_FsSetChannel(SH100_CHANNEL1);
 					}
 					break;
 				}
@@ -76,7 +76,7 @@ void FSW_MainTask(const SH100HW_Controls_t* activatedCtrls)
 						{
 							zzCh12 = (currentChannel == SH100_CHANNEL1) ? SH100_CHANNEL2 : SH100_CHANNEL1;
 						}					
-						SH100CTRL_SetChannel(zzCh12);
+						SH100CTRL_FsSetChannel(zzCh12);
 					}
 				
 					if(ctrlsPrevState.FS1_sleeve != activatedCtrls->FS1_sleeve)
@@ -86,7 +86,7 @@ void FSW_MainTask(const SH100HW_Controls_t* activatedCtrls)
 						{
 							zzCh34 = (currentChannel == SH100_CHANNEL3) ? SH100_CHANNEL4 : SH100_CHANNEL3;
 						}
-						SH100CTRL_SetChannel(zzCh34);
+						SH100CTRL_FsSetChannel(zzCh34);
 					}
 					break;
 				}

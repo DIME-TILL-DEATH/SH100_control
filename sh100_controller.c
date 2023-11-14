@@ -30,7 +30,6 @@ void SH100CTRL_Init()
 		}		
 		ampState.swAB = false;		
 	}
-	
 	SH100CTRL_SetAmpState(&ampState);
 }
 
@@ -72,11 +71,21 @@ void SH100CTRL_StoreAmpState()
 	eeprom_write_block(&ampState, (void*)MEMORY_AMP_STATE_OFFSET, sizeof(SH100_State_t));
 }
 
-void SH100CTRL_BtnSwChannel(uint8_t chNum)
+void SH100CTRL_FsSetChannel(uint8_t chNum)
 {
 	if(ampState.channelNum != chNum)
 	{
 		SH100CTRL_SetChannel(chNum);
+		MIDICTRL_SendSwChComm(chNum);
+	}
+}
+
+void SH100CTRL_BtnSetChannel(uint8_t chNum)
+{
+	if(ampState.channelNum != chNum)
+	{
+		SH100CTRL_SetChannel(chNum);
+		MIDICTRL_SendSwChComm(chNum);
 	}
 	else
 	{
@@ -91,13 +100,12 @@ void SH100CTRL_SetChannel(uint8_t chNum)
 	SH100HW_SetCh(chNum);
 	SH100CTRL_SetLoop(ampState.loopOn[ampState.channelNum]);
 	setChannelLeds();
-	
-	MIDICTRL_SendSwChComm(chNum);
 }
 
 void SH100CTRL_SwLoop()
 {
 	SH100CTRL_SetLoop(!ampState.loopOn[ampState.channelNum]);
+	MIDICTRL_SendLoopEnComm(!ampState.loopOn[ampState.channelNum]);
 }
 
 void SH100CTRL_SetLoop(bool en)
@@ -105,13 +113,12 @@ void SH100CTRL_SetLoop(bool en)
 	ampState.loopOn[ampState.channelNum] = en;
 	SH100HW_LoopEn(ampState.loopOn[ampState.channelNum]);
 	SH100HW_SetNewLedState(LED_LOOP, ampState.loopOn[ampState.channelNum]);
-	
-	MIDICTRL_SendLoopEnComm(en);
 }
 
 void SH100CTRL_SwAB()
 {
 	SH100CTRL_SetAB(!ampState.swAB);
+	MIDICTRL_SendSwABComm(!ampState.swAB);
 }
 
 void SH100CTRL_SetAB(bool isB)
@@ -120,8 +127,6 @@ void SH100CTRL_SetAB(bool isB)
 	SH100HW_SetAB(ampState.swAB);
 	SH100HW_SetNewLedState(LED_A, !ampState.swAB);
 	SH100HW_SetNewLedState(LED_B, ampState.swAB);
-	
-	MIDICTRL_SendSwABComm(isB);
 }
 
 void SH100CTRL_MuteAmp()
