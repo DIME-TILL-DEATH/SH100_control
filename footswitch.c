@@ -25,7 +25,7 @@ void FSW_SetMode(FSW_SwitchMode_t newSwitchMode)
 	eeprom_write_byte((uint8_t*)MEMORY_FSW_MODE_OFFSET, switchMode);
 }
 
-#define FSW_PROTECTION_INTERVAL 100
+#define FSW_PROTECTION_INTERVAL 25
 uint8_t zzCh12 = SH100_CHANNEL1;
 uint8_t zzCh34 = SH100_CHANNEL3;
 void FSW_MainTask(const SH100HW_Controls_t* activatedCtrls)
@@ -38,6 +38,8 @@ void FSW_MainTask(const SH100HW_Controls_t* activatedCtrls)
 			{		
 				case FSW_RELAY:
 				{
+					if((ctrlsPrevState.FS1_tip == activatedCtrls->FS1_tip) && (ctrlsPrevState.FS1_sleeve == activatedCtrls->FS1_sleeve)) return; //There is no changes
+							
 					uint8_t channelNum = (!(activatedCtrls->FS1_sleeve) << 1) | (!(activatedCtrls->FS1_tip));
 			
 					if(SH100CTRL_GetAmpState().channelNum != channelNum)

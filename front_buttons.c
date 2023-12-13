@@ -27,7 +27,7 @@ void FBTNS_MainTask(const SH100HW_Controls_t* pressedButtons)
 {
 	if(protectionInterval_cnt == 0)
 	{
-		if(FSW_BlockFrontControls()) return;
+		//if(FSW_BlockFrontControls()) return;
 		
 		//=============BTN CH1==========================
 		if(pressedButtons->btnCh1 == BT_ON)
