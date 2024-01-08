@@ -53,7 +53,7 @@ typedef enum
 typedef struct  
 {
 	MIDI_Status_t status;
-	uint8_t channel_type;
+	uint8_t midiChannel;
 	uint8_t data1;
 	uint8_t data2;
 }MIDI_Command_t;

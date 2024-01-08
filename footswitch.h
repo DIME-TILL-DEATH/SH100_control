@@ -8,9 +8,10 @@
 
 typedef enum
 {
-	FSW_RING = 0,
-	FSW_ZIGZAG = 1,
-	FSW_RELAY = 2
+	FSW_DISCRET = 0,
+	FSW_RELAY = 1,
+	FSW_RING = 2,
+	FSW_ZIGZAG = 3
 }FSW_SwitchMode_t;
 
 void FSW_Init();

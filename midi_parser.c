@@ -79,7 +79,7 @@ void MIDI_ParserTask()
 		case DISPATCH_STATUS:
 		{
 			currentCommand.status = (MIDI_Status_t)((recievedWord & 0xF0) >> 4);
-			currentCommand.channel_type = recievedWord & 0x0F;
+			currentCommand.midiChannel = recievedWord & 0x0F;
 			currentCommand.data1 = 0;
 			currentCommand.data2 = 0;
 			currentStatusType = MIDI_GetStatusType(currentCommand.status);

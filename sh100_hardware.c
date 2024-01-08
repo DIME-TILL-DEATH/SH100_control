@@ -67,9 +67,13 @@ bool isPAOk;
 
 void SH100HW_Init()
 {
-	isPAOk = false;
-	
 	// PINS init
+	
+	gpio_configure_pin(PIN_SW, IOPORT_INIT_LOW | IOPORT_DIR_OUTPUT);
+	gpio_configure_pin(PIN_MUTE, IOPORT_INIT_HIGH | IOPORT_DIR_OUTPUT); // MUTE on start
+	gpio_configure_pin(PIN_RELE_W, IOPORT_INIT_LOW | IOPORT_DIR_OUTPUT);
+	gpio_configure_pin(PIN_RELAY_LOOP, IOPORT_INIT_LOW | IOPORT_DIR_OUTPUT);
+	
 	gpio_configure_pin(PIN_MOSI, IOPORT_INIT_LOW | IOPORT_DIR_OUTPUT);
 	gpio_configure_pin(PIN_SCK, IOPORT_INIT_LOW | IOPORT_DIR_OUTPUT);
 	gpio_configure_pin(PIN_ST, IOPORT_INIT_HIGH| IOPORT_DIR_OUTPUT);
@@ -79,17 +83,14 @@ void SH100HW_Init()
 	gpio_configure_pin(PIN_C, IOPORT_INIT_LOW | IOPORT_DIR_OUTPUT);
 
 	gpio_configure_pin(PIN_BUTTONS, IOPORT_DIR_INPUT);
-	gpio_configure_pin(PIN_MIDI_SWITCH, IOPORT_DIR_INPUT | IOPORT_PULL_UP);
+	gpio_configure_pin(PIN_MIDI_SWITCH, IOPORT_DIR_INPUT);
 	gpio_configure_pin(PIN_FOOTSWITCH, IOPORT_DIR_INPUT);
 	
 	gpio_configure_pin(PIN_SW_DETECT, IOPORT_DIR_INPUT);
 	gpio_configure_pin(PIN_M8_DETECT, IOPORT_DIR_INPUT);
 	gpio_configure_pin(PIN_M16_DETECT, IOPORT_DIR_INPUT);
 	
-	//gpio_configure_pin(PIN_SW, IOPORT_INIT_LOW | IOPORT_DIR_OUTPUT);
-	gpio_configure_pin(PIN_MUTE, IOPORT_INIT_HIGH | IOPORT_DIR_OUTPUT); // MUTE on start
-	gpio_configure_pin(PIN_RELE_W, IOPORT_INIT_LOW | IOPORT_DIR_OUTPUT);
-	gpio_configure_pin(PIN_RELAY_LOOP, IOPORT_INIT_LOW | IOPORT_DIR_OUTPUT);
+	isPAOk = false;
 	
 	for(int i=0; i< LED_COUNT; i++)
 	{
@@ -102,7 +103,7 @@ void SH100HW_SetPAFailure(bool isFail)
 	isPAOk = !isFail;
 	if(isFail)
 	{
-		SH100CTRL_MuteAmp();
+		SH100HW_SetPAState(OUTPUT_MUTE);
 	}
 }
 
@@ -189,24 +190,30 @@ SH100HW_OutputJacks_t SH100HW_GetOutputJacks()
 	return ((is16Ohm) | (is8Ohm<<1));
 }
 
-void SH100HW_SetPAState(SH100HW_OutputState_t state)
+void SH100HW_SetPAState(SH100HW_OutputState_t paState)
 {
 	if(isPAOk)
 	{
-		ioport_set_pin_level(PIN_MUTE, !state);
-		ioport_set_pin_level(PIN_RELE_W, state);
+		//ioport_set_pin_level(PIN_MUTE, !paState);
+		ioport_set_pin_level(PIN_RELE_W, paState);
 	}
 	else
 	{		
 		// PA failure, mute AMP
-		ioport_set_pin_level(PIN_MUTE, 1);
+		//ioport_set_pin_level(PIN_MUTE, 1);
 		ioport_set_pin_level(PIN_RELE_W, 0);
 	}
+}
+
+void SH100HW_SetDiMute(SH100HW_OutputState_t muteEn)
+{
+	ioport_set_pin_level(PIN_MUTE, !muteEn);	
 }
 
 void SH100HW_SetOutputMode(SH100HW_PAMode_t mode)
 {
 	RELAY_8_16 = mode;
+	ioport_set_pin_level(PIN_SW, mode);
 }
 
 void SH100HW_StartADConvertion(ADC_Channels_t channel)
@@ -216,7 +223,8 @@ void SH100HW_StartADConvertion(ADC_Channels_t channel)
 	ADCSRA = (1<<ADEN) | (1<<ADSC) | (1<<ADIE) | (1<<ADPS2) | (1<<ADPS1); // ADC enable, INT enable, prescaler = 64
 }
 
-SH100HW_Controls_t SH100HW_GetControlsState()
+#define READ_DELAY 1
+SH100HW_Controls_t SH100HW_GetControlsState(bool delayed)
 {
 	SH100HW_Controls_t buttonsState;
 	uint8_t midiChBit[4];
@@ -230,6 +238,7 @@ SH100HW_Controls_t SH100HW_GetControlsState()
 				ioport_set_pin_level(PIN_A, 0);
 				ioport_set_pin_level(PIN_B, 0);
 				ioport_set_pin_level(PIN_C, 0);
+				if(delayed) delay_ms(READ_DELAY);
 				
 				buttonsState.midiOmni = ioport_get_pin_level(PIN_MIDI_SWITCH);
 				buttonsState.FS2_sleeve = ioport_get_pin_level(PIN_FOOTSWITCH);
@@ -241,6 +250,7 @@ SH100HW_Controls_t SH100HW_GetControlsState()
 				ioport_set_pin_level(PIN_A, 1);
 				ioport_set_pin_level(PIN_B, 0);
 				ioport_set_pin_level(PIN_C, 0);
+				if(delayed) delay_ms(READ_DELAY);
 				
 				midiChBit[3] = ioport_get_pin_level(PIN_MIDI_SWITCH);
 				buttonsState.btnAB = ioport_get_pin_level(PIN_BUTTONS);
@@ -253,6 +263,7 @@ SH100HW_Controls_t SH100HW_GetControlsState()
 				ioport_set_pin_level(PIN_A, 0);
 				ioport_set_pin_level(PIN_B, 1);
 				ioport_set_pin_level(PIN_C, 0);
+				if(delayed) delay_ms(READ_DELAY);
 				
 				midiChBit[2] = ioport_get_pin_level(PIN_MIDI_SWITCH);
 				buttonsState.btnLoop = ioport_get_pin_level(PIN_BUTTONS);
@@ -265,6 +276,7 @@ SH100HW_Controls_t SH100HW_GetControlsState()
 				ioport_set_pin_level(PIN_A, 1);
 				ioport_set_pin_level(PIN_B, 1);
 				ioport_set_pin_level(PIN_C, 0);
+				if(delayed) delay_ms(READ_DELAY);
 				
 				buttonsState.midiMuteComm = ioport_get_pin_level(PIN_MIDI_SWITCH);
 				buttonsState.FS1_sleeve = ioport_get_pin_level(PIN_FOOTSWITCH);
@@ -276,6 +288,7 @@ SH100HW_Controls_t SH100HW_GetControlsState()
 				ioport_set_pin_level(PIN_A, 0);
 				ioport_set_pin_level(PIN_B, 0);
 				ioport_set_pin_level(PIN_C, 1);
+				if(delayed) delay_ms(READ_DELAY);
 				
 				midiChBit[0] = ioport_get_pin_level(PIN_MIDI_SWITCH);
 				buttonsState.btnCh2 = ioport_get_pin_level(PIN_BUTTONS);
@@ -288,6 +301,7 @@ SH100HW_Controls_t SH100HW_GetControlsState()
 				ioport_set_pin_level(PIN_A, 1);
 				ioport_set_pin_level(PIN_B, 0);
 				ioport_set_pin_level(PIN_C, 1);
+				//if(delayed) delay_ms(READ_DELAY);
 				
 				buttonsState.btnCh3 = ioport_get_pin_level(PIN_BUTTONS);
 				break;
@@ -298,6 +312,7 @@ SH100HW_Controls_t SH100HW_GetControlsState()
 				ioport_set_pin_level(PIN_A, 0);
 				ioport_set_pin_level(PIN_B, 1);
 				ioport_set_pin_level(PIN_C, 1);
+				if(delayed) delay_ms(READ_DELAY);
 				
 				midiChBit[1] = ioport_get_pin_level(PIN_MIDI_SWITCH);
 				buttonsState.btnCh4 = ioport_get_pin_level(PIN_BUTTONS);
@@ -310,6 +325,7 @@ SH100HW_Controls_t SH100HW_GetControlsState()
 				ioport_set_pin_level(PIN_A, 1);
 				ioport_set_pin_level(PIN_B, 1);
 				ioport_set_pin_level(PIN_C, 1);
+			//	if(delayed) delay_ms(READ_DELAY);
 				
 				buttonsState.btnCh1 = ioport_get_pin_level(PIN_BUTTONS);
 				break;
@@ -344,7 +360,7 @@ bool fastBlink = false;
 uint8_t indErrorCnt = 0;
 void SH100HW_MainTask()
 {
-	if(!isPAOk) SH100CTRL_MuteAmp();
+	if(!isPAOk) SH100HW_SetPAState(OUTPUT_MUTE);
 	
 	//SH100HW_ReadControlsState();
 	

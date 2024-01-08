@@ -17,7 +17,7 @@ int16_t posVdd;
 void initTest()
 {
 	SH100HW_SetNewLedState(LED_PWR_GRN, LED_FAST_BLINKING);
-	delay_ms(20000);
+	delay_ms(15000);
 	
 	SH100HW_StartADConvertion(ADC_V_SIGNAL);
 	while(ADCSRA & (1<<ADSC)){}
@@ -53,6 +53,7 @@ void initTest()
 	}
 		
 	SH100HW_SetPAFailure(false);
+	
 	SH100CTRL_CheckOutputJacks();
 	isAmpStarted = true;
 }
@@ -70,44 +71,63 @@ void ISRInit()
 	PCMSK1 |= 0x04;
 }
 
+bool processTimerISR;
 int main(void)
 {
 	UART_init();
 	SH100HW_Init();
-	SH100CTRL_Init();
+	
+	
 	MIDICTRL_Init();
+	SH100CTRL_Init();	
 	FSW_Init();
+	
+	processTimerISR = false;
 	
 	ISRInit();	
 	cpu_irq_enable();
 	
+	SH100HW_Controls_t pressedButtons = SH100HW_GetControlsState(true);
+	
+	MIDICTRL_SetMidiChannel(pressedButtons.midiChNum);
+	MIDICTRL_OmniModeEn(pressedButtons.midiOmni);
+	MIDICTRL_MuteCommEn(pressedButtons.midiMuteComm);
+	
 	initTest();
+	SH100HW_SetDiMute(OUTPUT_ENABLED);
 		
     while(1)
     {
 		MIDI_ParserTask();
+		
+		if(processTimerISR)
+		{
+			SH100HW_MainTask();
+				
+			if(isAmpStarted)
+			{
+				SH100CTRL_CheckOutputJacks();
+				SH100HW_StartADConvertion(ADC_V_NEGATIVE);
+			}
+				
+			SH100HW_Controls_t pressedButtons = SH100HW_GetControlsState(false);
+				
+			//MIDICTRL_SetMidiChannel(pressedButtons.midiChNum);
+			//MIDICTRL_OmniModeEn(pressedButtons.midiOmni);
+			//MIDICTRL_MuteCommEn(pressedButtons.midiMuteComm);
+				
+			FBTNS_MainTask(&pressedButtons);
+			FSW_MainTask(&pressedButtons);
+				
+			processTimerISR = false;
+		}
 	}
 }
 
 //==========================Main AMP task=======================================
 ISR(TIMER0_OVF_vect)
 {
-	SH100HW_MainTask();
-	
-	if(isAmpStarted)
-	{
-		SH100CTRL_CheckOutputJacks();
-		SH100HW_StartADConvertion(ADC_V_NEGATIVE);
-	}
-	
-	SH100HW_Controls_t pressedButtons = SH100HW_GetControlsState();
-	
-	MIDICTRL_SetMidiChannel(pressedButtons.midiChNum);
-	MIDICTRL_OmniModeEn(pressedButtons.midiOmni);
-	MIDICTRL_MuteCommEn(pressedButtons.midiMuteComm);
-	
-	FBTNS_MainTask(&pressedButtons);
-	FSW_MainTask(&pressedButtons);
+	processTimerISR = true;
 	
 	TCNT0 = 0xFF - MAIN_TIMER_PERIOD;
 }
@@ -145,7 +165,10 @@ ISR(ADC_vect)
 //=========================PWR Turn off INT=================================
 ISR(PCINT1_vect)
 {
-	SH100CTRL_StoreAmpState();
-	SH100CTRL_MuteAmp();
+	//isAmpShutdown = true;
+	
+	SH100HW_SetPAState(OUTPUT_MUTE);
+	SH100HW_SetDiMute(OUTPUT_MUTE);
+	SH100CTRL_StoreAmpState();	
 }
 

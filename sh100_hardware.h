@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define LED_COUNT 9
+
 #define LED_CH1 0
 #define LED_CH2 1
 #define LED_CH3 2
@@ -72,7 +74,7 @@ typedef enum
 }ADC_Channels_t;
 
 void SH100HW_Init();
-SH100HW_Controls_t SH100HW_GetControlsState();
+SH100HW_Controls_t SH100HW_GetControlsState(bool delayed);
 
 void SH100HW_SetCh(uint8_t chNum);
 void SH100HW_LoopEn(bool isEnabled);
@@ -91,7 +93,8 @@ typedef enum
 	OUTPUT_MUTE = 0,
 	OUTPUT_ENABLED	
 }SH100HW_OutputState_t;
-void SH100HW_SetPAState(SH100HW_OutputState_t state);
+void SH100HW_SetPAState(SH100HW_OutputState_t paState);
+void SH100HW_SetDiMute(SH100HW_OutputState_t muteEn);
 
 typedef enum
 {

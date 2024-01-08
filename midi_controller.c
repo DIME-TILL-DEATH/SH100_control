@@ -1,6 +1,8 @@
 #include <avr/eeprom.h>
 #include <asf.h>
 
+#include <string.h>
+
 #include "midi_parser.h"
 #include "midi_controller.h"
 
@@ -8,122 +10,131 @@
 #include "sh100_controller.h"
 #include "sh100_hardware.h"
 
+#define MIDI_CC_MUTE 7
+#define MIDI_CC_CHANNEL1 21
+#define MIDI_CC_CHANNEL2 22
+#define MIDI_CC_CHANNEL3 23
+#define MIDI_CC_CHANNEL4 24
+#define MIDI_CC_LOOP 25
+#define MIDI_CC_AB 26
+
 #include "footswitch.h"
 
-enum 
+typedef struct 
 {
-	DEFAULT = 0,
-	USER
-}commandSet;
+	uint8_t channelNum : 4;
+	bool loopOn : 1;
+	bool stateAB : 1;
+}MIDICTRL_Preset_t;
 
-typedef enum
-{
-	PROG_CLEAR,
-	PROG_ACTING,
-	PROG_PROGRAMMED
-}MIDICTRL_ProgBtnState_t;
+MIDICTRL_Preset_t storedPresets[128];
+MIDICTRL_Preset_t progPresets[128];
 
-MIDICTRL_ProgBtnState_t midiProgBtnState[MIDI_PROG_BTN_COUNT];
+MIDICTRL_Preset_t currentPresetState;
 
-uint8_t currentProgBtn;
-uint8_t currentErrBtnId;
+bool isIndicatingError;
+bool isIndicatingAccept;
 
-MIDICTRL_Mode_t mode;
+MIDICTRL_Mode_t mode = RUNNING;
 
 bool omniModeEnabled = false;
 bool muteCommandEnabled = false;
 
-uint8_t channelNum = 0;
+uint8_t midiChannelNum = 0;
 
-const MIDI_Command_t muteCommand =
+MIDICTRL_CommandBlock_t fixedCommands =
 {
-	.status = MIDI_COMM_CONTROL_CHANGE,
-	.channel_type = 0,
-	.data1 = 7,
-	.data2 = 0
-};
-
-MIDICTRL_CommandBlock_t userCommands;
-MIDICTRL_CommandBlock_t defaultCommands =
-{
+	.mute =
+	{
+		.status = MIDI_COMM_CONTROL_CHANGE,
+		.midiChannel = 0,
+		.data1 = MIDI_CC_MUTE,
+		.data2 = 0
+	},
+	
 	.channel1 =
 	{
-		.status = MIDI_COMM_PROGRAM_CHANGE,
-		.channel_type = 0,
-		.data1 = 0,
-		.data2 = 0
+		.status = MIDI_COMM_CONTROL_CHANGE,
+		.midiChannel = 0,
+		.data1 = MIDI_CC_CHANNEL1,
+		.data2 = 0x7F
 	},	
 	
 	.channel2 =
 	{
-		.status = MIDI_COMM_PROGRAM_CHANGE,
-		.channel_type = 0,
-		.data1 = 1,
-		.data2 = 0
+		.status = MIDI_COMM_CONTROL_CHANGE,
+		.midiChannel = 0,
+		.data1 = MIDI_CC_CHANNEL2,
+		.data2 = 0x7F
 	},
 	
 	.channel3 =
 	{
-		.status = MIDI_COMM_PROGRAM_CHANGE,
-		.channel_type = 0,
-		.data1 = 2,
-		.data2 = 0
+		.status = MIDI_COMM_CONTROL_CHANGE,
+		.midiChannel = 0,
+		.data1 = MIDI_CC_CHANNEL3,
+		.data2 = 0x7F
 	},
 	
 	.channel4 =
 	{
-		.status = MIDI_COMM_PROGRAM_CHANGE,
-		.channel_type = 0,
-		.data1 = 3,
-		.data2 = 0
+		.status = MIDI_COMM_CONTROL_CHANGE,
+		.midiChannel = 0,
+		.data1 = MIDI_CC_CHANNEL4,
+		.data2 = 0x7F
 	},
 	
 	.loopOn =
 	{
 		.status = MIDI_COMM_CONTROL_CHANGE,
-		.channel_type = 0,
-		.data1 = 15,
+		.midiChannel = 0,
+		.data1 = MIDI_CC_LOOP,
 		.data2 = 0
 	},
 	
 	.outAB =
 	{
 		.status = MIDI_COMM_CONTROL_CHANGE,
-		.channel_type = 0,
-		.data1 = 14,
+		.midiChannel = 0,
+		.data1 = MIDI_CC_AB,
 		.data2 = 0
 	}
 };
-
 void indicateMidiError();
+void indicateMidiAccept();
 
-bool isEqualCommands(const MIDI_Command_t* commandRecieved, const MIDI_Command_t* commandSaved)
+bool midiValToBool(uint8_t data)
 {
-	if(commandRecieved->status != commandSaved->status) return false;
-	if(commandRecieved->data1 != commandSaved->data1) return false;
-			
-	return true;
+	return (data > 63) ? 1 : 0;
+}
+
+void fillDefaultPresets()
+{
+	for(int i=0; i<128; i++)
+	{
+		storedPresets[i].channelNum = i%4;
+		storedPresets[i].loopOn = (i/4)%2;
+		storedPresets[i].stateAB = (i/8)%2;
+	}
 }
 
 void loadCommSetFromMemory()
 {
-	uint16_t readedMagicWord = eeprom_read_word((uint16_t*)0x02);
+	uint16_t readedMagicWord = eeprom_read_word((uint16_t*)MEMORY_MW_MIDI_COMMANDS_OFFSET);
 		
 	if(readedMagicWord == MEMORY_MAGIC_WORD)
-	{
+	{		
 		// memory is not empty. Load EEPROM values
-		uint8_t readedData[sizeof(MIDICTRL_CommandBlock_t)];
-		eeprom_read_block(&readedData, (void*)MEMORY_USER_COMMANDS_OFFSET, sizeof(MIDICTRL_CommandBlock_t));
-		MIDICTRL_CommandBlock_t* userCommands_ptr = (MIDICTRL_CommandBlock_t*)readedData;
-		userCommands = *userCommands_ptr;
-			
-		commandSet = eeprom_read_byte((uint8_t*)MEMORY_COMMAND_BLOCK_TYPE_OFFSET);
+		uint8_t readedData[128*sizeof(MIDICTRL_Preset_t)];
+		eeprom_read_block(&readedData, (void*)MEMORY_USER_PRESETS_OFFSET, 128*sizeof(MIDICTRL_Preset_t));
+		
+		memcpy(storedPresets, readedData, 128*sizeof(MIDICTRL_Preset_t));
 	}
 	else
 	{
 		// memory empty. Load default values
-		userCommands = defaultCommands;
-		commandSet = DEFAULT;
+		fillDefaultPresets();
+		
 	}
 }
 
@@ -131,29 +142,58 @@ void setMidiLeds()
 {
 	if(mode == PROGRAMMING)
 	{
-		for(uint8_t i=0; i<MIDI_PROG_BTN_COUNT; i++)
+		if (isIndicatingError)
 		{
-			switch(midiProgBtnState[i])
+			for(uint8_t i=0; i<LED_COUNT; i++)
 			{
-				case PROG_CLEAR: SH100HW_SetNewLedState(i, LED_OFF); break;
-				case PROG_ACTING: SH100HW_SetNewLedState(i, LED_FAST_BLINKING); break;
-				case PROG_PROGRAMMED: SH100HW_SetNewLedState(i, LED_ON); break;
+				SH100HW_SetNewLedState(i, LED_ON); 
 			}
 		}
-		
-		if(currentErrBtnId != MIDI_PROG_BTN_UNDEFINED)
+		else
 		{
-			SH100HW_SetNewLedState(currentErrBtnId, LED_ON);
+			SH100HW_LedState_t chosenCtrlLedState = isIndicatingAccept ? LED_ON : LED_FAST_BLINKING;
+			
+			for (int i=0; i<4; i++)
+			{
+				if(currentPresetState.channelNum == i)
+				{
+					SH100HW_SetNewLedState(i, chosenCtrlLedState);
+				}
+				else
+				{
+					SH100HW_SetNewLedState(i, LED_OFF);
+				}
+			}
+			
+			SH100HW_SetNewLedState(LED_LOOP, currentPresetState.loopOn ? chosenCtrlLedState : LED_OFF);
+			
+			if(currentPresetState.stateAB)
+			{
+				SH100HW_SetNewLedState(LED_A, LED_OFF);
+				SH100HW_SetNewLedState(LED_B, chosenCtrlLedState);
+			}
+			else
+			{
+				SH100HW_SetNewLedState(LED_A, chosenCtrlLedState);
+				SH100HW_SetNewLedState(LED_B, LED_OFF);
+			}
 		}
 	}
 }
 
 void MIDICTRL_Init()
 {	
-	currentErrBtnId = MIDI_PROG_BTN_UNDEFINED;
+	isIndicatingError = false;
+	isIndicatingAccept = false;
 	
 	loadCommSetFromMemory();
 	mode = RUNNING;
+}
+
+void MIDICTRL_FactoryReset()
+{
+	fillDefaultPresets();
+	eeprom_write_word((uint16_t*)MEMORY_MW_MIDI_COMMANDS_OFFSET, 0xFFFF);
 }
 
 void MIDICTRL_EnterProgrammingMode()
@@ -161,15 +201,17 @@ void MIDICTRL_EnterProgrammingMode()
 	mode = PROGRAMMING;
 	MIDI_SetRetranslateState(false);
 	
-	for(uint8_t i=0; i<MIDI_PROG_BTN_COUNT;i++)
-		midiProgBtnState[i] = PROG_CLEAR;
-		
+	memcpy(progPresets, storedPresets, 128*sizeof(MIDICTRL_Preset_t));
+	
+	currentPresetState.channelNum = 0;
+	currentPresetState.loopOn = false;
+	currentPresetState.stateAB = false;
+	
 	SH100HW_SetNewLedState(LED_PWR_GRN, LED_SLOW_BLINKING);
 	SH100HW_SetNewLedState(LED_PWR_RED, LED_SLOW_BLINKING);
 	
 	SH100HW_SetNewLedState(LED_B, LED_OFF);
 	
-	MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_CH1);	
 	setMidiLeds();
 }
 
@@ -180,19 +222,21 @@ MIDICTRL_Mode_t MIDICTRL_MidiMode()
 
 void MIDICTRL_SetProgrammingButton(uint8_t progBtnId)
 {
-	if(midiProgBtnState[currentProgBtn] == PROG_ACTING) 
+	switch(progBtnId)
 	{
-		midiProgBtnState[currentProgBtn] = PROG_CLEAR;
+		case MIDI_PROG_BTN_CH1: currentPresetState.channelNum = 0; break;
+		case MIDI_PROG_BTN_CH2: currentPresetState.channelNum = 1; break;
+		case MIDI_PROG_BTN_CH3: currentPresetState.channelNum = 2; break;
+		case MIDI_PROG_BTN_CH4: currentPresetState.channelNum = 3; break;
+		case MIDI_PROG_BTN_LOOP: currentPresetState.loopOn = !currentPresetState.loopOn; break;
+		case MIDI_PROG_BTN_AB: currentPresetState.stateAB = !currentPresetState.stateAB; break;
 	}
-	
-	currentProgBtn = progBtnId;
-	midiProgBtnState[currentProgBtn] = PROG_ACTING;
 	setMidiLeds();
 }
 
 void MIDICTRL_SetMidiChannel(uint8_t midiChNum)
 {
-	channelNum = midiChNum;
+	midiChannelNum = midiChNum;
 }
 
 void MIDICTRL_OmniModeEn(bool isEnabled)
@@ -205,31 +249,16 @@ void MIDICTRL_MuteCommEn(bool isEnabled)
 	muteCommandEnabled = isEnabled;
 }
 
-void programmBtn(MIDI_Command_t* targetComm, const MIDI_Command_t* srcComm, uint8_t targetBtnId)
-{
-	if(midiProgBtnState[targetBtnId] == PROG_ACTING)
-	{
-		targetComm->status = srcComm->status;
-		targetComm->data1 = srcComm->data1;
-		midiProgBtnState[targetBtnId] = PROG_PROGRAMMED;
-		setMidiLeds();
-	}
-}
-
 void MIDICTRL_SendSwChComm(uint8_t chNum)
 {
 	if(mode == RUNNING)
 	{
-		MIDICTRL_CommandBlock_t* currentCommandBlock;
-		if(commandSet == USER) currentCommandBlock = &userCommands;
-		else currentCommandBlock = &defaultCommands;
-		
 		switch(chNum)
 		{
-			case SH100_CHANNEL1: MIDI_SendCommand(currentCommandBlock->channel1, channelNum); break;
-			case SH100_CHANNEL2: MIDI_SendCommand(currentCommandBlock->channel2, channelNum); break;
-			case SH100_CHANNEL3: MIDI_SendCommand(currentCommandBlock->channel3, channelNum); break;
-			case SH100_CHANNEL4: MIDI_SendCommand(currentCommandBlock->channel4, channelNum); break;
+			case SH100_CHANNEL1: MIDI_SendCommand(fixedCommands.channel1, midiChannelNum); break;
+			case SH100_CHANNEL2: MIDI_SendCommand(fixedCommands.channel2, midiChannelNum); break;
+			case SH100_CHANNEL3: MIDI_SendCommand(fixedCommands.channel3, midiChannelNum); break;
+			case SH100_CHANNEL4: MIDI_SendCommand(fixedCommands.channel4, midiChannelNum); break;
 			default: break;
 		}
 	}
@@ -238,121 +267,71 @@ void MIDICTRL_SendSwChComm(uint8_t chNum)
 void MIDICTRL_SendLoopEnComm(bool isEn)
 {
 	if(mode == RUNNING)
-	{
-		MIDICTRL_CommandBlock_t* currentCommandBlock;
-		if(commandSet == USER) currentCommandBlock = &userCommands;
-		else currentCommandBlock = &defaultCommands;
-		
-		MIDI_Command_t loopComm = currentCommandBlock->loopOn;
+	{	
+		MIDI_Command_t loopComm = fixedCommands.loopOn;
 		loopComm.data2 = isEn ? 0x7F : 0x00;
 		
-		MIDI_SendCommand(loopComm, channelNum);
+		MIDI_SendCommand(loopComm, midiChannelNum);
 	}
 }
 
 void MIDICTRL_SendSwABComm(bool isEn)
 {
 	if(mode == RUNNING)
-	{
-		MIDICTRL_CommandBlock_t* currentCommandBlock;
-		if(commandSet == USER) currentCommandBlock = &userCommands;
-		else currentCommandBlock = &defaultCommands;
-		
-		MIDI_Command_t abComm = currentCommandBlock->outAB;
+	{	
+		MIDI_Command_t abComm = fixedCommands.outAB;
 		abComm.data2 = isEn ? 0x7F : 0x00;
 		
-		MIDI_SendCommand(abComm, channelNum);
+		MIDI_SendCommand(abComm, midiChannelNum);
 	}
 }
 
 void MIDICTRL_HandleCommand(const MIDI_Command_t* command)
 {
-	if(FSW_BlockFrontControls()) return;
+	//if(FSW_BlockFrontControls()) return;
+	if(!omniModeEnabled)
+	{
+		if(midiChannelNum != command->midiChannel) return;
+	}
 	
 	switch(mode)
 	{
 		case RUNNING:
 		{
-			if(!omniModeEnabled)
+			if(command->status == MIDI_COMM_CONTROL_CHANGE)
 			{
-				if(channelNum != command->channel_type) return;
-			}
-			
-			if(muteCommandEnabled)
-			{
-				if(isEqualCommands(command, &muteCommand)) 
+				switch(command->data1)
 				{
-					if((command->data2>63) ? 1 : 0) SH100CTRL_MuteAmp();
-					else SH100CTRL_UnmuteAmp();
+					case MIDI_CC_CHANNEL1: SH100CTRL_SetChannelExclusive(0); break;
+					case MIDI_CC_CHANNEL2: SH100CTRL_SetChannelExclusive(1); break;
+					case MIDI_CC_CHANNEL3: SH100CTRL_SetChannelExclusive(2); break;
+					case MIDI_CC_CHANNEL4: SH100CTRL_SetChannelExclusive(3); break;
+					case MIDI_CC_LOOP: SH100CTRL_SetLoop(midiValToBool(command->data2)); break;
+					case MIDI_CC_AB: SH100CTRL_SetAB(midiValToBool(command->data2)); break;
+					case MIDI_CC_MUTE: 
+					{
+						if(muteCommandEnabled) SH100CTRL_SetMuteAmp(midiValToBool(command->data2)); 
+						break;
+					}
 				}
 			}
 			
-			MIDICTRL_CommandBlock_t* currentCommandBlock;
-			if(commandSet == USER) currentCommandBlock = &userCommands;
-			else currentCommandBlock = &defaultCommands;
-			
-			// priority ch1, ch2, ch3, ch4, loop, AB. After handling, return. Only one switch by one command
-			if(isEqualCommands(command, &(currentCommandBlock->channel1))) 
+			if(command->status == MIDI_COMM_PROGRAM_CHANGE)
 			{
-				SH100CTRL_SetChannel(0); 
-				return;
+				MIDICTRL_Preset_t preset = storedPresets[command->data1];
+				
+				SH100CTRL_SetChannel(preset.channelNum);
+				SH100CTRL_SetLoop(preset.loopOn);
+				SH100CTRL_SetAB(preset.stateAB);
 			}
-			if(isEqualCommands(command, &(currentCommandBlock->channel2))) 
-			{
-				SH100CTRL_SetChannel(1); 
-				return;
-			}
-			if(isEqualCommands(command, &(currentCommandBlock->channel3))) 
-			{
-				SH100CTRL_SetChannel(2); 
-				return;
-			}
-			if(isEqualCommands(command, &(currentCommandBlock->channel4))) 
-			{
-				SH100CTRL_SetChannel(3); 
-				return;
-			}		
-			if(isEqualCommands(command, &(currentCommandBlock->loopOn))) 
-			{
-				SH100CTRL_SetLoop((command->data2>63) ? 1 : 0); 
-				return;
-			}
-			if(isEqualCommands(command, &(currentCommandBlock->outAB))) 
-			{
-				SH100CTRL_SetAB((command->data2>63) ? 1 : 0); 
-				return;
-			}
-			break;
 		}
 		
 		case PROGRAMMING:
 		{
 			if(command->status == MIDI_COMM_PROGRAM_CHANGE)
 			{
-				switch(currentProgBtn)
-				{
-					case MIDI_PROG_BTN_CH1: programmBtn(&(userCommands.channel1), command, MIDI_PROG_BTN_CH1); break;
-					case MIDI_PROG_BTN_CH2: programmBtn(&(userCommands.channel2), command, MIDI_PROG_BTN_CH2); break;
-					case MIDI_PROG_BTN_CH3: programmBtn(&(userCommands.channel3), command, MIDI_PROG_BTN_CH3); break;
-					case MIDI_PROG_BTN_CH4: programmBtn(&(userCommands.channel4), command, MIDI_PROG_BTN_CH4); break;
-					default: indicateMidiError(); break; 
-				}
-			}
-			else if(command->status == MIDI_COMM_CONTROL_CHANGE)
-			{
-				if(command->data1 == muteCommand.data1)
-				{
-					indicateMidiError();
-				}
-				else
-				{
-					switch(currentProgBtn)
-					{
-						case MIDI_PROG_BTN_AB: programmBtn(&(userCommands.outAB), command, MIDI_PROG_BTN_AB); break;
-						case MIDI_PROG_BTN_LOOP: programmBtn(&(userCommands.loopOn), command, MIDI_PROG_BTN_LOOP); break;
-						default: indicateMidiError(); break;
-					}
-				}
+				progPresets[command->data1] = currentPresetState;
+				indicateMidiAccept();
 			}
 			else
 			{
@@ -367,11 +346,10 @@ void MIDICTRL_StoreUserCommands()
 {
 	if(mode == PROGRAMMING)
 	{
-		commandSet = USER;
+		memcpy(storedPresets, progPresets, 128*sizeof(MIDICTRL_Preset_t));
 		
-		eeprom_write_word((uint16_t*)0x02, MEMORY_MAGIC_WORD);
-		eeprom_write_byte((void*)MEMORY_COMMAND_BLOCK_TYPE_OFFSET, commandSet);
-		eeprom_write_block(&userCommands, (void*)MEMORY_USER_COMMANDS_OFFSET, sizeof(MIDICTRL_CommandBlock_t));
+		eeprom_write_word((uint16_t*)MEMORY_MW_MIDI_COMMANDS_OFFSET, MEMORY_MAGIC_WORD);
+		eeprom_write_block(storedPresets, (void*)MEMORY_USER_PRESETS_OFFSET, 128*sizeof(MIDICTRL_Preset_t));
 		
 		SH100HW_SetPreviousLedState(LED_B);
 		MIDI_SetRetranslateState(true);
@@ -383,10 +361,7 @@ void MIDICTRL_StoreUserCommands()
 void MIDICTRL_DiscardCommands()
 {
 	if(mode == PROGRAMMING)
-	{
-		commandSet = DEFAULT;
-		eeprom_write_byte((void*)MEMORY_COMMAND_BLOCK_TYPE_OFFSET, commandSet);		
-		
+	{		
 		SH100HW_SetPreviousLedState(LED_B);
 		MIDI_SetRetranslateState(true);
 		
@@ -401,18 +376,35 @@ void indicateMidiError()
 	TCNT1 = 0xFFFF - MIDI_ERR_TIMER_PERIOD;
 	TIMSK1 |= 0x01; // OVF INT enable, count pulse = 100us
 	TCCR1B |= 0x05; // psc = 1024, timer on
-	currentErrBtnId = currentProgBtn;
+	
+	isIndicatingError = true;
 	setMidiLeds();
 	
 	SH100HW_SetNewLedState(LED_PWR_GRN, LED_OFF);
 	SH100HW_SetNewLedState(LED_PWR_RED, LED_ON);
 }
 
+void indicateMidiAccept()
+{
+	TCNT1 = 0xFFFF - MIDI_ERR_TIMER_PERIOD;
+	TIMSK1 |= 0x01; // OVF INT enable, count pulse = 100us
+	TCCR1B |= 0x05; // psc = 1024, timer on
+	
+	isIndicatingError = false;
+	isIndicatingAccept = true;
+	setMidiLeds();
+	
+	SH100HW_SetNewLedState(LED_PWR_GRN, LED_ON);
+	SH100HW_SetNewLedState(LED_PWR_RED, LED_OFF);
+}
+
 ISR(TIMER1_OVF_vect)
 {
 	TIMSK1 |= 0x00; // OVF INT disable
 	TCCR1B |= 0x00; // psc = 0, timer off
-	currentErrBtnId = MIDI_PROG_BTN_UNDEFINED;
+	
+	isIndicatingAccept = false;
+	isIndicatingError = false;
 	setMidiLeds();
 	
 	SH100HW_SetPreviousLedState(LED_PWR_GRN);

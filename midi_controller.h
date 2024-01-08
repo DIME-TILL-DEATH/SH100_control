@@ -16,11 +16,12 @@
 typedef enum
 {
 	RUNNING,
-	PROGRAMMING,
+	PROGRAMMING
 }MIDICTRL_Mode_t;
 
 typedef struct
 {
+	MIDI_Command_t mute;
 	MIDI_Command_t channel1;
 	MIDI_Command_t channel2;
 	MIDI_Command_t channel3;
@@ -30,6 +31,7 @@ typedef struct
 }MIDICTRL_CommandBlock_t;
 
 void MIDICTRL_Init();
+void MIDICTRL_FactoryReset();
 void MIDICTRL_HandleCommand(const MIDI_Command_t* command);
 
 void MIDICTRL_EnterProgrammingMode();

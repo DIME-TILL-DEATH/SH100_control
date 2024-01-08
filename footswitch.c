@@ -5,6 +5,8 @@
 #include "sh100_controller.h"
 #include "footswitch.h"
 
+#include "midi_controller.h"
+
 FSW_SwitchMode_t switchMode;
 SH100HW_Controls_t ctrlsPrevState;
 uint8_t protectionInterval_cnt;
@@ -15,7 +17,7 @@ void FSW_Init()
 	
 	if(switchMode > 2) switchMode = 0;
 	
-	ctrlsPrevState = SH100HW_GetControlsState();
+	ctrlsPrevState = SH100HW_GetControlsState(false);
 	protectionInterval_cnt = 0;
 }
 
@@ -25,17 +27,37 @@ void FSW_SetMode(FSW_SwitchMode_t newSwitchMode)
 	eeprom_write_byte((uint8_t*)MEMORY_FSW_MODE_OFFSET, switchMode);
 }
 
-#define FSW_PROTECTION_INTERVAL 25
+#define FSW_PROTECTION_INTERVAL 50
 uint8_t zzCh12 = SH100_CHANNEL1;
 uint8_t zzCh34 = SH100_CHANNEL3;
 void FSW_MainTask(const SH100HW_Controls_t* activatedCtrls)
 {
+	//if(MIDICTRL_MidiMode() == PROGRAMMING) return;
+	
 	if(protectionInterval_cnt == 0)
 	{		
 		if (activatedCtrls->FS1_presence == FSW_PRESENT)
 		{
 			switch(switchMode)
-			{		
+			{	
+				case FSW_DISCRET:
+				{
+					uint8_t desiredChannel = SH100CTRL_GetAmpState().channelNum;
+					if(ctrlsPrevState.FS1_tip != activatedCtrls->FS1_tip) desiredChannel = 0;
+					else if(ctrlsPrevState.FS1_sleeve != activatedCtrls->FS1_sleeve) desiredChannel = 1;
+					else return;
+					
+					if(SH100CTRL_GetAmpState().channelNum != desiredChannel)
+					{
+						SH100CTRL_FsSetChannel(desiredChannel); // send midi comm only once
+					}
+					else
+					{
+						SH100CTRL_SwLoop();
+						if(MIDICTRL_MidiMode() == PROGRAMMING) MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_LOOP);
+					}
+					break;
+				}	
 				case FSW_RELAY:
 				{
 					if((ctrlsPrevState.FS1_tip == activatedCtrls->FS1_tip) && (ctrlsPrevState.FS1_sleeve == activatedCtrls->FS1_sleeve)) return; //There is no changes
@@ -97,16 +119,43 @@ void FSW_MainTask(const SH100HW_Controls_t* activatedCtrls)
 
 		if (activatedCtrls->FS2_presence == FSW_PRESENT)
 		{
-			if(ctrlsPrevState.FS2_sleeve != activatedCtrls->FS2_sleeve)
-			{
-				protectionInterval_cnt = FSW_PROTECTION_INTERVAL;
-				SH100CTRL_SwLoop();
-			}
+			switch(switchMode)
+			{	
+				case FSW_DISCRET:
+				{
+					uint8_t desiredChannel = SH100CTRL_GetAmpState().channelNum;
+					if(ctrlsPrevState.FS2_tip != activatedCtrls->FS2_tip) desiredChannel = 2;
+					else if(ctrlsPrevState.FS2_sleeve != activatedCtrls->FS2_sleeve) desiredChannel = 3;
+					else return;
+					
+					if(SH100CTRL_GetAmpState().channelNum != desiredChannel)
+					{
+						SH100CTRL_FsSetChannel(desiredChannel); // send midi comm only once
+					}
+					else
+					{
+						SH100CTRL_SwLoop();
+						if(MIDICTRL_MidiMode() == PROGRAMMING) MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_LOOP);
+					}
+					break;
+				}	
+				default:
+				{
+					if(ctrlsPrevState.FS2_sleeve != activatedCtrls->FS2_sleeve)
+					{
+						protectionInterval_cnt = FSW_PROTECTION_INTERVAL;
+						SH100CTRL_SwLoop();
+						if(MIDICTRL_MidiMode() == PROGRAMMING) MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_LOOP);
+					}
 		
-			if (ctrlsPrevState.FS2_tip != activatedCtrls->FS2_tip)
-			{
-				protectionInterval_cnt = FSW_PROTECTION_INTERVAL;
-				SH100CTRL_SwAB();
+					if (ctrlsPrevState.FS2_tip != activatedCtrls->FS2_tip)
+					{
+						protectionInterval_cnt = FSW_PROTECTION_INTERVAL;
+						SH100CTRL_SwAB();
+						if(MIDICTRL_MidiMode() == PROGRAMMING) 
+						if(MIDICTRL_MidiMode() == PROGRAMMING) MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_AB);
+					}
+				}
 			}
 		}			
 	}

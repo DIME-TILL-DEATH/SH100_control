@@ -8,4 +8,6 @@
 
 void FBTNS_MainTask(const SH100HW_Controls_t* pressedBtns);
 
+extern bool isAmpStarted;
+
 #endif /* FRONT_BUTTONS_H_ */
