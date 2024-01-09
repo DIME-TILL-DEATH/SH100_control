@@ -17,10 +17,12 @@ typedef struct
 	
 	uint8_t channelNum;
 	bool loopOn[4]; // every channel
+	bool loopAll;
 	bool swAB[4];
 }SH100_State_t;
 
 void SH100CTRL_Init();
+void SH100CTRL_setDefaultAmpState();
 void SH100CTRL_FactoryReset();
 
 void SH100CTRL_SwAuxFollowMode();

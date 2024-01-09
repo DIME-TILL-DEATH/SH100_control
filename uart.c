@@ -32,8 +32,6 @@ uint8_t rx_buffer0[RX_BUFFER_SIZE];
 
 uint8_t rx_wr_index, rx_rd_index, rx_counter;
 
-bool rx_buffer_overflow;
-
 ISR(USART_RX_vect)
 {
 	uint8_t status, data;
@@ -49,7 +47,6 @@ ISR(USART_RX_vect)
 		if (++rx_counter == RX_BUFFER_SIZE)
 		{
 			rx_counter=0;
-			rx_buffer_overflow=1;
 		}
 	}
 }
@@ -66,9 +63,9 @@ uint8_t UART_PopWord()
 		if (rx_rd_index == RX_BUFFER_SIZE) rx_rd_index = 0;
 	#endif
 	
-	cpu_irq_disable();
+	//cpu_irq_disable();
 	--rx_counter;
-	cpu_irq_enable();
+	//cpu_irq_enable();
 	return data;
 }
 
@@ -90,9 +87,7 @@ ISR(USART_TX_vect)
 		--tx_counter;
 		UDR0=tx_buffer[tx_rd_index++];
 		
-		#if TX_BUFFER_SIZE != 256
-			if (tx_rd_index == TX_BUFFER_SIZE) tx_rd_index = 0;
-		#endif
+		if (tx_rd_index == TX_BUFFER_SIZE) tx_rd_index = 0;
 	}
 }
 
@@ -101,7 +96,7 @@ void UART_PushWord(uint8_t c)
 {	
 	while (tx_counter == TX_BUFFER_SIZE);
 	
-	cpu_irq_disable();
+	//cpu_irq_disable();
 	
 	if (tx_counter || ((UCSR0A & DATA_REGISTER_EMPTY)==0))
 	{
@@ -115,5 +110,5 @@ void UART_PushWord(uint8_t c)
 	}
 	else UDR0=c;
 	
-	cpu_irq_enable();
+	//cpu_irq_enable();
 }

@@ -54,7 +54,7 @@ void FSW_MainTask(const SH100HW_Controls_t* activatedCtrls)
 					else
 					{
 						SH100CTRL_SwLoop();
-						if(MIDICTRL_MidiMode() == PROGRAMMING) MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_LOOP);
+						//if(MIDICTRL_MidiMode() == PROGRAMMING) MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_LOOP);
 					}
 					break;
 				}	
@@ -135,7 +135,7 @@ void FSW_MainTask(const SH100HW_Controls_t* activatedCtrls)
 					else
 					{
 						SH100CTRL_SwLoop();
-						if(MIDICTRL_MidiMode() == PROGRAMMING) MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_LOOP);
+						//if(MIDICTRL_MidiMode() == PROGRAMMING) MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_LOOP);
 					}
 					break;
 				}	
@@ -145,15 +145,15 @@ void FSW_MainTask(const SH100HW_Controls_t* activatedCtrls)
 					{
 						protectionInterval_cnt = FSW_PROTECTION_INTERVAL;
 						SH100CTRL_SwLoop();
-						if(MIDICTRL_MidiMode() == PROGRAMMING) MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_LOOP);
+						//if(MIDICTRL_MidiMode() == PROGRAMMING) MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_LOOP);
 					}
 		
 					if (ctrlsPrevState.FS2_tip != activatedCtrls->FS2_tip)
 					{
 						protectionInterval_cnt = FSW_PROTECTION_INTERVAL;
-						SH100CTRL_SwAB();
-						if(MIDICTRL_MidiMode() == PROGRAMMING) 
-						if(MIDICTRL_MidiMode() == PROGRAMMING) MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_AB);
+						SH100CTRL_SwAB();						
+						//if(MIDICTRL_MidiMode() == PROGRAMMING) 
+						//if(MIDICTRL_MidiMode() == PROGRAMMING) MIDICTRL_SetProgrammingButton(MIDI_PROG_BTN_AB);
 					}
 				}
 			}

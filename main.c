@@ -77,7 +77,6 @@ int main(void)
 	UART_init();
 	SH100HW_Init();
 	
-	
 	MIDICTRL_Init();
 	SH100CTRL_Init();	
 	FSW_Init();
@@ -94,16 +93,15 @@ int main(void)
 	MIDICTRL_MuteCommEn(pressedButtons.midiMuteComm);
 	
 	initTest();
+	delay_ms(1000);
 	SH100HW_SetDiMute(OUTPUT_ENABLED);
 		
     while(1)
     {
 		MIDI_ParserTask();
 		
-		if(processTimerISR)
-		{
-			SH100HW_MainTask();
-				
+		/*if(processTimerISR)
+		{		
 			if(isAmpStarted)
 			{
 				SH100CTRL_CheckOutputJacks();
@@ -120,14 +118,32 @@ int main(void)
 			FSW_MainTask(&pressedButtons);
 				
 			processTimerISR = false;
-		}
+		}*/
 	}
 }
 
 //==========================Main AMP task=======================================
 ISR(TIMER0_OVF_vect)
 {
-	processTimerISR = true;
+	SH100HW_MainTask();
+	
+	if(isAmpStarted)
+	{
+		SH100CTRL_CheckOutputJacks();
+		SH100HW_StartADConvertion(ADC_V_NEGATIVE);
+	}
+				
+	SH100HW_Controls_t pressedButtons = SH100HW_GetControlsState(false);
+				
+	//MIDICTRL_SetMidiChannel(pressedButtons.midiChNum);
+	//MIDICTRL_OmniModeEn(pressedButtons.midiOmni);
+	//MIDICTRL_MuteCommEn(pressedButtons.midiMuteComm);
+				
+	FBTNS_MainTask(&pressedButtons);
+	FSW_MainTask(&pressedButtons);
+				
+	//processTimerISR = true;
+	
 	
 	TCNT0 = 0xFF - MAIN_TIMER_PERIOD;
 }

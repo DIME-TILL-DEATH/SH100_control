@@ -63,7 +63,7 @@ SH100HW_Led_t led[LED_COUNT];
 
 void writeShiftRegs(uint16_t data);
 
-bool isPAOk;
+bool isPAOk=false;
 
 void SH100HW_Init()
 {
@@ -90,7 +90,7 @@ void SH100HW_Init()
 	gpio_configure_pin(PIN_M8_DETECT, IOPORT_DIR_INPUT);
 	gpio_configure_pin(PIN_M16_DETECT, IOPORT_DIR_INPUT);
 	
-	isPAOk = false;
+	//isPAOk = false;
 	
 	for(int i=0; i< LED_COUNT; i++)
 	{
@@ -197,12 +197,12 @@ void SH100HW_SetPAState(SH100HW_OutputState_t paState)
 		//ioport_set_pin_level(PIN_MUTE, !paState);
 		ioport_set_pin_level(PIN_RELE_W, paState);
 	}
-	else
+	/*else
 	{		
 		// PA failure, mute AMP
 		//ioport_set_pin_level(PIN_MUTE, 1);
 		ioport_set_pin_level(PIN_RELE_W, 0);
-	}
+	}*/
 }
 
 void SH100HW_SetDiMute(SH100HW_OutputState_t muteEn)

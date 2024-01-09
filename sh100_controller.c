@@ -7,13 +7,15 @@
 #include "sh100_hardware.h"
 
 SH100_State_t ampState;
+bool ampMuted = false;
 
 void setChannelLeds();
 
-void setDefaultAmpState()
+void SH100CTRL_setDefaultAmpState()
 {
 	ampState.auxFollowChannel = true;
 	ampState.channelNum = 0;
+	ampState.loopAll = false;
 	for(int i=0; i<4; i++)
 	{
 		ampState.loopOn[i] = false;
@@ -34,15 +36,15 @@ void SH100CTRL_Init()
 	}
 	else
 	{
-		setDefaultAmpState();
+		SH100CTRL_setDefaultAmpState();
 	}
 	SH100CTRL_SetAmpState(&ampState);
 }
 
 void SH100CTRL_FactoryReset()
 {
-	setDefaultAmpState();
-	eeprom_write_word(0x00, 0xFF);
+	SH100CTRL_setDefaultAmpState();
+	eeprom_write_word(0x00, 0xFFFF);
 }
 
 void SH100CTRL_SwAuxFollowMode()
@@ -55,7 +57,7 @@ void SH100CTRL_SetAmpState(const SH100_State_t* state)
 	ampState = *state;
 	
 	SH100CTRL_SetChannelExclusive(ampState.channelNum);
-	SH100CTRL_SetLoop(ampState.loopOn[ampState.channelNum]);
+	SH100CTRL_SetLoop(ampState.auxFollowChannel ? ampState.loopOn[ampState.channelNum] : ampState.loopAll);
 	SH100CTRL_SetAB(ampState.swAB[ampState.channelNum]);
 	SH100CTRL_SetAmpLeds();
 }
@@ -92,7 +94,7 @@ void SH100CTRL_StoreAmpState()
 void SH100CTRL_FsSetChannel(uint8_t chNum)
 {
 	SH100CTRL_BtnSetChannel(chNum);
-	if(MIDICTRL_MidiMode() == PROGRAMMING) MIDICTRL_SetProgrammingButton(chNum);
+	//if(MIDICTRL_MidiMode() == PROGRAMMING) MIDICTRL_SetProgrammingButton(chNum);
 }
 
 void SH100CTRL_BtnSetChannel(uint8_t chNum)
@@ -127,15 +129,24 @@ void SH100CTRL_SetChannelExclusive(uint8_t chNum)
 
 void SH100CTRL_SwLoop()
 {
-	SH100CTRL_SetLoop(!ampState.loopOn[ampState.channelNum]);
+	SH100CTRL_SetLoop(!(ampState.auxFollowChannel ? ampState.loopOn[ampState.channelNum] : ampState.loopAll));
 	MIDICTRL_SendLoopEnComm(!ampState.loopOn[ampState.channelNum]);
 }
 
 void SH100CTRL_SetLoop(bool en)
 {
-	ampState.loopOn[ampState.channelNum] = en;
-	SH100HW_LoopEn(ampState.loopOn[ampState.channelNum]);
-	if(MIDICTRL_MidiMode() == RUNNING)  SH100HW_SetNewLedState(LED_LOOP, ampState.loopOn[ampState.channelNum]);
+	if(ampState.auxFollowChannel)
+	{
+		ampState.loopOn[ampState.channelNum] = en;
+		SH100HW_LoopEn(ampState.loopOn[ampState.channelNum]);	
+		if(MIDICTRL_MidiMode() == RUNNING)  SH100HW_SetNewLedState(LED_LOOP, ampState.loopOn[ampState.channelNum]);
+	}
+	else
+	{
+		ampState.loopAll = en;
+		SH100HW_LoopEn(ampState.loopAll);
+		if(MIDICTRL_MidiMode() == RUNNING)  SH100HW_SetNewLedState(LED_LOOP, ampState.loopAll);
+	}
 }
 
 void SH100CTRL_SwAB()
@@ -157,15 +168,20 @@ void SH100CTRL_SetAB(bool isB)
 
 void SH100CTRL_UnmuteAmp()
 {
-	if(SH100HW_GetOutputJacks() != OUT_NONE)
+	if(!ampMuted)
 	{
-		SH100HW_SetPAState(OUTPUT_ENABLED);	
-	}		
-	SH100HW_SetDiMute(OUTPUT_ENABLED);
+		SH100HW_SetDiMute(OUTPUT_ENABLED);
+		if(SH100HW_GetOutputJacks() != OUT_NONE)
+		{
+			SH100HW_SetPAState(OUTPUT_ENABLED);
+		}
+		
+	}
 }
 
 void SH100CTRL_SetMuteAmp(bool mute)
 {
+	ampMuted = mute;
 	if(mute)
 	{
 		SH100HW_SetPAState(OUTPUT_MUTE);
@@ -200,8 +216,8 @@ void SH100CTRL_CheckOutputJacks()
 				SH100HW_SetNewLedState(LED_PWR_GRN, LED_ON);
 				SH100HW_SetNewLedState(LED_PWR_RED, LED_OFF);
 			}		
-			SH100CTRL_UnmuteAmp();
-			SH100HW_SetOutputMode(OUTPUT_16OHM);	
+			SH100HW_SetOutputMode(OUTPUT_16OHM);
+			if(!ampMuted) SH100HW_SetPAState(OUTPUT_ENABLED);
 			break;
 		}
 		case OUT_8OHM:
@@ -210,10 +226,9 @@ void SH100CTRL_CheckOutputJacks()
 			{
 				SH100HW_SetNewLedState(LED_PWR_GRN, LED_ON);
 				SH100HW_SetNewLedState(LED_PWR_RED, LED_OFF);
-			}
-			SH100CTRL_UnmuteAmp();
+			}		
 			SH100HW_SetOutputMode(OUTPUT_8OHM);
-
+			if(!ampMuted) SH100HW_SetPAState(OUTPUT_ENABLED);
 			break;
 		}
 		case OUT_BOTH:

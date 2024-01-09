@@ -302,10 +302,14 @@ void MIDICTRL_HandleCommand(const MIDI_Command_t* command)
 			{
 				switch(command->data1)
 				{
-					case MIDI_CC_CHANNEL1: SH100CTRL_SetChannelExclusive(0); break;
+					/*case MIDI_CC_CHANNEL1: SH100CTRL_SetChannelExclusive(0); break;
 					case MIDI_CC_CHANNEL2: SH100CTRL_SetChannelExclusive(1); break;
 					case MIDI_CC_CHANNEL3: SH100CTRL_SetChannelExclusive(2); break;
-					case MIDI_CC_CHANNEL4: SH100CTRL_SetChannelExclusive(3); break;
+					case MIDI_CC_CHANNEL4: SH100CTRL_SetChannelExclusive(3); break;*/
+					case MIDI_CC_CHANNEL1: SH100CTRL_BtnSetChannel(0); break;
+					case MIDI_CC_CHANNEL2: SH100CTRL_BtnSetChannel(1); break;
+					case MIDI_CC_CHANNEL3: SH100CTRL_BtnSetChannel(2); break;
+					case MIDI_CC_CHANNEL4: SH100CTRL_BtnSetChannel(3); break;
 					case MIDI_CC_LOOP: SH100CTRL_SetLoop(midiValToBool(command->data2)); break;
 					case MIDI_CC_AB: SH100CTRL_SetAB(midiValToBool(command->data2)); break;
 					case MIDI_CC_MUTE: 
@@ -333,10 +337,10 @@ void MIDICTRL_HandleCommand(const MIDI_Command_t* command)
 				progPresets[command->data1] = currentPresetState;
 				indicateMidiAccept();
 			}
-			else
+			/*else
 			{
 				indicateMidiError();
-			}			
+			}	*/		
 			break;
 		}
 	}	
